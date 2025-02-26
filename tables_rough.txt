@@ -20,7 +20,11 @@ Complaints:
 Resource_ID (Foreign Key referencing Resources), Aadhar_No (Foreign Key referencing Citizens), Complaint_Desc, Complain_Date
 
 Resources: 
+<<<<<<< HEAD
 Resource_ID (Primary Key), Last_Inspected_Date
+=======
+Resource_ID (Primary Key), Resource_Name, Last_Inspected_Date
+>>>>>>> bd68a66 (beginning)
 
 Welfare_Schemes: 
 Scheme_ID (Primary Key), Scheme_Type, Budget, Description
