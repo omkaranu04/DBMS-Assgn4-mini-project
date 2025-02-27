@@ -1,5 +1,19 @@
 <h1>Government Officials</h1>
-<a href="{{ url_for('main.add_edit_government_official', username='') }}">Add New Official</a>
+
+<!-- Form to Add New Official -->
+<form method="POST" action="{{ url_for('main.add_edit_government_official') }}">
+  <label for="username">Username:</label>
+  <input type="text" name="username" id="username" required />
+
+  <label for="password">Password:</label>
+  <input type="password" name="password" id="password" required />
+
+  <button type="submit">Add New Official</button>
+</form>
+
+<hr />
+
+<!-- Table for Listing Officials -->
 <table>
   <tr>
     <th>Username</th>
@@ -9,11 +23,20 @@
   <tr>
     <td>{{ off.username }}</td>
     <td>
-        <!-- Use 'off.username' instead of 'official.username' -->
-        <a href="{{ url_for('main.add_edit_government_official', username=off.username) }}">Edit</a>
-        <form method="POST" action="{{ url_for('main.delete_government_official', username=off.username) }}">
-            <button type="submit">Delete</button>
-        </form>        
+      <!-- Edit Official -->
+      <a
+        href="{{ url_for('main.add_edit_government_official', username=off.username) }}"
+        >Edit</a
+      >
+
+      <!-- Delete Official -->
+      <form
+        method="POST"
+        action="{{ url_for('main.delete_government_official', username=off.username) }}"
+        style="display: inline"
+      >
+        <button type="submit">Delete</button>
+      </form>
     </td>
   </tr>
   {% endfor %}

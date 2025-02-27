@@ -1,5 +1,6 @@
 <h1>Government Officials</h1>
-<a href="{{ url_for('main.add_edit_government_official', username=None) }}">Add New Official</a>
+<a href="{{ url_for('main.add_edit_government_official') }}">Add New Official</a> <!-- No username parameter -->
+
 <table>
   <tr>
     <th>Username</th>
@@ -9,8 +10,8 @@
   <tr>
     <td>{{ off.username }}</td>
     <td>
-        <a href="{{ url_for('main.add_edit_government_official', username=official.username) }}">Edit</a>
-        <form method="POST" action="{{ url_for('main.delete_government_official', username=official.username) }}">
+        <a href="{{ url_for('main.add_edit_government_official', username=off.username) }}">Edit</a>
+        <form method="POST" action="{{ url_for('main.delete_government_official', username=off.username) }}">
             <button type="submit">Delete</button>
         </form>        
     </td>
