@@ -10,9 +10,9 @@ CREATE TABLE Citizens (
     Name VARCHAR(100) NOT NULL,
     DOB DATE NOT NULL,
     Gender VARCHAR(10) CHECK (Gender IN ('Male', 'Female')),
-    House_No VARCHAR(20) REFERENCES Household(House_No),
-    Phone_No VARCHAR(15),
-    Email_Id VARCHAR(100),
+    House_No INTEGER REFERENCES Household(House_No),
+    Phone_No VARCHAR(10) CHECK (LENGTH(Phone_No) = 10 AND Phone_No ~ '^[6-9][0-9]{9}$'),
+    Email_Id VARCHAR(100) CHECK (Email_Id ~ '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
     Education_Level VARCHAR(20) CHECK (Education_Level IN ('Uneducated', 'High School', 'Secondary School', 'Graduate', 'Post Graduate')),
     Income NUMERIC CHECK(Income >= 0),
     Employment VARCHAR(20) CHECK (Employment IN ('Unemployed', 'Employee', 'Self Employed', 'Business')),
@@ -39,7 +39,7 @@ CREATE TABLE Certificates (
 CREATE TABLE Agricultural_Land (
     Land_ID SERIAL PRIMARY KEY,
     Aadhar_No VARCHAR(12) REFERENCES Citizens(Aadhar_No),
-    Area_in_Acres INTEGER NOT NULL CHECK (Area_in_Acres > 0 AND Area_in_Acres < 60),
+    Area_in_Acres INTEGER NOT NULL CHECK (Area_in_Acres > 0 AND Area_in_Acres <= 60),
     Crop_Type VARCHAR(20) CHECK (Crop_Type IN ('Rice', 'Wheat', 'Sugarcane', 'Cotton', 'Jute', 'Maize', 'Millets', 'Pulses', 'Mustard', 'Groundnut', 'Mango', 'Banana', 'Coconut', 'Vegetables', 'Sugarcane', 'Grapes')),
     Soil_Type VARCHAR(20) CHECK (Soil_Type IN ('Alluvial', 'Black', 'Red', 'Laterite', 'Peaty Soil', 'Desert Soil', 'Mountain Soil'))
 );
@@ -106,4 +106,11 @@ CREATE TABLE Panchayat_Users (
     Aadhar_No VARCHAR(12) REFERENCES Citizens(Aadhar_No),
     Password VARCHAR(100) NOT NULL,
     Designation VARCHAR(50) CHECK (Designation IN ('Sarpanch', 'Naib Sarpanch', 'Panchayat Secretary', 'Gram Sevak', 'Ward Member', 'Community Mobilizer'))
+);
+
+-- For System Administrator and Government Officials
+CREATE TABLE System_Users_Top(
+    Username VARCHAR(50) PRIMARY KEY,
+    Password VARCHAR(100) NOT NULL,
+    User_Type VARCHAR(50) CHECK (User_Type IN ('System Administrator', 'Government Official'))
 );
