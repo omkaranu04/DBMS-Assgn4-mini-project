@@ -726,9 +726,9 @@ def manage_welfare_schemes():
             scheme_id = request.form.get('scheme_id')
             scheme = Welfare_Schemes.query.filter_by(scheme_id=scheme_id).first()
             if scheme:
-                scheme.scheme_type = request.form.get('scheme_type') or scheme.scheme_type
-                scheme.budget = request.form.get('budget') or scheme.budget
-                scheme.scheme_description = request.form.get('description') or scheme.scheme_description
+                scheme.scheme_type = request.form.get('new_scheme_type') or scheme.scheme_type
+                scheme.budget = request.form.get('new_budget') or scheme.budget
+                scheme.scheme_description = request.form.get('new_description') or scheme.scheme_description
                 db.session.commit()
                 flash("Welfare Scheme modified successfully!", "success")
             else:
@@ -922,19 +922,14 @@ def manage_resources():
         elif action == 'delete':
             # Delete resource logic with password confirmation
             resource_id = request.form.get('resource_id')
-            password = request.form.get('password')
-
-            # Validate password (replace session['user_password'] with actual validation logic)
-            if 'user_password' in session and password == session['user_password']:
-                resource = Resources.query.filter_by(resource_id=resource_id).first()
-                if resource:
-                    db.session.delete(resource)
-                    db.session.commit()
-                    flash("Resource deleted successfully!", "success")
-                else:
-                    flash("Resource not found!", "danger")
+            resource = Resources.query.filter_by(resource_id=resource_id).first()
+            if resource:
+                db.session.delete(resource)
+                db.session.commit()
+                flash("Resource deleted successfully!", "success")
             else:
-                flash("Incorrect password!", "danger")
+                flash("Resource not found!", "danger")
+            
 
     # Fetch all resources for display
     resources_list = Resources.query.all()
@@ -951,3 +946,299 @@ def view_government_bodies():
 
     # Pass the data to the template for rendering
     return render_template('view_government_bodies.html', institutions=institutions)
+
+@main_bp.route('/avail_welfare_scheme', methods=['GET'])
+def avail_welfare_scheme():
+    return render_template('avail_welfare_scheme.html')
+
+@main_bp.route('/submit_scheme', methods=['POST'])
+def submit_scheme():
+    try:
+        scheme_id = request.form.get('scheme_id')
+        citizen_aadhar_no = request.form.get('citizen_aadhar_no')
+
+        if not scheme_id or not citizen_aadhar_no:
+            flash("Both Scheme ID and Aadhar Number are required!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Convert scheme_id to integer
+        try:
+            scheme_id = int(scheme_id)
+        except ValueError:
+            flash("Invalid Scheme ID format!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Check if scheme exists
+        scheme = Welfare_Schemes.query.get(scheme_id)
+        if not scheme:
+            flash("Invalid Scheme ID!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Check if citizen exists
+        citizen = Citizens.query.filter_by(aadhar_no=citizen_aadhar_no).first()
+        if not citizen:
+            flash("Invalid Aadhar Number!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Check if already availed
+        existing_avail = db.session.execute(text("""
+            SELECT * FROM Avails 
+            WHERE Aadhar_No = :aadhar_no AND Scheme_ID = :scheme_id
+        """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id}).fetchone()
+
+        if existing_avail:
+            flash("This citizen has already availed this scheme!", "warning")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Insert into Avails table
+        db.session.execute(text("""
+            INSERT INTO Avails (Aadhar_No, Scheme_ID, Avail_Date) 
+            VALUES (:aadhar_no, :scheme_id, CURRENT_DATE)
+        """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id})
+
+        db.session.commit()
+        flash("Welfare Scheme availed successfully!", "success")
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f"An error occurred: {str(e)}", "danger")
+
+    return redirect(url_for('main.avail_welfare_scheme'))
+
+
+@main_bp.route('/remove_scheme_beneficiary', methods=['POST'])
+def remove_scheme_beneficiary():
+    try:
+        scheme_id = request.form.get('scheme_id')
+        citizen_aadhar_no = request.form.get('citizen_aadhar_no')
+
+        if not scheme_id or not citizen_aadhar_no:
+            flash("Both Scheme ID and Aadhar Number are required!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Convert scheme_id to integer
+        try:
+            scheme_id = int(scheme_id)
+        except ValueError:
+            flash("Invalid Scheme ID format!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Check if the scheme and citizen exist in Avails table
+        availed_scheme = db.session.execute(text("""
+            SELECT * FROM Avails 
+            WHERE Aadhar_No = :aadhar_no AND Scheme_ID = :scheme_id
+        """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id}).fetchone()
+
+        if not availed_scheme:
+            flash("No record found for the given Scheme ID and Aadhar Number!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+
+        # Remove the record
+        db.session.execute(text("""
+            DELETE FROM Avails 
+            WHERE Aadhar_No = :aadhar_no AND Scheme_ID = :scheme_id
+        """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id})
+
+        db.session.commit()
+        flash("Beneficiary removed from the welfare scheme successfully!", "success")
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f"An error occurred: {str(e)}", "danger")
+
+    return redirect(url_for('main.avail_welfare_scheme'))
+
+
+@main_bp.route('/submit_complaint', methods=['POST'])
+def submit_complaint():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        aadhar_no = request.form.get('aadhar_no')
+        resource_id = request.form.get('resource_id')
+        complaint_desc = request.form.get('complaint_desc')
+        
+        if not aadhar_no or not resource_id or not complaint_desc:
+            flash("All fields are required for submitting a complaint!", "danger")
+            return redirect(url_for('main.citizen', aadhar_no=aadhar_no))
+        
+        # Check if resource exists
+        resource = Resources.query.get(resource_id)
+        if not resource:
+            flash("Invalid Resource ID!", "danger")
+            return redirect(url_for('main.citizen', aadhar_no=aadhar_no))
+        
+        # Check if citizen exists
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Invalid Aadhar Number!", "danger")
+            return redirect(url_for('main.login'))
+        
+        # Insert into Complaints table
+        db.session.execute(
+            text("""
+            INSERT INTO Complaints (Resource_ID, Aadhar_No, Complaint_Desc, Complain_Date)
+            VALUES (:resource_id, :aadhar_no, :complaint_desc, CURRENT_DATE)
+            """),
+            {
+                'resource_id': resource_id, 
+                'aadhar_no': aadhar_no, 
+                'complaint_desc': complaint_desc
+            }
+        )
+        db.session.commit()
+        
+        flash("Complaint submitted successfully!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"An error occurred: {str(e)}", "danger")
+    
+    return redirect(url_for('main.citizen', aadhar_no=aadhar_no))
+
+@main_bp.route('/add_government_institution', methods=['POST'])
+def add_government_institution():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        institute_type = request.form.get('institute_type')
+        institute_name = request.form.get('institute_name')
+        institute_location = request.form.get('institute_location')
+        
+        if not institute_type or not institute_name or not institute_location:
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.view_government_bodies'))
+        
+        # Validate institute_type
+        valid_types = ['Educational', 'Health', 'Banking', 'Administration']
+        if institute_type not in valid_types:
+            flash("Invalid institution type!", "danger")
+            return redirect(url_for('main.view_government_bodies'))
+        
+        # Insert into Government_Institutions table
+        db.session.execute(
+            text("""
+            INSERT INTO Government_Institutions (Institute_Type, Institute_Name, Institue_Location)
+            VALUES (:institute_type, :institute_name, :institute_location)
+            """),
+            {
+                'institute_type': institute_type,
+                'institute_name': institute_name,
+                'institute_location': institute_location
+            }
+        )
+        db.session.commit()
+        
+        flash("Government institution added successfully!", "success")
+    except Exception as e:
+        db.session.rollback()
+        flash(f"An error occurred: {str(e)}", "danger")
+    
+    return redirect(url_for('main.view_government_bodies'))
+
+
+@main_bp.route('/about_us', methods=['GET'])
+def about_us():
+    # Fetch panchayat employees with their details, ordered by designation
+    # First Sarpanch, then Naib Sarpanch, then others
+    
+    panchayat_employees = []
+    
+    # Get Sarpanch first
+    sarpanch_data = db.session.execute(text("""
+        SELECT c.Name, p.Designation, c.Phone_No, h.Address
+        FROM Panchayat_Users p
+        JOIN Citizens c ON p.Aadhar_No = c.Aadhar_No
+        JOIN Household h ON c.House_No = h.House_No
+        WHERE p.Designation = 'Sarpanch'
+    """)).fetchall()
+    
+    # Get Naib Sarpanch second
+    naib_sarpanch_data = db.session.execute(text("""
+        SELECT c.Name, p.Designation, c.Phone_No, h.Address
+        FROM Panchayat_Users p
+        JOIN Citizens c ON p.Aadhar_No = c.Aadhar_No
+        JOIN Household h ON c.House_No = h.House_No
+        WHERE p.Designation = 'Naib Sarpanch'
+    """)).fetchall()
+    
+    # Get other panchayat employees
+    other_employees_data = db.session.execute(text("""
+        SELECT c.Name, p.Designation, c.Phone_No, h.Address
+        FROM Panchayat_Users p
+        JOIN Citizens c ON p.Aadhar_No = c.Aadhar_No
+        JOIN Household h ON c.House_No = h.House_No
+        WHERE p.Designation NOT IN ('Sarpanch', 'Naib Sarpanch')
+        ORDER BY p.Designation
+    """)).fetchall()
+    
+    # Process the results into a list of dictionaries for the template
+    for employee_data in sarpanch_data + naib_sarpanch_data + other_employees_data:
+        panchayat_employees.append({
+            'name': employee_data[0],
+            'designation': employee_data[1],
+            'contact_no': employee_data[2],
+            'address': employee_data[3]
+        })
+    
+    return render_template('aboutus.html', panchayat_employees=panchayat_employees)
+
+@main_bp.route('/declare_death', methods=['GET'])
+def declare_death():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    return render_template('declare_death.html')
+
+@main_bp.route('/process_death_declaration', methods=['POST'])
+def process_death_declaration():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        aadhar_no = request.form.get('aadhar_no')
+        death_date = request.form.get('death_date')
+        
+        if not aadhar_no or not death_date:
+            flash("Both Aadhar Number and Death Date are required!", "danger")
+            return redirect(url_for('main.declare_death'))
+        
+        # Check if citizen exists
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar Number does not exist!", "danger")
+            return redirect(url_for('main.declare_death'))
+        
+        # Check if citizen is already marked as deceased
+        if not citizen.is_alive:
+            flash("This citizen is already marked as deceased!", "warning")
+            return redirect(url_for('main.declare_death'))
+        
+        # 1. Update citizen's is_alive status to False
+        db.session.execute(
+            text("""
+            UPDATE Citizens
+            SET Is_Alive = FALSE
+            WHERE Aadhar_No = :aadhar_no
+            """),
+            {'aadhar_no': aadhar_no}
+        )
+        
+        # 2. Add a death certificate
+        db.session.execute(
+            text("""
+            INSERT INTO Certificates (Aadhar_No, Certificate_Type, Date_of_Issue)
+            VALUES (:aadhar_no, 'Death', :death_date)
+            """),
+            {'aadhar_no': aadhar_no, 'death_date': death_date}
+        )
+        
+        db.session.commit()
+        flash("Death has been recorded successfully. Death certificate has been issued.", "success")
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"An error occurred: {str(e)}", "danger")
+    
+    return redirect(url_for('main.dashboard_employees'))

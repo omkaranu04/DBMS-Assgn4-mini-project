@@ -1,286 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Citizen Information</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <style>
-        body {
-            padding: 20px;
-        }
-        h2, h3 {
-            margin-top: 20px;
-        }
-        table {
-            margin-bottom: 20px;
-        }
+      body {
+        padding: 20px;
+      }
+      h2,
+      h3 {
+        margin-top: 20px;
+      }
+      table {
+        margin-bottom: 20px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h2>Citizen Information</h2>
-        <p><strong>Aadhar No:</strong> {{ citizen[0] }}</p>
-        <p><strong>House No:</strong> {{ citizen[2] }}</p>
-        <p><strong>Address:</strong> {% if household %}{{ household[1] }}{% else %}Not available{% endif %}</p>
-        <p><strong>Phone:</strong> {{ citizen[3] }}</p>
-        <p><strong>Email:</strong> {{ citizen[4] }}</p>
+      <h2>Citizen Information</h2>
+      <p><strong>Aadhar No:</strong> {{ citizen[0] }}</p>
+      <p><strong>House No:</strong> {{ citizen[4] }}</p>
+      <p>
+        <strong>Address:</strong> {% if household %}{{ household[1] }}{% else
+        %}Not available{% endif %}
+      </p>
+      <p><strong>Phone:</strong> {{ citizen[5] }}</p>
+      <p><strong>Email:</strong> {{ citizen[6] }}</p>
 
-        <h3>Health Check-up Records</h3>
-        {% if health_data %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date of Visit</th>
-                    <th>Medical Condition</th>
-                    <th>Prescription</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for checkup in health_data %}
-                <tr>
-                    <td>{{ checkup[3] }}</td>
-                    <td>{{ checkup[1] }}</td>
-                    <td>{{ checkup[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No health check-up records found.</p>
-        {% endif %}
+      <h3>Health Check-up Records</h3>
+      {% if health_data %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Date of Visit</th>
+            <th>Medical Condition</th>
+            <th>Prescription</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for checkup in health_data %}
+          <tr>
+            <td>{{ checkup[3] }}</td>
+            <td>{{ checkup[1] }}</td>
+            <td>{{ checkup[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No health check-up records found.</p>
+      {% endif %}
 
-        <h3>Tax Information</h3>
-        {% if tax_data %}
-        <table class="table">
-            <tr>
-                <th>Tax Amount</th>
-                <td>₹{{ tax_data[0] }}</td>
-            </tr>
-            <tr>
-                <th>Payment Status</th>
-                <td>{% if tax_data[1] %} Paid {% else %} Unpaid {% endif %}</td>
-            </tr>
-        </table>
-        {% else %}
-        <p>No tax records found.</p>
-        {% endif %}
+      <h3>Tax Information</h3>
+      {% if tax_data %}
+      <table class="table">
+        <tr>
+          <th>Tax Amount</th>
+          <td>₹{{ tax_data[0] }}</td>
+        </tr>
+        <tr>
+          <th>Payment Status</th>
+          <td>{% if tax_data[1] %} Paid {% else %} Unpaid {% endif %}</td>
+        </tr>
+      </table>
+      {% else %}
+      <p>No tax records found.</p>
+      {% endif %}
 
-        <h3>Welfare Schemes</h3>
-        {% if welfare_data %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Scheme Type</th>
-                    <th>Description</th>
-                    <th>Avail Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for scheme in welfare_data %}
-                <tr>
-                    <td>{{ scheme[0] }}</td>
-                    <td>{{ scheme[1] }}</td>
-                    <td>{{ scheme[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No welfare schemes found.</p>
-        {% endif %}
+      <h3>Welfare Schemes</h3>
+      {% if welfare_data %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Scheme Type</th>
+            <th>Description</th>
+            <th>Avail Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for scheme in welfare_data %}
+          <tr>
+            <td>{{ scheme[0] }}</td>
+            <td>{{ scheme[1] }}</td>
+            <td>{{ scheme[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No welfare schemes found.</p>
+      {% endif %}
 
-        <h3>Agricultural Land</h3>
-        {% if agriculture_data %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Land ID</th>
-                    <th>Area (Acres)</th>
-                    <th>Crop Type</th>
-                    <th>Soil Type</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for land in agriculture_data %}
-                <tr>
-                    <td>{{ land[0] }}</td>
-                    <td>{{ land[1] }}</td>
-                    <td>{{ land[2] }}</td>
-                    <td>{{ land[3] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No agricultural land records found.</p>
-        {% endif %}
+      <h3>Agricultural Land</h3>
+      {% if agriculture_data %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Land ID</th>
+            <th>Area (Acres)</th>
+            <th>Crop Type</th>
+            <th>Soil Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for land in agriculture_data %}
+          <tr>
+            <td>{{ land[0] }}</td>
+            <td>{{ land[1] }}</td>
+            <td>{{ land[2] }}</td>
+            <td>{{ land[3] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No agricultural land records found.</p>
+      {% endif %}
 
-        <h3>Village Resources</h3>
-        {% if resources_data %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Resource ID</th>
-                    <th>Resource Name</th>
-                    <th>Last Inspected</th>
-                </tr>
-            </thead>
-            <tbody>
+      <h3>Village Resources</h3>
+      {% if resources_data %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Resource ID</th>
+            <th>Resource Name</th>
+            <th>Last Inspected</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for resource in resources_data %}
+          <tr>
+            <td>{{ resource[0] }}</td>
+            <td>{{ resource[1] }}</td>
+            <td>{{ resource[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No resources found.</p>
+      {% endif %}
+
+      <h3>Complaints</h3>
+      {% if complaints_data %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Complaint ID</th>
+            <th>Resource</th>
+            <th>Description</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for complaint in complaints_data %}
+          <tr>
+            <td>{{ complaint[0] }}</td>
+            <td>{{ complaint[1] }}</td>
+            <td>{{ complaint[2] }}</td>
+            <td>{{ complaint[3] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No complaints found.</p>
+      {% endif %}
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Raise a New Complaint</h5>
+        </div>
+        <div class="card-body">
+          <form action="{{ url_for('main.submit_complaint') }}" method="post">
+            <input type="hidden" name="aadhar_no" value="{{ citizen[0] }}" />
+
+            <div class="form-group mb-3">
+              <label for="resource_id">Select Resource:</label>
+              <select
+                class="form-control"
+                id="resource_id"
+                name="resource_id"
+                required
+              >
+                <option value="">-- Select Resource --</option>
                 {% for resource in resources_data %}
-                <tr>
-                    <td>{{ resource[0] }}</td>
-                    <td>{{ resource[1] }}</td>
-                    <td>{{ resource[2] }}</td>
-                </tr>
+                <option value="{{ resource[0] }}">{{ resource[1] }}</option>
                 {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No resources found.</p>
-        {% endif %}
+              </select>
+            </div>
 
-        <h3>Complaints</h3>
-        {% if complaints_data %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Complaint ID</th>
-                    <th>Resource</th>
-                    <th>Description</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for complaint in complaints_data %}
-                <tr>
-                    <td>{{ complaint[0] }}</td>
-                    <td>{{ complaint[1] }}</td>
-                    <td>{{ complaint[2] }}</td>
-                    <td>{{ complaint[3] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No complaints found.</p>
-        {% endif %}
+            <div class="form-group mb-3">
+              <label for="complaint_desc">Complaint Description:</label>
+              <textarea
+                class="form-control"
+                id="complaint_desc"
+                name="complaint_desc"
+                rows="3"
+                required
+              ></textarea>
+            </div>
 
-        <h3>Educational Institutions</h3>
-        {% if education_institutions %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inst in education_institutions %}
-                <tr>
-                    <td>{{ inst[1] }}</td>
-                    <td>{{ inst[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No educational institutions found.</p>
-        {% endif %}
+            <button type="submit" class="btn btn-primary">
+              Submit Complaint
+            </button>
+          </form>
+        </div>
+      </div>
 
-        <h3>Health Institutions</h3>
-        {% if health_institutions %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inst in health_institutions %}
-                <tr>
-                    <td>{{ inst[1] }}</td>
-                    <td>{{ inst[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No health institutions found.</p>
-        {% endif %}
+      <h3>Educational Institutions</h3>
+      {% if education_institutions %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inst in education_institutions %}
+          <tr>
+            <td>{{ inst[1] }}</td>
+            <td>{{ inst[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No educational institutions found.</p>
+      {% endif %}
 
-        <h3>Banking Institutions</h3>
-        {% if banking_institutions %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inst in banking_institutions %}
-                <tr>
-                    <td>{{ inst[1] }}</td>
-                    <td>{{ inst[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No banking institutions found.</p>
-        {% endif %}
+      <h3>Health Institutions</h3>
+      {% if health_institutions %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inst in health_institutions %}
+          <tr>
+            <td>{{ inst[1] }}</td>
+            <td>{{ inst[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No health institutions found.</p>
+      {% endif %}
 
-        <h3>Administrative Institutions</h3>
-        {% if admin_institutions %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for inst in admin_institutions %}
-                <tr>
-                    <td>{{ inst[1] }}</td>
-                    <td>{{ inst[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No administrative institutions found.</p>
-        {% endif %}
+      <h3>Banking Institutions</h3>
+      {% if banking_institutions %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inst in banking_institutions %}
+          <tr>
+            <td>{{ inst[1] }}</td>
+            <td>{{ inst[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No banking institutions found.</p>
+      {% endif %}
 
-        <h3>Certificates</h3>
-        {% if certificates %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Certificate ID</th>
-                    <th>Type</th>
-                    <th>Issue Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cert in certificates %}
-                <tr>
-                    <td>{{ cert[0] }}</td>
-                    <td>{{ cert[1] }}</td>
-                    <td>{{ cert[2] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No certificates found.</p>
-        {% endif %}
+      <h3>Administrative Institutions</h3>
+      {% if admin_institutions %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inst in admin_institutions %}
+          <tr>
+            <td>{{ inst[1] }}</td>
+            <td>{{ inst[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No administrative institutions found.</p>
+      {% endif %}
+
+      <h3>Certificates</h3>
+      {% if certificates %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Certificate ID</th>
+            <th>Type</th>
+            <th>Issue Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for cert in certificates %}
+          <tr>
+            <td>{{ cert[0] }}</td>
+            <td>{{ cert[1] }}</td>
+            <td>{{ cert[2] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No certificates found.</p>
+      {% endif %}
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+  </body>
 </html>

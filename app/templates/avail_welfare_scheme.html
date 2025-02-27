@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avail Welfare Scheme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        form {
+            display: inline-block;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 8px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Avail Welfare Scheme</h2>
+
+    <!-- Form to Avail Scheme -->
+    <form action="/submit_scheme" method="post">
+        <h3>Avail Scheme</h3>
+        <label for="scheme_id">Scheme ID:</label>
+        <input type="text" id="scheme_id" name="scheme_id" required>
+        
+        <label for="citizen_aadhar_no">Citizen Aadhar No:</label>
+        <input type="text" id="citizen_aadhar_no" name="citizen_aadhar_no" required>
+        
+        <button type="submit">Avail Scheme</button>
+    </form>
+
+    <!-- Form to Remove Beneficiary -->
+    <form action="/remove_scheme_beneficiary" method="post">
+        <h3>Remove Scheme Beneficiary</h3>
+        <label for="remove_scheme_id">Scheme ID:</label>
+        <input type="text" id="remove_scheme_id" name="scheme_id" required>
+
+        <label for="remove_citizen_aadhar_no">Citizen Aadhar No:</label>
+        <input type="text" id="remove_citizen_aadhar_no" name="citizen_aadhar_no" required>
+
+        <button type="submit">Remove Beneficiary</button>
+    </form>
+
+</body>
+</html>

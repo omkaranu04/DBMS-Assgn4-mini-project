@@ -1,0 +1,47 @@
+<div class="container mt-4">
+  <h2>Declare Death Certificate</h2>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5 class="mb-0">Enter Death Details</h5>
+    </div>
+    <div class="card-body">
+      <form
+        action="{{ url_for('main.process_death_declaration') }}"
+        method="post"
+      >
+        <div class="form-group mb-3">
+          <label for="aadhar_no">Aadhar Number:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="aadhar_no"
+            name="aadhar_no"
+            required
+            pattern="[1-9][0-9]{11}"
+            title="Please enter a valid 12-digit Aadhar number"
+          />
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="death_date">Date of Death:</label>
+          <input
+            type="date"
+            class="form-control"
+            id="death_date"
+            name="death_date"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Submit Death Certificate
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <a href="{{ url_for('main.dashboard_employees') }}" class="btn btn-secondary"
+    >Back to Dashboard</a
+  >
+</div>
