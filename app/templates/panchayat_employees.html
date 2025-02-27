@@ -1,0 +1,21 @@
+<h1>Panchayat Employees</h1>
+<a href="{{ url_for('main.add_edit_panchayat_employee', username=None) }}">Add New Employee</a>
+<table>
+  <tr>
+    <th>Username</th>
+    <th>Designation</th>
+    <th>Actions</th>
+  </tr>
+  {% for emp in employees %}
+  <tr>
+    <td>{{ emp.username }}</td>
+    <td>{{ emp.designation }}</td>
+    <td>
+      <a href="{{ url_for('main.add_edit_panchayat_employee', username=emp.username) }}">Edit</a>
+      <form method="POST" action="{{ url_for('main.delete_panchayat_employee', username=emp.username) }}">
+          <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>

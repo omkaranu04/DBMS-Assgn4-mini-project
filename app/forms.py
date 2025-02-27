@@ -12,3 +12,21 @@ class LoginForm(FlaskForm):
         ('Citizen', 'Citizen')
     ], validators=[DataRequired()])
     submit = SubmitField('Login')
+
+class PanchayatEmployeeForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    designation = SelectField('Designation', choices=[
+        ('Sarpanch', 'Sarpanch'),
+        ('Naib Sarpanch', 'Naib Sarpanch'),
+        ('Panchayat Secretary', 'Panchayat Secretary'),
+        ('Gram Sevak', 'Gram Sevak'),
+        ('Ward Member', 'Ward Member'),
+        ('Community Mobilizer', 'Community Mobilizer')
+    ], validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    
+class GovernmentOfficialForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Submit')

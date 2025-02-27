@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add/Edit User</title>
+</head>
+<body>
+    <h1>Add {{ user_type }}</h1>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        {{ form.username.label }}
+        {{ form.username }}
+
+        {{ form.password.label }}
+        {{ form.password }}
+
+        {% if user_type == "Panchayat Employee" %}
+            {{ form.designation.label }}
+            {{ form.designation }}
+        {% endif %}
+
+        {{ form.submit }}
+    </form>
+
+</body>
+</html>

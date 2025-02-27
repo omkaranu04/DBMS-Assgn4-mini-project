@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add/Edit Panchayat Employee</title>
+</head>
+<body>
+    <h1>{{ 'Edit' if form.username.data else 'Add' }} Panchayat Employee</h1>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <!-- Username Field -->
+        <label for="username">Username:</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+            <p style="color: red;">{{ form.username.errors[0] }}</p>
+        {% endif %}
+
+        <!-- Password Field -->
+        <label for="password">Password:</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+            <p style="color: red;">{{ form.password.errors[0] }}</p>
+        {% endif %}
+
+        <!-- Designation Field -->
+        <label for="designation">Designation:</label>
+        {{ form.designation }}
+        {% if form.designation.errors %}
+            <p style="color: red;">{{ form.designation.errors[0] }}</p>
+        {% endif %}
+
+        <!-- Submit Button -->
+        {{ form.submit }}
+    </form>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('main.panchayat_employees') }}">Back to Panchayat Employees</a>
+</body>
+</html>

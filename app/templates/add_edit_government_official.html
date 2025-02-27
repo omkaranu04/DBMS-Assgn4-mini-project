@@ -1,0 +1,20 @@
+<h1>Government Officials</h1>
+<a href="{{ url_for('main.add_edit_government_official', username='') }}">Add New Official</a>
+<table>
+  <tr>
+    <th>Username</th>
+    <th>Actions</th>
+  </tr>
+  {% for off in officials %}
+  <tr>
+    <td>{{ off.username }}</td>
+    <td>
+        <!-- Use 'off.username' instead of 'official.username' -->
+        <a href="{{ url_for('main.add_edit_government_official', username=off.username) }}">Edit</a>
+        <form method="POST" action="{{ url_for('main.delete_government_official', username=off.username) }}">
+            <button type="submit">Delete</button>
+        </form>        
+    </td>
+  </tr>
+  {% endfor %}
+</table>
