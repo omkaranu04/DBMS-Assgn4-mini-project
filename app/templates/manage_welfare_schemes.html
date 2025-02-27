@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Welfare Schemes</title>
+</head>
+<body>
+
+<h1>Manage Welfare Schemes and Beneficiaries</h1>
+
+<!-- Add Welfare Scheme Form -->
+<h2>Add Welfare Scheme</h2>
+<form method="POST">
+    <input type="hidden" name="action" value="add">
+    <label>Scheme Type:</label><input type="text" name="scheme_type" required><br>
+    <label>Budget:</label><input type="number" name="budget" required><br>
+    <label>Description:</label><textarea name="description" required></textarea><br>
+    <button type="submit">Add Scheme</button>
+</form>
+
+<!-- Delete Welfare Scheme Form -->
+<h2>Delete Welfare Scheme</h2>
+<form method="POST">
+    <input type="hidden" name="action" value="delete">
+    <label>Scheme ID:</label><input type="text" name="scheme_id" required><br>
+    <button type="submit">Delete Scheme</button>
+</form>
+
+<!-- Modify Welfare Scheme Form -->
+<h2>Modify Welfare Scheme</h2>
+<form method="POST">
+    <input type="hidden" name="action" value="modify">
+    <label>Scheme ID (to modify):</label><input type="text" name="scheme_id" required><br>
+    <label>New Scheme Type:</label><input type="text" name="new_scheme_type"><br>
+    <label>New Budget:</label><input type="number" name="new_budget"><br>
+    <label>New Description:</label><textarea name="new_description"></textarea><br>
+    <button type="submit">Modify Scheme</button>
+</form>
+
+</body>
+</html

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Taxation Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Taxation Data</h1>
+
+        <!-- General Taxation Data -->
+        <p>Total People Who Have Not Paid Tax: {{ not_paid_tax_count }}</p>
+
+        <!-- List of People Who Have Not Paid Tax -->
+        <h2>List of People Who Have Not Paid Tax:</h2>
+        <ul>
+            {% for person in people_not_paid_tax %}
+            <li>{{ person.Name }} - Phone: {{ person.Phone_No }}, Address: {{ person.Address }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Tax Summary -->
+        <h2>Tax Summary:</h2>
+        <p>Total Tax Paid: {{ tax_summary.paid_tax }}</p>
+        <p>Total Tax Owed: {{ tax_summary.total_tax }}</p>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Census Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Census Data</h1>
+
+        <!-- General Census Data -->
+        <p>Total People Alive: {{ total_alive }}</p>
+        <p>Total Male: {{ total_male }}</p>
+        <p>Total Female: {{ total_female }}</p>
+
+        <!-- Employment Status Chart -->
+        <h2>Employment Status</h2>
+        <ul>
+            {% for employment, count in employment_data %}
+            <li>{{ employment }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Age Distribution -->
+        <h2>Age Distribution</h2>
+        <p>Below 18: {{ below_18 }}</p>
+        <p>18-60: {{ age_18_to_60 }}</p>
+        <p>Above 60: {{ above_60 }}</p>
+
+        <!-- Education Levels -->
+        <h2>Education Levels</h2>
+        <ul>
+            {% for level, count in education_data %}
+            <li>{{ level }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Vital Statistics -->
+        <h2>Vital Statistics</h2>
+        <p>Deaths This Year: {{ deaths_this_year }}</p>
+        <p>Births This Year: {{ births_this_year }}</p>
+
+    </div>
+</body>
+</html>

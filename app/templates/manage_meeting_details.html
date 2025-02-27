@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Meeting Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Meeting Details</h1>
+
+        <!-- Add Meeting Form -->
+        <h2>Add Meeting Details</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+            <label for="date_conducted">Date Conducted:</label>
+            <input type="date" id="date_conducted" name="date_conducted" required><br><br>
+
+            <label for="meeting_agenda">Meeting Agenda:</label>
+            <textarea id="meeting_agenda" name="meeting_agenda" required></textarea><br><br>
+
+            <button type="submit" class="btn btn-primary">Add Meeting</button>
+        </form>
+
+        <!-- Delete Meeting Form -->
+        <h2>Delete Meeting Details</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="delete">
+            <label for="meeting_id">Meeting ID:</label>
+            <input type="text" id="meeting_id" name="meeting_id" required><br><br>
+
+            <!-- Password Confirmation -->
+            <label for="password">Confirm Your Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <button type="submit" class="btn btn-danger">Delete Meeting</button>
+        </form>
+
+        <!-- View All Meetings -->
+        <h2>All Meetings</h2>
+        {% if meetings %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Meeting ID</th>
+                    <th>Date Conducted</th>
+                    <th>Meeting Agenda</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meeting in meetings %}
+                <tr>
+                    <td>{{ meeting.Meeting_ID }}</td>
+                    <td>{{ meeting.Date_Conducted }}</td>
+                    <td>{{ meeting.Meeting_Agenda }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No meetings found.</p>
+        {% endif %}
+
+        <!-- Back Button -->
+        <div class="mt-3">
+            <a href="{{ url_for('main.dashboard_employees') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+
+    </div>
+</body>
+</html>

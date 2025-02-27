@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Agriculture Land</title>
+</head>
+<body>
+    <h1>Manage Agriculture Land</h1>
+
+    <!-- Add Agriculture Land Form -->
+    <h2>Add Agriculture Land</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="add">
+        <label>Aadhar No:</label><input type="text" name="aadhar_no" required><br>
+        <label>Area in Acres:</label><input type="number" name="area_in_acres" required><br>
+        <label>Crop Type:</label><input type="text" name="crop_type" required><br>
+        <label>Soil Type:</label><input type="text" name="soil_type"><br>
+        <button type="submit">Add Land</button>
+    </form>
+
+    <!-- Delete Agriculture Land Form -->
+    <h2>Delete Agriculture Land</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="delete">
+        <label>Land ID:</label><input type="text" name="land_id" required><br>
+        <button type="submit">Delete Land</button>
+    </form>
+
+    <!-- Modify Agriculture Land Form -->
+    <h2>Modify Agriculture Land</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="modify">
+        <label>Land ID (to modify):</label><input type="text" name="land_id" required><br>
+        <!-- Only fill fields you want to modify -->
+        <label>Area in Acres:</label><input type="number" name="area_in_acres"><br>
+        <label>Crop Type:</label><input type="text" name="crop_type"><br>
+        <label>Soil Type:</label><input type="text" name="soil_type"><br>
+        <button type="submit">Modify Land</button>
+    </form>
+
+    <!-- View Agriculture Lands -->
+    <h2>All Agriculture Lands</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Aadhar No</th>
+            <th>Area (Acres)</th>
+            <th>Crop Type</th>
+            <th>Soil Type</th>
+        </tr>
+        {% for land in lands %}
+        <tr>
+            <td>{{ land.Land_ID }}</td>
+            <td>{{ land.Aadhar_No }}</td>
+            <td>{{ land.Area_in_Acres }}</td>
+            <td>{{ land.Crop_Type }}</td>
+            <td>{{ land.Soil_Type }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Panchayat Employee Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Panchayat Employee Dashboard</h1>
+
+        <!-- Data Editing Section -->
+        <h2>Data Adding/Editing</h2>
+        <button onclick="location.href='{{ url_for('main.manage_citizens') }}'">Add/Delete/Modify/View Citizens</button>
+        <button onclick="location.href='{{ url_for('main.manage_certificates') }}'">Add/Delete/Modify/View Certificates</button>
+        <button onclick="location.href='{{ url_for('main.manage_welfare_schemes') }}'">Add/Delete/Modify/View Welfare Schemes and Beneficiaries</button>
+        <button onclick="location.href='{{ url_for('main.manage_agriculture_land') }}'">Add/Delete/Modify/View Agriculture Land</button>
+        <button onclick="location.href='{{ url_for('main.manage_health_data') }}'">Add/Delete/Modify/View Health Data</button>
+        <button onclick="location.href='{{ url_for('main.manage_taxation_data') }}'">Add/Delete/Modify/View Taxation Data</button>
+        <button onclick="location.href='{{ url_for('main.manage_meeting_details') }}'">Add/Delete/Modify/View Meeting Details</button>
+        <button onclick="location.href='{{ url_for('main.manage_complaints') }}'">Delete/View Complaints</button>
+        <button onclick="location.href='{{ url_for('main.manage_resources') }}'">Add/View Resources</button>
+        <button onclick="location.href='{{ url_for('main.view_government_bodies') }}'">View Government Bodies</button>
+
+    </div>
+</body>
+</html>

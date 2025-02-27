@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Institutions Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Institutions Data</h1>
+
+        <!-- Institution Counts -->
+        <h2>Institution Types and Counts:</h2>
+        <ul>
+            {% for institution_type, count in institution_counts %}
+            <li>{{ institution_type }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</body>
+</html>

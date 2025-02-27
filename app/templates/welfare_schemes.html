@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welfare Schemes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welfare Schemes</h1>
+
+        <!-- List of Welfare Schemes -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Budget</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for scheme in schemes %}
+                <tr>
+                    <td>{{ scheme.Scheme_ID }}</td>
+                    <td>{{ scheme.Scheme_Type }}</td>
+                    <td>{{ scheme.Scheme_Description }}</td>
+                    <td>{{ scheme.Budget }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p>Total Welfare Schemes: {{ schemes|length }}</p>
+    </div>
+</body>
+</html>

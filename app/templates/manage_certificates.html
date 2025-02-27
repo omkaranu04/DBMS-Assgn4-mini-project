@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Certificates</title>
+</head>
+<body>
+    <h1>Manage Certificates</h1>
+
+    <!-- Add Certificate Form -->
+    <h2>Add Certificate</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="add">
+        <label>Aadhar No:</label><input type="text" name="aadhar_no" required><br>
+        <label>Certificate Type:</label>
+        <select name="certificate_type" required>
+            <option value="Birth">Birth</option>
+            <option value="Death">Death</option>
+            <option value="Caste">Caste</option>
+            <option value="Domicile">Domicile</option>
+        </select><br>
+        <label>Date of Issue:</label><input type="date" name="date_of_issue" required><br>
+        <button type="submit">Add Certificate</button>
+    </form>
+
+    <!-- Delete Certificate Form -->
+    <h2>Delete Certificate</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="delete">
+        <label>Certificate ID:</label><input type="text" name="certificate_id" required><br>
+        <button type="submit">Delete Certificate</button>
+    </form>
+
+    <!-- Modify Certificate Form -->
+    <h2>Modify Certificate</h2>
+    <form method="POST">
+        <input type="hidden" name="action" value="modify">
+        <label>Certificate ID (to modify):</label><input type="text" name="certificate_id" required><br>
+        <!-- Only fill fields you want to modify -->
+        <label>Certificate Type:</label>
+        <select name="certificate_type">
+            <option value="">--Select--</option>
+            <option value="Birth">Birth</option>
+            <option value="Death">Death</option>
+            <option value="Caste">Caste</option>
+            <option value="Domicile">Domicile</option>
+        </select><br>
+        <label>Date of Issue:</label><input type="date" name="date_of_issue"><br>
+        <button type="submit">Modify Certificate</button>
+    </form>
+
+    <!-- View Certificates -->
+    <h2>All Certificates</h2>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Aadhar No</th>
+            <th>Type</th>
+            <th>Date of Issue</th>
+        </tr>
+        {% for cert in certificates %}
+        <tr>
+            <td>{{ cert.Certificate_ID }}</td>
+            <td>{{ cert.Aadhar_No }}</td>
+            <td>{{ cert.Certificate_Type }}</td>
+            <td>{{ cert.Date_of_Issue }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

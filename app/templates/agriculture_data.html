@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agriculture Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Agriculture Data</h1>
+
+        <!-- Total Land Area -->
+        <p>Total Land Area Under Cultivation: {{ total_land_area }} acres</p>
+
+        <!-- Crop Name - Land Area Chart -->
+        <h2>Crop Name - Land Area Chart:</h2>
+        <ul>
+            {% for crop, area in crop_data %}
+            <li>{{ crop }}: {{ area }} acres</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Health Data</h1>
+
+        <!-- Disease-Specific Count Chart -->
+        <h2>Disease-Specific Count This Month:</h2>
+        <ul>
+            {% for disease, count in disease_data %}
+            <li>{{ disease }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</body>
+</html>

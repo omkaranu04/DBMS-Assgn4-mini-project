@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Complaints</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Complaints</h1>
+
+        <!-- Delete Complaint Form -->
+        <h2>Delete Complaint</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="delete">
+            <label for="complaint_id">Complaint ID:</label>
+            <input type="text" id="complaint_id" name="complaint_id" required><br><br>
+
+            <!-- Password Confirmation -->
+            <label for="password">Confirm Your Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <button type="submit" class="btn btn-danger">Delete Complaint</button>
+        </form>
+
+        <!-- View All Complaints -->
+        <h2>All Complaints</h2>
+        {% if complaints %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Complaint ID</th>
+                    <th>Resource Name</th>
+                    <th>Citizen Name</th>
+                    <th>Description</th>
+                    <th>Date Filed</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint.Complaint_ID }}</td>
+                    <td>{{ complaint.Resource_Name }}</td>
+                    <td>{{ complaint.Citizen_Name }}</td>
+                    <td>{{ complaint.Complaint_Desc }}</td>
+                    <td>{{ complaint.Complain_Date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No complaints found.</p>
+        {% endif %}
+
+        <!-- Back Button -->
+        <div class="mt-3">
+            <a href="{{ url_for('main.dashboard_employees') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -9,8 +9,6 @@
         <h2>{{ 'Edit' if username else 'Add' }} Panchayat Employee</h2>
         
         <form method="POST">
-            <!-- Remove the csrf_token line or initialize Flask-WTF properly -->
-            <!-- <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> -->
             
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -29,7 +27,14 @@
             
             <div class="form-group">
                 <label for="designation">Designation:</label>
-                <input type="text" id="designation" name="designation" class="form-control" value="{{ form_data.designation }}">
+                <select id="designation" name="designation" class="form-control">
+                    <option value="Sarpanch" {% if form_data.designation == "Sarpanch" %}selected{% endif %}>Sarpanch</option>
+                    <option value="Naib Sarpanch" {% if form_data.designation == "Naib Sarpanch" %}selected{% endif %}>Naib Sarpanch</option>
+                    <option value="Panchayat Secretary" {% if form_data.designation == "Panchayat Secretary" %}selected{% endif %}>Panchayat Secretary</option>
+                    <option value="Gram Sevak" {% if form_data.designation == "Gram Sevak" %}selected{% endif %}>Gram Sevak</option>
+                    <option value="Ward Member" {% if form_data.designation == "Ward Member" %}selected{% endif %}>Ward Member</option>
+                    <option value="Community Mobilizer" {% if form_data.designation == "Community Mobilizer" %}selected{% endif %}>Community Mobilizer</option>
+                </select>
             </div>
             
             <div class="form-group">

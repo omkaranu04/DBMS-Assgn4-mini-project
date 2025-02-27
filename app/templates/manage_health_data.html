@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Health Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Manage Health Data</h1>
+
+        <!-- Add Health Data Form -->
+        <h2>Add Health Data</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="add">
+            <label for="aadhar_no">Aadhar No:</label>
+            <input type="text" id="aadhar_no" name="aadhar_no" required><br><br>
+
+            <label for="medical_condition">Medical Condition:</label>
+            <textarea id="medical_condition" name="medical_condition" required></textarea><br><br>
+
+            <label for="prescription">Prescription:</label>
+            <textarea id="prescription" name="prescription"></textarea><br><br>
+
+            <label for="date_of_visit">Date of Visit:</label>
+            <input type="date" id="date_of_visit" name="date_of_visit" required><br><br>
+
+            <button type="submit" class="btn btn-primary">Add Health Data</button>
+        </form>
+
+        <!-- Delete Health Data Form -->
+        <h2>Delete Health Data</h2>
+        <form method="POST">
+            <input type="hidden" name="action" value="delete">
+            <label for="checkup_id">CheckUp ID:</label>
+            <input type="text" id="checkup_id" name="checkup_id" required><br><br>
+
+            <!-- Password Confirmation -->
+            <label for="password">Confirm Your Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <button type="submit" class="btn btn-danger">Delete Health Data</button>
+        </form>
+
+        <!-- View All Health Records -->
+        <h2>All Health Records</h2>
+        {% if health_records %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>CheckUp ID</th>
+                    <th>Aadhar No</th>
+                    <th>Medical Condition</th>
+                    <th>Prescription</th>
+                    <th>Date of Visit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in health_records %}
+                <tr>
+                    <td>{{ record.CheckUp_ID }}</td>
+                    <td>{{ record.Aadhar_No }}</td>
+                    <td>{{ record.Medical_Condition }}</td>
+                    <td>{{ record.Prescription }}</td>
+                    <td>{{ record.Date_of_Visit }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No health records found.</p>
+        {% endif %}
+
+        <!-- Back Button -->
+        <div class="mt-3">
+            <a href="{{ url_for('main.dashboard_employees') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+
+    </div>
+</body>
+</html>
