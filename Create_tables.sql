@@ -6,7 +6,7 @@ CREATE TABLE Household (
 
 -- Citizens table 
 CREATE TABLE Citizens (
-    Aadhar_No VARCHAR(12) PRIMARY KEY CHECK (LENGTH(Aadhar_No) = 12 AND Aadhar_No ~ '^[0-9]+$'),
+    Aadhar_No VARCHAR(12) PRIMARY KEY CHECK (LENGTH(Aadhar_No) = 12 AND Aadhar_No ~ '^[1-9][0-9]{11}$'),
     Name VARCHAR(100) NOT NULL,
     DOB DATE NOT NULL,
     Gender VARCHAR(10) CHECK (Gender IN ('Male', 'Female')),
