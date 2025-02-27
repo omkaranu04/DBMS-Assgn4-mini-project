@@ -107,6 +107,8 @@ CREATE TABLE Panchayat_Users (
     Password VARCHAR(100) NOT NULL,
     Designation VARCHAR(50) CHECK (Designation IN ('Sarpanch', 'Naib Sarpanch', 'Panchayat Secretary', 'Gram Sevak', 'Ward Member', 'Community Mobilizer'))
 );
+CREATE UNIQUE INDEX unique_sarpanch ON Panchayat_Users (Designation) WHERE Designation = 'Sarpanch';
+CREATE UNIQUE INDEX unique_naib_sarpanch ON Panchayat_Users (Designation) WHERE Designation = 'Naib Sarpanch';
 
 -- For System Administrator and Government Officials
 CREATE TABLE System_Users_Top(
@@ -114,3 +116,4 @@ CREATE TABLE System_Users_Top(
     Password VARCHAR(100) NOT NULL,
     User_Type VARCHAR(50) CHECK (User_Type IN ('System Administrator', 'Government Official'))
 );
+CREATE UNIQUE INDEX unique_administrator ON System_Users_Top (User_Type) WHERE User_Type = 'System Administrator';
