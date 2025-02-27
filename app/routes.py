@@ -590,6 +590,7 @@ def manage_citizens():
         action = request.form.get('action')
         if action == 'add':
             # Add citizen logic
+            aadhar_no = request.form.get('aadhar_no')
             name = request.form.get('name')
             dob = request.form.get('dob')
             gender = request.form.get('gender')
@@ -602,17 +603,17 @@ def manage_citizens():
             is_alive = bool(request.form.get('is_alive'))
 
             new_citizen = Citizens(
-                Aadhar_No=request.form.get('aadhar_no'),
-                Name=name,
-                DOB=dob,
-                Gender=gender,
-                House_No=house_no,
-                Phone_No=phone_no,
-                Email_Id=email_id,
-                Education_Level=education_level,
-                Income=income,
-                Employment=employment,
-                Is_Alive=is_alive
+                aadhar_no=aadhar_no, 
+                name=name,
+                dob=dob,
+                gender=gender,
+                house_no=house_no,
+                phone_no=phone_no,
+                email_id=email_id,
+                education_level=education_level,
+                income=income,
+                employment=employment,
+                is_alive=is_alive
             )
             db.session.add(new_citizen)
             db.session.commit()
@@ -621,7 +622,7 @@ def manage_citizens():
         elif action == 'delete':
             # Delete citizen logic
             aadhar_no = request.form.get('aadhar_no')
-            citizen = Citizens.query.filter_by(Aadhar_No=aadhar_no).first()
+            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
             if citizen:
                 db.session.delete(citizen)
                 db.session.commit()
@@ -632,18 +633,18 @@ def manage_citizens():
         elif action == 'modify':
             # Modify citizen logic
             aadhar_no = request.form.get('aadhar_no')
-            citizen = Citizens.query.filter_by(Aadhar_No=aadhar_no).first()
+            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
             if citizen:
-                citizen.Name = request.form.get('name') or citizen.Name
-                citizen.DOB = request.form.get('dob') or citizen.DOB
-                citizen.Gender = request.form.get('gender') or citizen.Gender
-                citizen.House_No = request.form.get('house_no') or citizen.House_No
-                citizen.Phone_No = request.form.get('phone_no') or citizen.Phone_No
-                citizen.Email_Id = request.form.get('email_id') or citizen.Email_Id
-                citizen.Education_Level = request.form.get('education_level') or citizen.Education_Level
-                citizen.Income = request.form.get('income') or citizen.Income
-                citizen.Employment = request.form.get('employment') or citizen.Employment
-                citizen.Is_Alive = bool(request.form.get('is_alive')) if 'is_alive' in request.form else citizen.Is_Alive
+                citizen.name = request.form.get('name') or citizen.name
+                citizen.dob = request.form.get('dob') or citizen.dob
+                citizen.gender = request.form.get('gender') or citizen.gender
+                citizen.house_no = request.form.get('house_no') or citizen.house_no
+                citizen.phone_no = request.form.get('phone_no') or citizen.phone_no
+                citizen.email_id = request.form.get('email_id') or citizen.email_id
+                citizen.education_level = request.form.get('education_level') or citizen.education_level
+                citizen.income = request.form.get('income') or citizen.income
+                citizen.employment = request.form.get('employment') or citizen.employment
+                citizen.is_alive = bool(request.form.get('is_alive')) if 'is_alive' in request.form else citizen.is_alive
 
                 db.session.commit()
                 flash("Citizen modified successfully!", "success")
@@ -660,9 +661,9 @@ def manage_certificates():
         if action == 'add':
             # Add certificate logic
             new_certificate = Certificates(
-                Aadhar_No=request.form.get('aadhar_no'),
-                Certificate_Type=request.form.get('certificate_type'),
-                Date_of_Issue=request.form.get('date_of_issue')
+                aadhar_no=request.form.get('aadhar_no'),
+                certificate_type=request.form.get('certificate_type'),
+                date_of_issue=request.form.get('date_of_issue')
             )
             db.session.add(new_certificate)
             db.session.commit()
@@ -671,7 +672,7 @@ def manage_certificates():
         elif action == 'delete':
             # Delete certificate logic
             certificate_id = request.form.get('certificate_id')
-            certificate = Certificates.query.filter_by(Certificate_ID=certificate_id).first()
+            certificate = Certificates.query.filter_by(certificate_id=certificate_id).first()
             if certificate:
                 db.session.delete(certificate)
                 db.session.commit()
@@ -682,10 +683,10 @@ def manage_certificates():
         elif action == 'modify':
             # Modify certificate logic
             certificate_id = request.form.get('certificate_id')
-            certificate = Certificates.query.filter_by(Certificate_ID=certificate_id).first()
+            certificate = Certificates.query.filter_by(certificate_id=certificate_id).first()
             if certificate:
-                certificate.Certificate_Type = request.form.get('certificate_type') or certificate.Certificate_Type
-                certificate.Date_of_Issue = request.form.get('date_of_issue') or certificate.Date_of_Issue
+                certificate.certificate_type = request.form.get('certificate_type') or certificate.certificate_type
+                certificate.date_of_issue = request.form.get('date_of_issue') or certificate.date_of_issue
                 db.session.commit()
                 flash("Certificate modified successfully!", "success")
             else:
@@ -701,9 +702,9 @@ def manage_welfare_schemes():
         if action == 'add':
             # Add welfare scheme logic
             new_scheme = Welfare_Schemes(
-                Scheme_Type=request.form.get('scheme_type'),
-                Budget=request.form.get('budget'),
-                Scheme_Description=request.form.get('description')
+                scheme_type=request.form.get('scheme_type'),
+                budget=request.form.get('budget'),
+                scheme_description=request.form.get('description')
             )
             db.session.add(new_scheme)
             db.session.commit()
@@ -712,7 +713,7 @@ def manage_welfare_schemes():
         elif action == 'delete':
             # Delete welfare scheme logic
             scheme_id = request.form.get('scheme_id')
-            scheme = Welfare_Schemes.query.filter_by(Scheme_ID=scheme_id).first()
+            scheme = Welfare_Schemes.query.filter_by(scheme_id=scheme_id).first()
             if scheme:
                 db.session.delete(scheme)
                 db.session.commit()
@@ -723,11 +724,11 @@ def manage_welfare_schemes():
         elif action == 'modify':
             # Modify welfare scheme logic
             scheme_id = request.form.get('scheme_id')
-            scheme = Welfare_Schemes.query.filter_by(Scheme_ID=scheme_id).first()
+            scheme = Welfare_Schemes.query.filter_by(scheme_id=scheme_id).first()
             if scheme:
-                scheme.Scheme_Type = request.form.get('scheme_type') or scheme.Scheme_Type
-                scheme.Budget = request.form.get('budget') or scheme.Budget
-                scheme.Scheme_Description = request.form.get('description') or scheme.Scheme_Description
+                scheme.scheme_type = request.form.get('scheme_type') or scheme.scheme_type
+                scheme.budget = request.form.get('budget') or scheme.budget
+                scheme.scheme_description = request.form.get('description') or scheme.scheme_description
                 db.session.commit()
                 flash("Welfare Scheme modified successfully!", "success")
             else:
@@ -743,10 +744,10 @@ def manage_agriculture_land():
         if action == 'add':
             # Add agriculture land logic
             new_land = Agricultural_Land(
-                Aadhar_No=request.form.get('aadhar_no'),
-                Area_in_Acres=request.form.get('area_in_acres'),
-                Crop_Type=request.form.get('crop_type'),
-                Soil_Type=request.form.get('soil_type')
+                aadhar_no=request.form.get('aadhar_no'),
+                area_in_acres=request.form.get('area_in_acres'),
+                crop_type=request.form.get('crop_type'),
+                soil_type=request.form.get('soil_type')
             )
             db.session.add(new_land)
             db.session.commit()
@@ -755,7 +756,7 @@ def manage_agriculture_land():
         elif action == 'delete':
             # Delete agriculture land logic
             land_id = request.form.get('land_id')
-            land = Agricultural_Land.query.filter_by(Land_ID=land_id).first()
+            land = Agricultural_Land.query.filter_by(land_id=land_id).first()
             if land:
                 db.session.delete(land)
                 db.session.commit()
@@ -766,11 +767,11 @@ def manage_agriculture_land():
         elif action == 'modify':
             # Modify agriculture land logic
             land_id = request.form.get('land_id')
-            land = Agricultural_Land.query.filter_by(Land_ID=land_id).first()
+            land = Agricultural_Land.query.filter_by(land_id=land_id).first()
             if land:
-                land.Area_in_Acres = request.form.get('area_in_acres') or land.Area_in_Acres
-                land.Crop_Type = request.form.get('crop_type') or land.Crop_Type
-                land.Soil_Type = request.form.get('soil_type') or land.Soil_Type
+                land.area_in_acres = request.form.get('area_in_acres') or land.area_in_acres
+                land.crop_type = request.form.get('crop_type') or land.crop_type
+                land.soil_type = request.form.get('soil_type') or land.soil_type
                 db.session.commit()
                 flash("Agriculture Land modified successfully!", "success")
             else:
@@ -786,10 +787,10 @@ def manage_health_data():
         if action == 'add':
             # Add health data logic
             new_health_data = Health_CheckUp(
-                Aadhar_No=request.form.get('aadhar_no'),
-                Medical_Condition=request.form.get('medical_condition'),
-                Prescription=request.form.get('prescription'),
-                Date_of_Visit=request.form.get('date_of_visit')
+                aadhar_no=request.form.get('aadhar_no'),
+                medical_condition=request.form.get('medical_condition'),
+                prescription=request.form.get('prescription'),
+                date_of_visit=request.form.get('date_of_visit')
             )
             db.session.add(new_health_data)
             db.session.commit()
@@ -798,7 +799,7 @@ def manage_health_data():
         elif action == 'delete':
             # Delete health data logic
             checkup_id = request.form.get('checkup_id')
-            health_data = Health_CheckUp.query.filter_by(CheckUp_ID=checkup_id).first()
+            health_data = Health_CheckUp.query.filter_by(checkup_id=checkup_id).first()
             if health_data:
                 db.session.delete(health_data)
                 db.session.commit()
@@ -816,9 +817,9 @@ def manage_taxation_data():
         if action == 'add':
             # Add taxation data logic
             new_tax = Taxation(
-                Aadhar_No=request.form.get('aadhar_no'),
-                Tax_Amount=request.form.get('tax_amount'),
-                Payment_Status=bool(request.form.get('payment_status'))
+                aadhar_no=request.form.get('aadhar_no'),
+                tax_amount=request.form.get('tax_amount'),
+                payment_status=bool(request.form.get('payment_status'))
             )
             db.session.add(new_tax)
             db.session.commit()
@@ -827,7 +828,7 @@ def manage_taxation_data():
         elif action == 'delete':
             # Delete taxation data logic
             aadhar_no = request.form.get('aadhar_no')
-            tax = Taxation.query.filter_by(Aadhar_No=aadhar_no).first()
+            tax = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
             if tax:
                 db.session.delete(tax)
                 db.session.commit()
@@ -838,10 +839,10 @@ def manage_taxation_data():
         elif action == 'modify':
             # Modify taxation data logic
             aadhar_no = request.form.get('aadhar_no')
-            tax = Taxation.query.filter_by(Aadhar_No=aadhar_no).first()
+            tax = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
             if tax:
-                tax.Tax_Amount = request.form.get('tax_amount') or tax.Tax_Amount
-                tax.Payment_Status = bool(request.form.get('payment_status')) if 'payment_status' in request.form else tax.Payment_Status
+                tax.tax_amount = request.form.get('tax_amount') or tax.tax_amount
+                tax.payment_status = bool(request.form.get('payment_status')) if 'payment_status' in request.form else tax.payment_status
                 db.session.commit()
                 flash("Taxation data modified successfully!", "success")
             else:
@@ -857,8 +858,8 @@ def manage_meeting_details():
         if action == 'add':
             # Add meeting details logic
             new_meeting = Meetings(
-                Date_Conducted=request.form.get('date_conducted'),
-                Meeting_Agenda=request.form.get('meeting_agenda')
+                date_conducted=request.form.get('date_conducted'),
+                meeting_agenda=request.form.get('meeting_agenda')
             )
             db.session.add(new_meeting)
             db.session.commit()
@@ -867,7 +868,7 @@ def manage_meeting_details():
         elif action == 'delete':
             # Delete meeting details logic
             meeting_id = request.form.get('meeting_id')
-            meeting = Meetings.query.filter_by(Meeting_ID=meeting_id).first()
+            meeting = Meetings.query.filter_by(meeting_id=meeting_id).first()
             if meeting:
                 db.session.delete(meeting)
                 db.session.commit()
@@ -878,6 +879,7 @@ def manage_meeting_details():
     meetings_list = Meetings.query.all()
     return render_template('manage_meeting_details.html', meetings=meetings_list)
 
+# yet to be checked because of correlation
 @main_bp.route('/manage_complaints', methods=['GET', 'POST'])
 def manage_complaints():
     if request.method == 'POST':
@@ -889,7 +891,7 @@ def manage_complaints():
             
             # Validate password (this is just an example, replace with real validation)
             if password == session['user_password']:
-                complaint = Complaints.query.filter_by(Complaint_ID=complaint_id).first()
+                complaint = Complaints.query.filter_by(complaint_id=complaint_id).first()
                 if complaint:
                     db.session.delete(complaint)
                     db.session.commit()

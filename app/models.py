@@ -139,7 +139,6 @@ class Health_CheckUp(db.Model):
         nullable=False
     )
 
-
 # Resources (Infrastructure like Roads, Water Supply, etc.)
 class Resources(db.Model):
     __tablename__ = 'resources'
