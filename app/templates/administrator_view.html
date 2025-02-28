@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Dashboard - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
 </head>
 <body>
-    <h1>Welcome to the Dashboard!</h1>
-    <ul>
-        <li><a href="{{ url_for('main.panchayat_employees') }}">View Panchayat Employees</a></li>
-        <li><a href="{{ url_for('main.government_officials') }}">View Government Officials</a></li>
-    </ul>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="dashboard-container">
+            <div class="welcome-message">
+                <h2>Welcome Administrator</h2>
+                <p>What would you like to do?</p>
+            </div>
+
+            <div class="options-container">
+                <a href="{{ url_for('main.panchayat_employees') }}" class="option-card">
+                    <div class="option-icon">👥</div>
+                    <h3>View Panchayat Employees</h3>
+                    <p>Manage and view all panchayat staff members</p>
+                </a>
+
+                <a href="{{ url_for('main.government_officials') }}" class="option-card">
+                    <div class="option-icon">🏛️</div>
+                    <h3>View Government Officials</h3>
+                    <p>Access information about government officials</p>
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,68 +1,87 @@
-{% block content %}
-<div class="container mt-4">
-  <h2>About Us - Panchayat Team</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/aboutus.css') }}">
+</head>
+<body>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">Go to Login</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
 
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">Our Panchayat Officials</h5>
+    <div class="main-content">
+        <div class="about-container">
+            <h2>About Us - Panchayat Team</h2>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Our Panchayat Officials</h3>
+                </div>
+                <div class="card-body">
+                    {% if panchayat_employees %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Designation</th>
+                                    <th>Contact Number</th>
+                                    <th>Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for employee in panchayat_employees %}
+                                <tr>
+                                    <td>{{ employee.name }}</td>
+                                    <td>{{ employee.designation }}</td>
+                                    <td>{{ employee.contact_no }}</td>
+                                    <td>{{ employee.address }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="empty-message">No panchayat employees found.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>About Our Panchayat</h3>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Our Gram Panchayat is dedicated to the development and welfare of our
+                        village community. We work tirelessly to ensure that all citizens have
+                        access to essential services and resources.
+                    </p>
+
+                    <p class="mission-heading">Our mission is to:</p>
+                    <ul class="mission-list">
+                        <li>Promote sustainable development</li>
+                        <li>Ensure transparent governance</li>
+                        <li>Facilitate citizen participation in decision-making</li>
+                        <li>Implement welfare schemes effectively</li>
+                        <li>Address citizen concerns promptly</li>
+                    </ul>
+
+                    <p>
+                        We welcome your feedback and participation in making our village a
+                        better place for everyone.
+                    </p>
+                </div>
+            </div>
+
+            <a href="{{ url_for('main.login') }}" class="back-button">Back to Home</a>
+        </div>
     </div>
-    <div class="card-body">
-      {% if panchayat_employees %}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Designation</th>
-            <th>Contact Number</th>
-            <th>Address</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for employee in panchayat_employees %}
-          <tr>
-            <td>{{ employee.name }}</td>
-            <td>{{ employee.designation }}</td>
-            <td>{{ employee.contact_no }}</td>
-            <td>{{ employee.address }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <p class="text-muted">No panchayat employees found.</p>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">About Our Panchayat</h5>
-    </div>
-    <div class="card-body">
-      <p>
-        Our Gram Panchayat is dedicated to the development and welfare of our
-        village community. We work tirelessly to ensure that all citizens have
-        access to essential services and resources.
-      </p>
-
-      <p>Our mission is to:</p>
-      <ul>
-        <li>Promote sustainable development</li>
-        <li>Ensure transparent governance</li>
-        <li>Facilitate citizen participation in decision-making</li>
-        <li>Implement welfare schemes effectively</li>
-        <li>Address citizen concerns promptly</li>
-      </ul>
-
-      <p>
-        We welcome your feedback and participation in making our village a
-        better place for everyone.
-      </p>
-    </div>
-  </div>
-
-  <a href="{{ url_for('main.login') }}" class="btn btn-secondary"
-    >Back to Home</a
-  >
-</div>
-{% endblock %}
+</body>
+</html>

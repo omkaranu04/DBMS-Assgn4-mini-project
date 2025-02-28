@@ -1,0 +1,265 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.2em;
+    max-width: 60%;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styling */
+.btn {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.7em;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px 40px;
+    box-sizing: border-box;
+}
+
+.officials-container {
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* Page Title */
+.page-title {
+    margin-bottom: 30px;
+}
+
+.page-title h2 {
+    color: #0056b3;
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.subtitle {
+    color: #6c757d;
+    margin: 0;
+    font-size: 1.1em;
+    line-height: 1.5;
+}
+
+/* Action Bar */
+.action-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.add-button {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #218838;
+}
+
+.add-button .icon {
+    margin-right: 5px;
+    font-size: 1.2em;
+}
+
+/* Table Styling */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.officials-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.officials-table th {
+    background-color: #f0f2f5;
+    color: #0056b3;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #e1e4e8;
+}
+
+.officials-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.officials-table tr:last-child td {
+    border-bottom: none;
+}
+
+.officials-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Actions Cell */
+.actions-cell {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.edit-button {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+    background-color: #004494;
+}
+
+.delete-form {
+    display: inline;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* Empty Message */
+.empty-message {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 30px 15px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1em;
+        max-width: 50%;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.65em;
+    }
+    
+    .page-title h2 {
+        font-size: 1.6em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    .officials-table th,
+    .officials-table td {
+        padding: 10px;
+    }
+    
+    .actions-cell {
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-start;
+    }
+    
+    .edit-button,
+    .delete-button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    header h1 {
+        margin-bottom: 10px;
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .main-content {
+        padding-top: 130px;
+    }
+    
+    .action-bar {
+        justify-content: center;
+    }
+}

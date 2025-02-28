@@ -1,20 +1,63 @@
-<h1>Government Officials</h1>
-<a href="{{ url_for('main.add_edit_government_official') }}">Add New Official</a> <!-- No username parameter -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Officials - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/government_officials.css') }}">
+</head>
+<body>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
 
-<table>
-  <tr>
-    <th>Username</th>
-    <th>Actions</th>
-  </tr>
-  {% for off in officials %}
-  <tr>
-    <td>{{ off.username }}</td>
-    <td>
-        <a href="{{ url_for('main.add_edit_government_official', username=off.username) }}">Edit</a>
-        <form method="POST" action="{{ url_for('main.delete_government_official', username=off.username) }}">
-            <button type="submit">Delete</button>
-        </form>        
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+    <div class="main-content">
+        <div class="officials-container">
+            <div class="page-title">
+                <h2>Government Officials</h2>
+                <p class="subtitle">The Government Officials are representatives who oversee village administration and ensure proper implementation of government schemes.</p>
+            </div>
+
+            <div class="action-bar">
+                <a href="{{ url_for('main.add_edit_government_official') }}" class="add-button">
+                    <span class="icon">+</span> Add New Official
+                </a>
+            </div>
+
+            <div class="table-container">
+                <table class="officials-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for off in officials %}
+                        <tr>
+                            <td>{{ off.username }}</td>
+                            <td class="actions-cell">
+                                <a href="{{ url_for('main.add_edit_government_official', username=off.username) }}" class="edit-button">Edit</a>
+                                <form method="POST" action="{{ url_for('main.delete_government_official', username=off.username) }}" class="delete-form">
+                                    <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this official?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                        {% if not officials %}
+                        <tr>
+                            <td colspan="2" class="empty-message">No government officials found. Add a new official to get started.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

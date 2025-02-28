@@ -1,0 +1,179 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.2em;
+    max-width: 60%;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styling */
+.btn {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.7em;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px 40px;
+    box-sizing: border-box;
+}
+
+.dashboard-container {
+    max-width: 1000px;
+    width: 100%;
+}
+
+/* Welcome Message */
+.welcome-message {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.welcome-message h2 {
+    color: #0056b3;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.welcome-message p {
+    color: #6c757d;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+/* Options Container */
+.options-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* Option Cards */
+.option-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 300px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.option-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.option-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.option-card h3 {
+    color: #0056b3;
+    margin: 0 0 15px 0;
+}
+
+.option-card p {
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1em;
+        max-width: 50%;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.65em;
+    }
+    
+    .welcome-message h2 {
+        font-size: 1.6em;
+    }
+    
+    .welcome-message p {
+        font-size: 1em;
+    }
+    
+    .option-card {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    header h1 {
+        margin-bottom: 10px;
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .main-content {
+        padding-top: 130px;
+    }
+}
