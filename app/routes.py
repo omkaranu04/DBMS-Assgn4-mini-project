@@ -73,7 +73,20 @@ def panchayat_employees():
     if 'user' not in session:
         return redirect(url_for('main.login'))
 
-    employees = PanchayatUsers.query.all()
+        # Custom sorting to display Sarpanch first, Naib Sarpanch second, and others afterwards
+    employees = db.session.execute(
+        text("""
+            SELECT * FROM Panchayat_Users
+            ORDER BY 
+                CASE 
+                    WHEN designation = 'Sarpanch' THEN 1
+                    WHEN designation = 'Naib Sarpanch' THEN 2
+                    ELSE 3
+                END,
+                designation
+        """)
+    ).fetchall()
+
     return render_template('panchayat_employees.html', employees=employees)
 
 # Add/Edit a Panchayat Employee
@@ -596,26 +609,48 @@ def dashboard_employees():
     return render_template('dashboard_employees.html')
 
 
-@main_bp.route('/manage_citizens', methods=['GET', 'POST'])
+@main_bp.route('/manage_citizens', methods=['GET'])
 def manage_citizens():
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'add':
-            # Add citizen logic
-            aadhar_no = request.form.get('aadhar_no')
-            name = request.form.get('name')
-            dob = request.form.get('dob')
-            gender = request.form.get('gender')
-            house_no = request.form.get('house_no')
-            phone_no = request.form.get('phone_no')
-            email_id = request.form.get('email_id')
-            education_level = request.form.get('education_level')
-            income = request.form.get('income')
-            employment = request.form.get('employment')
-            is_alive = bool(request.form.get('is_alive'))
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    citizens_list = Citizens.query.filter_by(is_alive=True).all()
+    return render_template('manage_citizens.html', citizens=citizens_list)
 
+@main_bp.route('/add_citizen', methods=['GET', 'POST'])
+def add_citizen():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    if request.method == 'POST':
+        # Get form data
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        name = request.form.get('name', '').strip()
+        dob = request.form.get('dob', '').strip()
+        gender = request.form.get('gender', '').strip()
+        house_no = request.form.get('house_no', '').strip()
+        phone_no = request.form.get('phone_no', '').strip()
+        email_id = request.form.get('email_id', '').strip()
+        education_level = request.form.get('education_level', '').strip()
+        income = request.form.get('income', '').strip()
+        employment = request.form.get('employment', '').strip()
+        is_alive = 'is_alive' in request.form
+        
+        # Validate required fields
+        if not all([aadhar_no, name, dob, gender, house_no, phone_no, education_level, income, employment]):
+            flash("All required fields must be filled!", "danger")
+            return redirect(url_for('main.add_citizen'))
+        
+        try:
+            # Check if citizen already exists
+            existing_citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+            if existing_citizen:
+                flash("Citizen with this Aadhar number already exists!", "danger")
+                return redirect(url_for('main.add_citizen'))
+            
+            # Create new citizen
             new_citizen = Citizens(
-                aadhar_no=aadhar_no, 
+                aadhar_no=aadhar_no,
                 name=name,
                 dob=dob,
                 gender=gender,
@@ -627,85 +662,334 @@ def manage_citizens():
                 employment=employment,
                 is_alive=is_alive
             )
+            
             db.session.add(new_citizen)
-            db.session.commit()
-            flash("Citizen added successfully!", "success")
-
-        elif action == 'delete':
-            # Delete citizen logic
-            aadhar_no = request.form.get('aadhar_no')
-            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
-            if citizen:
-                db.session.delete(citizen)
-                db.session.commit()
-                flash("Citizen deleted successfully!", "success")
-            else:
-                flash("Citizen not found!", "danger")
-
-        elif action == 'modify':
-            # Modify citizen logic
-            aadhar_no = request.form.get('aadhar_no')
-            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
-            if citizen:
-                citizen.name = request.form.get('name') or citizen.name
-                citizen.dob = request.form.get('dob') or citizen.dob
-                citizen.gender = request.form.get('gender') or citizen.gender
-                citizen.house_no = request.form.get('house_no') or citizen.house_no
-                citizen.phone_no = request.form.get('phone_no') or citizen.phone_no
-                citizen.email_id = request.form.get('email_id') or citizen.email_id
-                citizen.education_level = request.form.get('education_level') or citizen.education_level
-                citizen.income = request.form.get('income') or citizen.income
-                citizen.employment = request.form.get('employment') or citizen.employment
-                citizen.is_alive = bool(request.form.get('is_alive')) if 'is_alive' in request.form else citizen.is_alive
-
-                db.session.commit()
-                flash("Citizen modified successfully!", "success")
-            else:
-                flash("Citizen not found!", "danger")
-
-    citizens_list = Citizens.query.all()
-    return render_template('manage_citizens.html', citizens=citizens_list)
-
-@main_bp.route('/manage_certificates', methods=['GET', 'POST'])
-def manage_certificates():
-    if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'add':
-            # Add certificate logic
+            
+            # Create birth certificate automatically
             new_certificate = Certificates(
-                aadhar_no=request.form.get('aadhar_no'),
-                certificate_type=request.form.get('certificate_type'),
-                date_of_issue=request.form.get('date_of_issue')
+                aadhar_no=aadhar_no,
+                certificate_type='Birth',
+                date_of_issue=dob
             )
+            
             db.session.add(new_certificate)
             db.session.commit()
+            
+            flash("Citizen added successfully with birth certificate!", "success")
+            return redirect(url_for('main.manage_citizens'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error adding citizen: {str(e)}", "danger")
+            return redirect(url_for('main.add_citizen'))
+    
+    return render_template('add_citizen.html')
+
+@main_bp.route('/delete_citizen', methods=['GET', 'POST'])
+def delete_citizen():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    citizen = None
+    
+    if request.method == 'POST':
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        
+        # If aadhar_no is provided, find the citizen
+        if aadhar_no:
+            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+            if not citizen:
+                flash("Citizen not found with this Aadhar number!", "danger")
+                return redirect(url_for('main.delete_citizen'))
+    
+    # If aadhar_no is provided in the URL (for direct access)
+    if request.args.get('aadhar_no'):
+        aadhar_no = request.args.get('aadhar_no')
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen not found with this Aadhar number!", "danger")
+            return redirect(url_for('main.delete_citizen'))
+    
+    return render_template('delete_citizen.html', citizen=citizen)
+
+@main_bp.route('/delete_citizen_confirm/<aadhar_no>', methods=['POST'])
+def delete_citizen_confirm(aadhar_no):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen not found!", "danger")
+            return redirect(url_for('main.manage_citizens'))
+        
+        # Delete all related records
+        # Delete certificates
+        Certificates.query.filter_by(aadhar_no=aadhar_no).delete()
+        
+        # Delete taxation records
+        Taxation.query.filter_by(aadhar_no=aadhar_no).delete()
+        
+        # Delete health records
+        Health_CheckUp.query.filter_by(aadhar_no=aadhar_no).delete()
+        
+        # Delete complaints
+        Complaints.query.filter_by(aadhar_no=aadhar_no).delete()
+        
+        # Delete welfare scheme enrollments
+        db.session.execute(
+            text("DELETE FROM Avails WHERE Aadhar_No = :aadhar_no"),
+            {'aadhar_no': aadhar_no}
+        )
+        
+        # Delete agricultural land records
+        Agricultural_Land.query.filter_by(aadhar_no=aadhar_no).delete()
+        
+        # Finally delete the citizen
+        db.session.delete(citizen)
+        db.session.commit()
+        
+        flash("Citizen and all related records deleted successfully!", "success")
+        return redirect(url_for('main.manage_citizens'))
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting citizen: {str(e)}", "danger")
+        return redirect(url_for('main.delete_citizen'))
+
+@main_bp.route('/modify_citizen', methods=['GET', 'POST'])
+def modify_citizen():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    citizen = None
+    
+    if request.method == 'POST':
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        
+        # If aadhar_no is provided, find the citizen
+        if aadhar_no:
+            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+            if not citizen:
+                flash("Citizen not found with this Aadhar number!", "danger")
+                return redirect(url_for('main.modify_citizen'))
+    
+    # If aadhar_no is provided in the URL (for direct access)
+    if request.args.get('aadhar_no'):
+        aadhar_no = request.args.get('aadhar_no')
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen not found with this Aadhar number!", "danger")
+            return redirect(url_for('main.modify_citizen'))
+    
+    return render_template('modify_citizen.html', citizen=citizen)
+
+@main_bp.route('/modify_citizen_submit/<aadhar_no>', methods=['POST'])
+def modify_citizen_submit(aadhar_no):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen not found!", "danger")
+            return redirect(url_for('main.manage_citizens'))
+        
+        # Update citizen information
+        citizen.name = request.form.get('name', '').strip()
+        citizen.dob = request.form.get('dob', '').strip()
+        citizen.gender = request.form.get('gender', '').strip()
+        citizen.house_no = request.form.get('house_no', '').strip()
+        citizen.phone_no = request.form.get('phone_no', '').strip()
+        citizen.email_id = request.form.get('email_id', '').strip()
+        citizen.education_level = request.form.get('education_level', '').strip()
+        citizen.income = request.form.get('income', '').strip()
+        citizen.employment = request.form.get('employment', '').strip()
+        citizen.is_alive = 'is_alive' in request.form
+        
+        db.session.commit()
+        
+        flash("Citizen information updated successfully!", "success")
+        return redirect(url_for('main.manage_citizens'))
+    
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error updating citizen: {str(e)}", "danger")
+        return redirect(url_for('main.modify_citizen', aadhar_no=aadhar_no))
+
+
+@main_bp.route('/manage_certificates', methods=['GET'])
+def manage_certificates():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    return render_template('manage_certificates.html')
+
+@main_bp.route('/add_certificate', methods=['GET', 'POST'])
+def add_certificate():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    if request.method == 'POST':
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        certificate_type = request.form.get('certificate_type', '').strip()
+        date_of_issue = request.form.get('date_of_issue', '').strip()
+        
+        # Validate inputs
+        if not all([aadhar_no, certificate_type, date_of_issue]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.add_certificate'))
+        
+        # Check if citizen exists
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar number does not exist!", "danger")
+            return redirect(url_for('main.add_certificate'))
+        
+        # Special handling for Death certificates
+        if certificate_type == 'Death' and citizen.is_alive:
+            # Update citizen status to deceased
+            citizen.is_alive = False
+            
+        try:
+            # Create new certificate
+            new_certificate = Certificates(
+                aadhar_no=aadhar_no,
+                certificate_type=certificate_type,
+                date_of_issue=date_of_issue
+            )
+            
+            db.session.add(new_certificate)
+            db.session.commit()
+            
             flash("Certificate added successfully!", "success")
+            return redirect(url_for('main.manage_certificates'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error adding certificate: {str(e)}", "danger")
+            return redirect(url_for('main.add_certificate'))
+    
+    return render_template('add_certificate.html')
 
-        elif action == 'delete':
-            # Delete certificate logic
-            certificate_id = request.form.get('certificate_id')
-            certificate = Certificates.query.filter_by(certificate_id=certificate_id).first()
-            if certificate:
-                db.session.delete(certificate)
-                db.session.commit()
-                flash("Certificate deleted successfully!", "success")
-            else:
-                flash("Certificate not found!", "danger")
+@main_bp.route('/find_certificates', methods=['GET', 'POST'])
+def find_certificates():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    citizen = None
+    certificates = None
+    
+    if request.method == 'POST':
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        
+        if not aadhar_no:
+            flash("Aadhar number is required!", "danger")
+            return redirect(url_for('main.find_certificates'))
+        
+        # Find citizen
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar number does not exist!", "danger")
+            return redirect(url_for('main.find_certificates'))
+        
+        # Get certificates for this citizen
+        certificates = Certificates.query.filter_by(aadhar_no=aadhar_no).all()
+    
+    return render_template('find_certificates.html', citizen=citizen, certificates=certificates)
 
-        elif action == 'modify':
-            # Modify certificate logic
-            certificate_id = request.form.get('certificate_id')
-            certificate = Certificates.query.filter_by(certificate_id=certificate_id).first()
-            if certificate:
-                certificate.certificate_type = request.form.get('certificate_type') or certificate.certificate_type
-                certificate.date_of_issue = request.form.get('date_of_issue') or certificate.date_of_issue
-                db.session.commit()
-                flash("Certificate modified successfully!", "success")
-            else:
-                flash("Certificate not found!", "danger")
+@main_bp.route('/modify_certificate/<int:certificate_id>', methods=['GET'])
+def modify_certificate(certificate_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    certificate = Certificates.query.get(certificate_id)
+    if not certificate:
+        flash("Certificate not found!", "danger")
+        return redirect(url_for('main.manage_certificates'))
+    
+    citizen = Citizens.query.filter_by(aadhar_no=certificate.aadhar_no).first()
+    
+    return render_template('modify_certificate.html', certificate=certificate, citizen=citizen)
 
-    certificates_list = Certificates.query.all()
-    return render_template('manage_certificates.html', certificates=certificates_list)
+@main_bp.route('/modify_certificate_submit/<int:certificate_id>', methods=['POST'])
+def modify_certificate_submit(certificate_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    certificate = Certificates.query.get(certificate_id)
+    if not certificate:
+        flash("Certificate not found!", "danger")
+        return redirect(url_for('main.manage_certificates'))
+    
+    try:
+        certificate_type = request.form.get('certificate_type', '').strip()
+        date_of_issue = request.form.get('date_of_issue', '').strip()
+        
+        if not all([certificate_type, date_of_issue]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.modify_certificate', certificate_id=certificate_id))
+        
+        # Update certificate
+        certificate.certificate_type = certificate_type
+        certificate.date_of_issue = date_of_issue
+        
+        # Special handling for Death certificates
+        if certificate_type == 'Death':
+            citizen = Citizens.query.filter_by(aadhar_no=certificate.aadhar_no).first()
+            if citizen and citizen.is_alive:
+                citizen.is_alive = False
+        
+        db.session.commit()
+        
+        flash("Certificate updated successfully!", "success")
+        return redirect(url_for('main.find_certificates'))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error updating certificate: {str(e)}", "danger")
+        return redirect(url_for('main.modify_certificate', certificate_id=certificate_id))
+
+@main_bp.route('/delete_certificate/<int:certificate_id>', methods=['GET'])
+def delete_certificate(certificate_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    certificate = Certificates.query.get(certificate_id)
+    if not certificate:
+        flash("Certificate not found!", "danger")
+        return redirect(url_for('main.manage_certificates'))
+    
+    citizen = Citizens.query.filter_by(aadhar_no=certificate.aadhar_no).first()
+    
+    return render_template('delete_certificate.html', certificate=certificate, citizen=citizen)
+
+@main_bp.route('/delete_certificate_confirm/<int:certificate_id>', methods=['POST'])
+def delete_certificate_confirm(certificate_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        certificate = Certificates.query.get(certificate_id)
+        if not certificate:
+            flash("Certificate not found!", "danger")
+            return redirect(url_for('main.manage_certificates'))
+        
+        aadhar_no = certificate.aadhar_no
+        
+        # Delete the certificate
+        db.session.delete(certificate)
+        db.session.commit()
+        
+        flash("Certificate deleted successfully!", "success")
+        
+        # Redirect back to find certificates with the same Aadhar number
+        return redirect(url_for('main.find_certificates'))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting certificate: {str(e)}", "danger")
+        return redirect(url_for('main.delete_certificate', certificate_id=certificate_id))
 
 @main_bp.route('/manage_welfare_schemes', methods=['GET', 'POST'])
 def manage_welfare_schemes():

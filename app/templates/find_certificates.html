@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Certificates</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Find Certificates</h1>
+    
+    <div class="container">
+        <form method="POST" action="{{ url_for('main.find_certificates') }}">
+            <div class="form-group">
+                <label for="aadhar_no">Enter Aadhar No:</label>
+                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Find Certificates</button>
+                <a href="{{ url_for('main.manage_certificates') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        
+        {% if citizen %}
+        <div class="citizen-info">
+            <h2>Citizen Information</h2>
+            <p><strong>Name:</strong> {{ citizen.name }}</p>
+            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+            <p><strong>Status:</strong> {{ "Alive" if citizen.is_alive else "Deceased" }}</p>
+        </div>
+        
+        {% if certificates %}
+        <h2>Certificates</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Certificate ID</th>
+                    <th>Type</th>
+                    <th>Date of Issue</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cert in certificates %}
+                <tr>
+                    <td>{{ cert.certificate_id }}</td>
+                    <td>{{ cert.certificate_type }}</td>
+                    <td>{{ cert.date_of_issue }}</td>
+                    <td>
+                        <a href="{{ url_for('main.modify_certificate', certificate_id=cert.certificate_id) }}" class="btn btn-sm btn-warning">Modify</a>
+                        <a href="{{ url_for('main.delete_certificate', certificate_id=cert.certificate_id) }}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-info">No certificates found for this citizen.</div>
+        {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
