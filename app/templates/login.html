@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login_page.css') }}">
 </head>
 <body>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <label for="username">Username:</label>
-        {{ form.username }}
-        
-        <label for="password">Password:</label>
-        {{ form.password }}
-        
-        <label for="user_type">User Type:</label>
-        {{ form.user_type }}
-        
-        {{ form.submit }}
-        
-        {% for message in get_flashed_messages() %}
-            <p style="color: red;">{{ message }}</p>
-        {% endfor %}
-    </form>
-    <a href="{{ url_for('main.about_us') }}" class="btn btn-primary">About Us</a>
-
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <a href="{{ url_for('main.about_us') }}" class="btn">About Us</a>
+    </header>
+    
+    <div class="main-content">
+        <div class="login-container">
+            <form method="POST" class="login-form">
+                {{ form.hidden_tag() }}
+                
+                <label for="username">Username:</label>
+                {{ form.username(class="input-field") }}
+                
+                <label for="password">Password:</label>
+                {{ form.password(class="input-field") }}
+                
+                <label for="user_type">User Type:</label>
+                {{ form.user_type(class="input-field") }}
+                
+                {{ form.submit(class="submit-btn") }}
+                
+                {% for message in get_flashed_messages() %}
+                    <p class="error-message">{{ message }}</p>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
 </body>
 </html>
