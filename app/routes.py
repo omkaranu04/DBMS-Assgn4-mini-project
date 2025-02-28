@@ -73,7 +73,20 @@ def panchayat_employees():
     if 'user' not in session:
         return redirect(url_for('main.login'))
 
-    employees = PanchayatUsers.query.all()
+    # Custom sorting to display Sarpanch first, Naib Sarpanch second, and others afterwards
+    employees = db.session.execute(
+        text("""
+            SELECT * FROM Panchayat_Users
+            ORDER BY 
+                CASE 
+                    WHEN designation = 'Sarpanch' THEN 1
+                    WHEN designation = 'Naib Sarpanch' THEN 2
+                    ELSE 3
+                END,
+                designation
+        """)
+    ).fetchall()
+
     return render_template('panchayat_employees.html', employees=employees)
 
 # Add/Edit a Panchayat Employee
