@@ -122,7 +122,15 @@ def add_edit_panchayat_employee(username=None):
             flash('Password is required when adding a new Panchayat Employee!', 'danger')
         else:
             if username:  # Editing existing employee
-                # Use old password if new password is blank
+                # Fetch old password to retain if new password is blank or has only spaces
+                employee_result = db.session.execute(
+                    text("SELECT password FROM Panchayat_Users WHERE username = :username"),
+                    {'username': username}
+                ).fetchone()
+                
+                old_password = employee_result[0] if employee_result else ""
+
+                # Use old password if new password is blank or contains only spaces
                 update_password = form_password if form_password else old_password
                 password_message = "Password updated successfully!" if form_password else "Password kept the same!"
 
