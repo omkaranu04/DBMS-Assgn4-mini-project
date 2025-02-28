@@ -3,107 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modify Citizen</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Modify Citizen - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modify_citizen.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Modify Citizen</h1>
-    
-    <div class="container">
-        {% if citizen %}
-        <form method="POST" action="{{ url_for('main.modify_citizen_submit', aadhar_no=citizen.aadhar_no) }}">
-            <div class="form-group">
-                <label for="aadhar_no">Aadhar No:</label>
-                <input type="text" id="aadhar_no" value="{{ citizen.aadhar_no }}" disabled>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="form-container">
+            <div class="page-title">
+                <h2>Modify Citizen</h2>
+                <p class="subtitle">Update citizen information in the system</p>
             </div>
             
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" value="{{ citizen.name }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="dob">Date of Birth:</label>
-                <input type="date" id="dob" name="dob" value="{{ citizen.dob }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Gender:</label>
-                <div class="radio-group">
-                    <input type="radio" id="male" name="gender" value="Male" {% if citizen.gender == 'Male' %}checked{% endif %} required>
-                    <label for="male">Male</label>
+            {% if citizen %}
+            <!-- Citizen Edit Form -->
+            <form method="POST" action="{{ url_for('main.modify_citizen_submit', aadhar_no=citizen.aadhar_no) }}" class="citizen-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="aadhar_no">
+                            <i class="fas fa-id-card"></i> Aadhar No:
+                        </label>
+                        <input type="text" id="aadhar_no" value="{{ citizen.aadhar_no }}" class="form-control disabled" disabled>
+                        <small class="form-hint">Aadhar number cannot be changed</small>
+                    </div>
                     
-                    <input type="radio" id="female" name="gender" value="Female" {% if citizen.gender == 'Female' %}checked{% endif %}>
-                    <label for="female">Female</label>
+                    <div class="form-group">
+                        <label for="name">
+                            <i class="fas fa-user"></i> Name:
+                        </label>
+                        <input type="text" id="name" name="name" value="{{ citizen.name }}" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dob">
+                            <i class="fas fa-calendar-alt"></i> Date of Birth:
+                        </label>
+                        <input type="date" id="dob" name="dob" value="{{ citizen.dob }}" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-venus-mars"></i> Gender:
+                        </label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="male" name="gender" value="Male" {% if citizen.gender == 'Male' %}checked{% endif %} required>
+                                <label for="male">Male</label>
+                            </div>
+                            
+                            <div class="radio-option">
+                                <input type="radio" id="female" name="gender" value="Female" {% if citizen.gender == 'Female' %}checked{% endif %}>
+                                <label for="female">Female</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="house_no">
+                            <i class="fas fa-home"></i> House No:
+                        </label>
+                        <input type="number" id="house_no" name="house_no" value="{{ citizen.house_no }}" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone_no">
+                            <i class="fas fa-phone"></i> Phone No:
+                        </label>
+                        <input type="text" id="phone_no" name="phone_no" value="{{ citizen.phone_no }}" class="form-control" required pattern="[6-9][0-9]{9}" title="10-digit mobile number starting with 6-9">
+                        <small class="form-hint">10-digit number starting with 6-9</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email_id">
+                            <i class="fas fa-envelope"></i> Email ID:
+                        </label>
+                        <input type="email" id="email_id" name="email_id" value="{{ citizen.email_id }}" class="form-control">
+                        <small class="form-hint">Optional</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="education_level">
+                            <i class="fas fa-graduation-cap"></i> Education Level:
+                        </label>
+                        <select id="education_level" name="education_level" class="form-control" required>
+                            <option value="">--Select--</option>
+                            <option value="Uneducated" {% if citizen.education_level == 'Uneducated' %}selected{% endif %}>Uneducated</option>
+                            <option value="High School" {% if citizen.education_level == 'High School' %}selected{% endif %}>High School</option>
+                            <option value="Secondary School" {% if citizen.education_level == 'Secondary School' %}selected{% endif %}>Secondary School</option>
+                            <option value="Graduate" {% if citizen.education_level == 'Graduate' %}selected{% endif %}>Graduate</option>
+                            <option value="Post Graduate" {% if citizen.education_level == 'Post Graduate' %}selected{% endif %}>Post Graduate</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="income">
+                            <i class="fas fa-rupee-sign"></i> Income:
+                        </label>
+                        <input type="number" id="income" name="income" min="0" value="{{ citizen.income }}" class="form-control" required>
+                        <small class="form-hint">Annual income in rupees</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="employment">
+                            <i class="fas fa-briefcase"></i> Employment:
+                        </label>
+                        <select id="employment" name="employment" class="form-control" required>
+                            <option value="">--Select--</option>
+                            <option value="Unemployed" {% if citizen.employment == 'Unemployed' %}selected{% endif %}>Unemployed</option>
+                            <option value="Employee" {% if citizen.employment == 'Employee' %}selected{% endif %}>Employee</option>
+                            <option value="Self Employed" {% if citizen.employment == 'Self Employed' %}selected{% endif %}>Self Employed</option>
+                            <option value="Business" {% if citizen.employment == 'Business' %}selected{% endif %}>Business</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i> Update Citizen
+                    </button>
+                    <a href="{{ url_for('main.manage_citizens') }}" class="btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
             
-            <div class="form-group">
-                <label for="house_no">House No:</label>
-                <input type="number" id="house_no" name="house_no" value="{{ citizen.house_no }}" required>
+            {% else %}
+            <!-- Citizen Search Form -->
+            <div class="search-citizen-form">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <form method="POST" action="{{ url_for('main.modify_citizen') }}" class="search-form">
+                    <div class="form-group">
+                        <label for="aadhar_no">Enter Aadhar No to Modify:</label>
+                        <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                        <small class="form-hint">Enter the 12-digit Aadhar number of the citizen you want to modify</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-search"></i> Find Citizen
+                        </button>
+                        <a href="{{ url_for('main.manage_citizens') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="phone_no">Phone No:</label>
-                <input type="text" id="phone_no" name="phone_no" value="{{ citizen.phone_no }}" required pattern="[6-9][0-9]{9}" title="10-digit mobile number starting with 6-9">
-            </div>
-            
-            <div class="form-group">
-                <label for="email_id">Email ID:</label>
-                <input type="email" id="email_id" name="email_id" value="{{ citizen.email_id }}">
-            </div>
-            
-            <div class="form-group">
-                <label for="education_level">Education Level:</label>
-                <select id="education_level" name="education_level" required>
-                    <option value="">--Select--</option>
-                    <option value="Uneducated" {% if citizen.education_level == 'Uneducated' %}selected{% endif %}>Uneducated</option>
-                    <option value="High School" {% if citizen.education_level == 'High School' %}selected{% endif %}>High School</option>
-                    <option value="Secondary School" {% if citizen.education_level == 'Secondary School' %}selected{% endif %}>Secondary School</option>
-                    <option value="Graduate" {% if citizen.education_level == 'Graduate' %}selected{% endif %}>Graduate</option>
-                    <option value="Post Graduate" {% if citizen.education_level == 'Post Graduate' %}selected{% endif %}>Post Graduate</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="income">Income:</label>
-                <input type="number" id="income" name="income" min="0" value="{{ citizen.income }}" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="employment">Employment:</label>
-                <select id="employment" name="employment" required>
-                    <option value="">--Select--</option>
-                    <option value="Unemployed" {% if citizen.employment == 'Unemployed' %}selected{% endif %}>Unemployed</option>
-                    <option value="Employee" {% if citizen.employment == 'Employee' %}selected{% endif %}>Employee</option>
-                    <option value="Self Employed" {% if citizen.employment == 'Self Employed' %}selected{% endif %}>Self Employed</option>
-                    <option value="Business" {% if citizen.employment == 'Business' %}selected{% endif %}>Business</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="is_alive">Is Alive:</label>
-                <input type="checkbox" id="is_alive" name="is_alive" {% if citizen.is_alive %}checked{% endif %}>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update Citizen</button>
-                <a href="{{ url_for('main.manage_citizens') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-        {% else %}
-        <form method="POST" action="{{ url_for('main.modify_citizen') }}">
-            <div class="form-group">
-                <label for="aadhar_no">Enter Aadhar No to Modify:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Find Citizen</button>
-                <a href="{{ url_for('main.manage_citizens') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

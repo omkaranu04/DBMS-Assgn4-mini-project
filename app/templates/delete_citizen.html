@@ -3,56 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Citizen</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Delete Citizen - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/delete_citizen.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Delete Citizen</h1>
-    
-    <div class="container">
-        {% if citizen %}
-        <div class="citizen-details">
-            <h2>Citizen Details</h2>
-            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
-            <p><strong>Name:</strong> {{ citizen.name }}</p>
-            <p><strong>Date of Birth:</strong> {{ citizen.dob }}</p>
-            <p><strong>Gender:</strong> {{ citizen.gender }}</p>
-            <p><strong>Status:</strong> {{ "Alive" if citizen.is_alive else "Deceased" }}</p>
-            
-            <div class="warning-box">
-                <h3>Warning!</h3>
-                <p>Deleting this citizen will permanently remove all their records including:</p>
-                <ul>
-                    <li>Personal information</li>
-                    <li>Certificates</li>
-                    <li>Tax records</li>
-                    <li>Health records</li>
-                    <li>Complaints</li>
-                    <li>Welfare scheme enrollments</li>
-                </ul>
-                <p>This action cannot be undone.</p>
-            </div>
-            
-            <form method="POST" action="{{ url_for('main.delete_citizen_confirm', aadhar_no=citizen.aadhar_no) }}">
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                    <a href="{{ url_for('main.manage_citizens') }}" class="btn btn-secondary">Cancel</a>
-                </div>
-            </form>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
-        {% else %}
-        <form method="POST" action="{{ url_for('main.delete_citizen') }}">
-            <div class="form-group">
-                <label for="aadhar_no">Enter Aadhar No to Delete:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+    </header>
+
+    <div class="main-content">
+        <div class="delete-container">
+            <div class="page-title">
+                <h2>Delete Citizen</h2>
+                <p class="subtitle">Remove a citizen from the system</p>
             </div>
             
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Find Citizen</button>
-                <a href="{{ url_for('main.manage_citizens') }}" class="btn btn-secondary">Cancel</a>
+            {% if citizen %}
+            <!-- Citizen Details and Confirmation -->
+            <div class="citizen-details">
+                <div class="details-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Citizen Details</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="detail-item">
+                            <span class="detail-label">Aadhar No:</span>
+                            <span class="detail-value">{{ citizen.aadhar_no }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Name:</span>
+                            <span class="detail-value">{{ citizen.name }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Date of Birth:</span>
+                            <span class="detail-value">{{ citizen.dob }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Gender:</span>
+                            <span class="detail-value">{{ citizen.gender }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value status-badge {% if citizen.is_alive %}alive{% else %}deceased{% endif %}">
+                                {{ "Alive" if citizen.is_alive else "Deceased" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    
+                    <div class="warning-content">
+                        <h3>Warning!</h3>
+                        <p>Deleting this citizen will permanently remove all their records including:</p>
+                        <ul>
+                            <li><i class="fas fa-user"></i> Personal information</li>
+                            <li><i class="fas fa-certificate"></i> Certificates</li>
+                            <li><i class="fas fa-file-invoice-dollar"></i> Tax records</li>
+                            <li><i class="fas fa-heartbeat"></i> Health records</li>
+                            <li><i class="fas fa-exclamation-circle"></i> Complaints</li>
+                            <li><i class="fas fa-hand-holding-heart"></i> Welfare scheme enrollments</li>
+                        </ul>
+                        <p class="warning-note">This action cannot be undone.</p>
+                    </div>
+                </div>
+                
+                <form method="POST" action="{{ url_for('main.delete_citizen_confirm', aadhar_no=citizen.aadhar_no) }}" class="confirmation-form">
+                    <div class="form-actions">
+                        <button type="submit" class="btn-danger">
+                            <i class="fas fa-trash-alt"></i> Confirm Delete
+                        </button>
+                        <a href="{{ url_for('main.manage_citizens') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
-        {% endif %}
+            
+            {% else %}
+            <!-- Citizen Search Form -->
+            <div class="search-citizen-form">
+                <div class="search-icon">
+                    <i class="fas fa-user-slash"></i>
+                </div>
+                
+                <form method="POST" action="{{ url_for('main.delete_citizen') }}" class="search-form">
+                    <div class="form-group">
+                        <label for="aadhar_no">Enter Aadhar No to Delete:</label>
+                        <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                        <small class="form-hint">Enter the 12-digit Aadhar number of the citizen you want to delete</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-search"></i> Find Citizen
+                        </button>
+                        <a href="{{ url_for('main.manage_citizens') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

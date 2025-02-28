@@ -3,55 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Citizens</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Manage Citizens - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_citizens.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Manage Citizens</h1>
-    
-    <div class="action-buttons">
-        <a href="{{ url_for('main.add_citizen') }}" class="btn btn-primary">Add New Citizen</a>
-        <a href="{{ url_for('main.delete_citizen') }}" class="btn btn-danger">Delete Citizen</a>
-        <a href="{{ url_for('main.modify_citizen') }}" class="btn btn-warning">Modify Citizen</a>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="citizens-container">
+            <div class="page-title">
+                <h2>Manage Citizens</h2>
+                <p class="subtitle">Add, modify, delete, and view citizen records</p>
+            </div>
+            
+            <div class="action-panel">
+                <div class="action-buttons">
+                    <a href="{{ url_for('main.add_citizen') }}" class="action-btn add">
+                        <i class="fas fa-user-plus"></i> Add New Citizen
+                    </a>
+                    <a href="{{ url_for('main.delete_citizen') }}" class="action-btn delete">
+                        <i class="fas fa-user-minus"></i> Delete Citizen
+                    </a>
+                    <a href="{{ url_for('main.modify_citizen') }}" class="action-btn edit">
+                        <i class="fas fa-user-edit"></i> Modify Citizen
+                    </a>
+                </div>
+                
+                <div class="search-box">
+                    <input type="text" id="citizenSearch" placeholder="Search citizens...">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="citizens-section">
+                <h3 class="section-title">
+                    <i class="fas fa-list"></i> Citizens List
+                    <span class="count-badge">{{ citizens|length }}</span>
+                </h3>
+                
+                <div class="table-responsive">
+                    <table class="citizens-table" id="citizensTable">
+                        <thead>
+                            <tr>
+                                <th>Aadhar No</th>
+                                <th>Name</th>
+                                <th>DOB</th>
+                                <th>Gender</th>
+                                <th>House No</th>
+                                <th>Phone No</th>
+                                <th>Email ID</th>
+                                <th>Education</th>
+                                <th>Income</th>
+                                <th>Employment</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for citizen in citizens %}
+                            <tr>
+                                <td>{{ citizen.aadhar_no }}</td>
+                                <td>{{ citizen.name }}</td>
+                                <td>{{ citizen.dob }}</td>
+                                <td>{{ citizen.gender }}</td>
+                                <td>{{ citizen.house_no }}</td>
+                                <td>{{ citizen.phone_no }}</td>
+                                <td>{{ citizen.email_id }}</td>
+                                <td>{{ citizen.education_level }}</td>
+                                <td>₹{{ citizen.income }}</td>
+                                <td>{{ citizen.employment }}</td>
+                                <td class="actions-cell">
+                                    <a href="{{ url_for('main.modify_citizen', aadhar_no=citizen.aadhar_no) }}" class="table-btn edit" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ url_for('main.delete_citizen', aadhar_no=citizen.aadhar_no) }}" class="table-btn delete" title="Delete" onclick="return confirm('Are you sure you want to delete this citizen?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {% if not citizens %}
+                            <tr>
+                                <td colspan="11" class="empty-message">No citizens found in the database.</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <h2>Citizens List</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Aadhar No</th>
-                <th>Name</th>
-                <th>DOB</th>
-                <th>Gender</th>
-                <th>House No</th>
-                <th>Phone No</th>
-                <th>Email ID</th>
-                <th>Education Level</th>
-                <th>Income</th>
-                <th>Employment</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for citizen in citizens %}
-            <tr>
-                <td>{{ citizen.aadhar_no }}</td>
-                <td>{{ citizen.name }}</td>
-                <td>{{ citizen.dob }}</td>
-                <td>{{ citizen.gender }}</td>
-                <td>{{ citizen.house_no }}</td>
-                <td>{{ citizen.phone_no }}</td>
-                <td>{{ citizen.email_id }}</td>
-                <td>{{ citizen.education_level }}</td>
-                <td>{{ citizen.income }}</td>
-                <td>{{ citizen.employment }}</td>
-                <td>
-                    <a href="{{ url_for('main.modify_citizen', aadhar_no=citizen.aadhar_no) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{{ url_for('main.delete_citizen', aadhar_no=citizen.aadhar_no) }}" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <script>
+        // Simple search functionality
+        document.getElementById('citizenSearch').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const table = document.getElementById('citizensTable');
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 1; i < rows.length; i++) {
+                let found = false;
+                const cells = rows[i].getElementsByTagName('td');
+                
+                for (let j = 0; j < cells.length; j++) {
+                    const cellText = cells[j].textContent.toLowerCase();
+                    if (cellText.indexOf(searchValue) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                rows[i].style.display = found ? '' : 'none';
+            }
+        });
+    </script>
 </body>
 </html>

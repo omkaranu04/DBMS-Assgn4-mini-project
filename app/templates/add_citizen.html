@@ -3,93 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Citizen</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Add Citizen - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_citizen.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Add New Citizen</h1>
-    
-    <div class="container">
-        <form method="POST" action="{{ url_for('main.add_citizen') }}">
-            <div class="form-group">
-                <label for="aadhar_no">Aadhar No:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="form-container">
+            <div class="page-title">
+                <h2>Add New Citizen</h2>
+                <p class="subtitle">Enter citizen details to register in the system</p>
             </div>
             
-            <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="dob">Date of Birth:</label>
-                <input type="date" id="dob" name="dob" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Gender:</label>
-                <div class="radio-group">
-                    <input type="radio" id="male" name="gender" value="Male" required>
-                    <label for="male">Male</label>
+            <form method="POST" action="{{ url_for('main.add_citizen') }}" class="citizen-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="aadhar_no">
+                            <i class="fas fa-id-card"></i> Aadhar No:
+                        </label>
+                        <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                        <small class="form-hint">12-digit number starting with non-zero digit</small>
+                    </div>
                     
-                    <input type="radio" id="female" name="gender" value="Female">
-                    <label for="female">Female</label>
+                    <div class="form-group">
+                        <label for="name">
+                            <i class="fas fa-user"></i> Name:
+                        </label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dob">
+                            <i class="fas fa-calendar-alt"></i> Date of Birth:
+                        </label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-venus-mars"></i> Gender:
+                        </label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="male" name="gender" value="Male" required>
+                                <label for="male">Male</label>
+                            </div>
+                            
+                            <div class="radio-option">
+                                <input type="radio" id="female" name="gender" value="Female">
+                                <label for="female">Female</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="house_no">
+                            <i class="fas fa-home"></i> House No:
+                        </label>
+                        <input type="number" id="house_no" name="house_no" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone_no">
+                            <i class="fas fa-phone"></i> Phone No:
+                        </label>
+                        <input type="text" id="phone_no" name="phone_no" required pattern="[6-9][0-9]{9}" title="10-digit mobile number starting with 6-9">
+                        <small class="form-hint">10-digit number starting with 6-9</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email_id">
+                            <i class="fas fa-envelope"></i> Email ID:
+                        </label>
+                        <input type="email" id="email_id" name="email_id">
+                        <small class="form-hint">Optional</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="education_level">
+                            <i class="fas fa-graduation-cap"></i> Education Level:
+                        </label>
+                        <select id="education_level" name="education_level" required>
+                            <option value="">--Select--</option>
+                            <option value="Uneducated">Uneducated</option>
+                            <option value="High School">High School</option>
+                            <option value="Secondary School">Secondary School</option>
+                            <option value="Graduate">Graduate</option>
+                            <option value="Post Graduate">Post Graduate</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="income">
+                            <i class="fas fa-rupee-sign"></i> Income:
+                        </label>
+                        <input type="number" id="income" name="income" min="0" required>
+                        <small class="form-hint">Annual income in rupees</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="employment">
+                            <i class="fas fa-briefcase"></i> Employment:
+                        </label>
+                        <select id="employment" name="employment" required>
+                            <option value="">--Select--</option>
+                            <option value="Unemployed">Unemployed</option>
+                            <option value="Employee">Employee</option>
+                            <option value="Self Employed">Self Employed</option>
+                            <option value="Business">Business</option>
+                        </select>
+                    </div>
+                    
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="house_no">House No:</label>
-                <input type="number" id="house_no" name="house_no" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="phone_no">Phone No:</label>
-                <input type="text" id="phone_no" name="phone_no" required pattern="[6-9][0-9]{9}" title="10-digit mobile number starting with 6-9">
-            </div>
-            
-            <div class="form-group">
-                <label for="email_id">Email ID:</label>
-                <input type="email" id="email_id" name="email_id">
-            </div>
-            
-            <div class="form-group">
-                <label for="education_level">Education Level:</label>
-                <select id="education_level" name="education_level" required>
-                    <option value="">--Select--</option>
-                    <option value="Uneducated">Uneducated</option>
-                    <option value="High School">High School</option>
-                    <option value="Secondary School">Secondary School</option>
-                    <option value="Graduate">Graduate</option>
-                    <option value="Post Graduate">Post Graduate</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="income">Income:</label>
-                <input type="number" id="income" name="income" min="0" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="employment">Employment:</label>
-                <select id="employment" name="employment" required>
-                    <option value="">--Select--</option>
-                    <option value="Unemployed">Unemployed</option>
-                    <option value="Employee">Employee</option>
-                    <option value="Self Employed">Self Employed</option>
-                    <option value="Business">Business</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="is_alive">Is Alive:</label>
-                <input type="checkbox" id="is_alive" name="is_alive" checked>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Add Citizen</button>
-                <a href="{{ url_for('main.manage_citizens') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Add Citizen
+                    </button>
+                    <a href="{{ url_for('main.manage_citizens') }}" class="btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

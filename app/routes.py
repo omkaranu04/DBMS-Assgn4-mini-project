@@ -3,6 +3,7 @@ from .forms import LoginForm, PanchayatEmployeeForm, GovernmentOfficialForm
 from .models import SystemUsersTop, PanchayatUsers, Citizens, Certificates, Welfare_Schemes, Agricultural_Land, Health_CheckUp, Taxation, Meetings, Complaints, Household, Resources, Government_Institutions
 from sqlalchemy import text
 from . import db
+from datetime import datetime
 
 main_bp = Blueprint('main', __name__)
 
@@ -639,70 +640,97 @@ def manage_citizens():
 
 @main_bp.route('/add_citizen', methods=['GET', 'POST'])
 def add_citizen():
-    if 'user' not in session:
-        return redirect(url_for('main.login'))
-    
     if request.method == 'POST':
-        # Get form data
+        # Get and strip form data
         aadhar_no = request.form.get('aadhar_no', '').strip()
         name = request.form.get('name', '').strip()
-        dob = request.form.get('dob', '').strip()
+        dob_str = request.form.get('dob', '').strip()
         gender = request.form.get('gender', '').strip()
         house_no = request.form.get('house_no', '').strip()
         phone_no = request.form.get('phone_no', '').strip()
         email_id = request.form.get('email_id', '').strip()
-        education_level = request.form.get('education_level', '').strip()
-        income = request.form.get('income', '').strip()
-        employment = request.form.get('employment', '').strip()
-        is_alive = 'is_alive' in request.form
-        
+        education_level = request.form.get('education_level', 'Uneducated').strip()
+        income_str = request.form.get('income', '0').strip()
+        employment = request.form.get('employment', 'Unemployed').strip()
+        is_alive = True
+
         # Validate required fields
-        if not all([aadhar_no, name, dob, gender, house_no, phone_no, education_level, income, employment]):
+        if not all([aadhar_no, name, dob_str, gender, house_no, education_level, income_str, employment]):
             flash("All required fields must be filled!", "danger")
             return redirect(url_for('main.add_citizen'))
-        
+
+        # Validate Aadhar Number (12 digits)
+        if len(aadhar_no) != 12 or not aadhar_no.isdigit():
+            flash("Aadhar number must be exactly 12 digits!", "danger")
+            return redirect(url_for('main.add_citizen'))
+
+        # Validate Date of Birth (YYYY-MM-DD format)
         try:
-            # Check if citizen already exists
-            existing_citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
-            if existing_citizen:
-                flash("Citizen with this Aadhar number already exists!", "danger")
-                return redirect(url_for('main.add_citizen'))
-            
-            # Create new citizen
-            new_citizen = Citizens(
-                aadhar_no=aadhar_no,
-                name=name,
-                dob=dob,
-                gender=gender,
-                house_no=house_no,
-                phone_no=phone_no,
-                email_id=email_id,
-                education_level=education_level,
-                income=income,
-                employment=employment,
-                is_alive=is_alive
-            )
-            
-            db.session.add(new_citizen)
-            
-            # Create birth certificate automatically
-            new_certificate = Certificates(
-                aadhar_no=aadhar_no,
-                certificate_type='Birth',
-                date_of_issue=dob
-            )
-            
-            db.session.add(new_certificate)
+            dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+        except ValueError:
+            flash("Invalid date format! Use YYYY-MM-DD.", "danger")
+            return redirect(url_for('main.add_citizen'))
+
+        # Convert House Number to Integer
+        if not house_no.isdigit():
+            flash("House number must be a number!", "danger")
+            return redirect(url_for('main.add_citizen'))
+        house_no = int(house_no)
+
+        # Convert Income to Numeric
+        try:
+            income = int(income_str)
+        except ValueError:
+            flash("Income must be a valid number!", "danger")
+            return redirect(url_for('main.add_citizen'))
+
+        # Validate Phone Number
+        if phone_no and (not phone_no.isdigit() or len(phone_no) > 15):
+            flash("Invalid phone number! It must contain only numbers and be at most 15 digits.", "danger")
+            return redirect(url_for('main.add_citizen'))
+
+        # Check if Citizen Already Exists
+        existing_citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if existing_citizen:
+            flash("Citizen with this Aadhar number already exists!", "danger")
+            return redirect(url_for('main.add_citizen'))
+
+        # Create New Citizen Entry
+        new_citizen = Citizens(
+            aadhar_no=aadhar_no,
+            name=name,
+            dob=dob,
+            gender=gender,
+            house_no=house_no,
+            phone_no=phone_no,
+            email_id=email_id,
+            education_level=education_level,
+            income=income,
+            employment=employment,
+            is_alive=is_alive
+        )
+
+        db.session.add(new_citizen)
+        db.session.flush()  # Ensures record is created before committing
+
+        # Automatically Create Birth Certificate
+        new_certificate = Certificates(
+            aadhar_no=aadhar_no,
+            certificate_type='Birth',
+            date_of_issue=dob
+        )
+        db.session.add(new_certificate)
+
+        # Commit Changes
+        try:
             db.session.commit()
-            
-            flash("Citizen added successfully with birth certificate!", "success")
+            flash("Citizen added successfully with a birth certificate!", "success")
             return redirect(url_for('main.manage_citizens'))
-            
         except Exception as e:
             db.session.rollback()
             flash(f"Error adding citizen: {str(e)}", "danger")
             return redirect(url_for('main.add_citizen'))
-    
+
     return render_template('add_citizen.html')
 
 @main_bp.route('/delete_citizen', methods=['GET', 'POST'])
