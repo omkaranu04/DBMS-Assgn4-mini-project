@@ -3,33 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ 'Edit' if username else 'Add' }} Government Official</title>
+    <title>{{ 'Edit' if username else 'Add' }} Government Official - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/government_officials_form.css') }}">
 </head>
 <body>
-    <h1>{{ 'Edit' if username else 'Add' }} Government Official</h1>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
 
-    <form method="POST">
-        {{ form.hidden_tag() }}
+    <div class="main-content">
+        <div class="form-container">
+            <div class="page-title">
+                <h2>{{ 'Edit' if username else 'Add' }} Government Official</h2>
+            </div>
+            
+            <form method="POST" class="official-form">
+                {{ form.hidden_tag() }}
 
-        <!-- Username Field -->
-        <label for="username">Username:</label>
-        {{ form.username }}
-        {% if form.username.errors %}
-            <p style="color: red;">{{ form.username.errors[0] }}</p>
-        {% endif %}
-
-        <!-- Password Field -->
-        <label for="password">Password:</label>
-        {{ form.password }}
-        {% if form.password.errors %}
-            <p style="color: red;">{{ form.password.errors[0] }}</p>
-        {% endif %}
-
-        <!-- Submit Button -->
-        {{ form.submit }}
-    </form>
-
-    <!-- Back Button -->
-    <a href="{{ url_for('main.government_officials') }}">Back to Government Officials</a>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    {{ form.username(class="form-control", id="username") }}
+                    {% if form.username.errors %}
+                        <p class="error-message">{{ form.username.errors[0] }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    {{ form.password(class="form-control", id="password") }}
+                    {% if form.password.errors %}
+                        <p class="error-message">{{ form.password.errors[0] }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    {{ form.submit(class="save-button", value="Add User") }}
+                    <a href="{{ url_for('main.government_officials') }}" class="cancel-button">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,49 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>{{ 'Edit' if username else 'Add' }} Panchayat Employee</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'Edit' if username else 'Add' }} Panchayat Employee - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/panchayat_employees_form.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h2>{{ 'Edit' if username else 'Add' }} Panchayat Employee</h2>
-        
-        <form method="POST">
-            
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" class="form-control" value="{{ form_data.username }}" required>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="form-container">
+            <div class="page-title">
+                <h2>{{ 'Edit' if username else 'Add' }} Panchayat Employee</h2>
             </div>
             
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" value="{{ form_data.password }}" {% if username %}placeholder="Leave blank to keep old password"{% else %}required{% endif %}>
-            </div>
-            
-            <div class="form-group">
-                <label for="aadhar_no">Aadhar Number:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" value="{{ form_data.aadhar_no }}" {% if username %}disabled{% endif %}>
-            </div>
-            
-            <div class="form-group">
-                <label for="designation">Designation:</label>
-                <select id="designation" name="designation" class="form-control" required>
-                    <option value="Sarpanch" {% if form_data.designation == "Sarpanch" %}selected{% endif %}>Sarpanch</option>
-                    <option value="Naib Sarpanch" {% if form_data.designation == "Naib Sarpanch" %}selected{% endif %}>Naib Sarpanch</option>
-                    <option value="Panchayat Secretary" {% if form_data.designation == "Panchayat Secretary" %}selected{% endif %}>Panchayat Secretary</option>
-                    <option value="Gram Sevak" {% if form_data.designation == "Gram Sevak" %}selected{% endif %}>Gram Sevak</option>
-                    <option value="Ward Member" {% if form_data.designation == "Ward Member" %}selected{% endif %}>Ward Member</option>
-                    <option value="Community Mobilizer" {% if form_data.designation == "Community Mobilizer" %}selected{% endif %}>Community Mobilizer</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-        </form>
-        
-        <div class="mt-3">
-            <a href="{{ url_for('main.panchayat_employees') }}" class="btn btn-secondary">Back to Panchayat Employees</a>
+            <form method="POST" class="employee-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" class="form-control" value="{{ form_data.username }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" value="{{ form_data.password }}" {% if username %}placeholder="Leave blank to keep old password"{% else %}required{% endif %}>
+                </div>
+                
+                <div class="form-group">
+                    <label for="aadhar_no">Aadhar Number:</label>
+                    <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" value="{{ form_data.aadhar_no }}" {% if username %}disabled{% endif %}>
+                </div>
+                
+                <div class="form-group">
+                    <label for="designation">Designation:</label>
+                    <select id="designation" name="designation" class="form-control" required>
+                        <option value="Sarpanch" {% if form_data.designation == "Sarpanch" %}selected{% endif %}>Sarpanch</option>
+                        <option value="Naib Sarpanch" {% if form_data.designation == "Naib Sarpanch" %}selected{% endif %}>Naib Sarpanch</option>
+                        <option value="Panchayat Secretary" {% if form_data.designation == "Panchayat Secretary" %}selected{% endif %}>Panchayat Secretary</option>
+                        <option value="Gram Sevak" {% if form_data.designation == "Gram Sevak" %}selected{% endif %}>Gram Sevak</option>
+                        <option value="Ward Member" {% if form_data.designation == "Ward Member" %}selected{% endif %}>Ward Member</option>
+                        <option value="Community Mobilizer" {% if form_data.designation == "Community Mobilizer" %}selected{% endif %}>Community Mobilizer</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="save-button">Save</button>
+                    <a href="{{ url_for('main.panchayat_employees') }}" class="cancel-button">Cancel</a>
+                </div>
+            </form>
         </div>
     </div>
 </body>

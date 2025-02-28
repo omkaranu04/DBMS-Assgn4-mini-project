@@ -1,29 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Taxation Data</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taxation Data - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/taxation.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Taxation Data</h1>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
 
-        <!-- General Taxation Data -->
-        <p>Total People Who Have Not Paid Tax: {{ not_paid_tax_count }}</p>
+    <div class="main-content">
+        <div class="taxation-container">
+            <div class="page-title">
+                <h2>Taxation Data</h2>
+                <p class="subtitle">Village tax collection and payment status information</p>
+            </div>
 
-        <!-- List of People Who Have Not Paid Tax -->
-        <h2>List of People Who Have Not Paid Tax:</h2>
-        <ul>
-            {% for person in people_not_paid_tax %}
-            <li>{{ person.Name }} - Phone: {{ person.Phone_No }}, Address: {{ person.Address }}</li>
-            {% endfor %}
-        </ul>
+            <!-- Tax Summary Dashboard -->
+            <div class="tax-summary-section">
+                <div class="summary-card total">
+                    <div class="summary-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Tax Owed</h3>
+                        <p class="summary-value">₹{{ tax_summary.total_tax }}</p>
+                    </div>
+                </div>
+                
+                <div class="summary-card paid">
+                    <div class="summary-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Tax Paid</h3>
+                        <p class="summary-value">₹{{ tax_summary.paid_tax }}</p>
+                    </div>
+                </div>
+                
+                <div class="summary-card pending">
+                    <div class="summary-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Pending Tax</h3>
+                        <p class="summary-value">₹{{ tax_summary.total_tax - tax_summary.paid_tax }}</p>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Tax Summary -->
-        <h2>Tax Summary:</h2>
-        <p>Total Tax Paid: {{ tax_summary.paid_tax }}</p>
-        <p>Total Tax Owed: {{ tax_summary.total_tax }}</p>
+            <!-- Tax Collection Progress -->
+            <div class="progress-section">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-pie"></i> Tax Collection Progress
+                </h3>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        {% set collection_percentage = (tax_summary.paid_tax / tax_summary.total_tax * 100)|round|int if tax_summary.total_tax > 0 else 0 %}
+                        <div class="progress" style="width: {{ collection_percentage }}%">
+                            <span class="progress-text">{{ collection_percentage }}%</span>
+                        </div>
+                    </div>
+                    <div class="progress-labels">
+                        <span>0%</span>
+                        <span>25%</span>
+                        <span>50%</span>
+                        <span>75%</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Defaulters Summary -->
+            <div class="defaulters-summary">
+                <div class="defaulters-count">
+                    <div class="count-icon">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="count-details">
+                        <h3>Tax Defaulters</h3>
+                        <p class="count-value">{{ not_paid_tax_count }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Defaulters List -->
+            <div class="defaulters-section">
+                <h3 class="section-title">
+                    <i class="fas fa-list"></i> List of Tax Defaulters
+                </h3>
+                
+                {% if people_not_paid_tax %}
+                <div class="table-responsive">
+                    <table class="defaulters-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone Number</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for person in people_not_paid_tax %}
+                            <tr>
+                                <td>{{ person[0] }}</td>
+                                <td>{{ person[1] }}</td>
+                                <td>{{ person[2] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="empty-message">No tax defaulters found. All citizens have paid their taxes.</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </body>
 </html>

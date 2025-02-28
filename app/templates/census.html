@@ -1,45 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Census Data</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Census Data - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/census.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Census Data</h1>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
 
-        <!-- General Census Data -->
-        <p>Total People Alive: {{ total_alive }}</p>
-        <p>Total Male: {{ total_male }}</p>
-        <p>Total Female: {{ total_female }}</p>
+    <div class="main-content">
+        <div class="census-container">
+            <div class="page-title">
+                <h2>Census Data</h2>
+                <p class="subtitle">Demographic statistics and population information for the village</p>
+            </div>
 
-        <!-- Employment Status Chart -->
-        <h2>Employment Status</h2>
-        <ul>
-            {% for employment, count in employment_data %}
-            <li>{{ employment }}: {{ count }}</li>
-            {% endfor %}
-        </ul>
+            <!-- Population Overview -->
+            <div class="stats-row">
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Total Population</h3>
+                        <p class="stat-value">{{ total_alive }}</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card secondary">
+                    <div class="stat-icon">
+                        <i class="fas fa-male"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Male Population</h3>
+                        <p class="stat-value">{{ total_male }}</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card tertiary">
+                    <div class="stat-icon">
+                        <i class="fas fa-female"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Female Population</h3>
+                        <p class="stat-value">{{ total_female }}</p>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Age Distribution -->
-        <h2>Age Distribution</h2>
-        <p>Below 18: {{ below_18 }}</p>
-        <p>18-60: {{ age_18_to_60 }}</p>
-        <p>Above 60: {{ above_60 }}</p>
+            <!-- Age Distribution -->
+            <div class="data-section">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-bar"></i> Age Distribution
+                </h3>
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="data-label">Below 18</div>
+                        <div class="data-value">{{ below_18 }}</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ (below_18 / total_alive * 100)|round }}%"></div>
+                        </div>
+                        <div class="data-percentage">{{ (below_18 / total_alive * 100)|round }}%</div>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="data-label">18-60 Years</div>
+                        <div class="data-value">{{ age_18_to_60 }}</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ (age_18_to_60 / total_alive * 100)|round }}%"></div>
+                        </div>
+                        <div class="data-percentage">{{ (age_18_to_60 / total_alive * 100)|round }}%</div>
+                    </div>
+                    
+                    <div class="data-card">
+                        <div class="data-label">Above 60</div>
+                        <div class="data-value">{{ above_60 }}</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ (above_60 / total_alive * 100)|round }}%"></div>
+                        </div>
+                        <div class="data-percentage">{{ (above_60 / total_alive * 100)|round }}%</div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Education Levels -->
-        <h2>Education Levels</h2>
-        <ul>
-            {% for level, count in education_data %}
-            <li>{{ level }}: {{ count }}</li>
-            {% endfor %}
-        </ul>
+            <!-- Employment Status -->
+            <div class="data-section">
+                <h3 class="section-title">
+                    <i class="fas fa-briefcase"></i> Employment Status
+                </h3>
+                <div class="list-container">
+                    <ul class="data-list">
+                        {% for employment, count in employment_data %}
+                        <li>
+                            <span class="list-label">{{ employment }}</span>
+                            <span class="list-value">{{ count }}</span>
+                            <div class="list-bar">
+                                <div class="list-progress" style="width: {{ (count / total_alive * 100)|round }}%"></div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
 
-        <!-- Vital Statistics -->
-        <h2>Vital Statistics</h2>
-        <p>Deaths This Year: {{ deaths_this_year }}</p>
-        <p>Births This Year: {{ births_this_year }}</p>
+            <!-- Education Levels -->
+            <div class="data-section">
+                <h3 class="section-title">
+                    <i class="fas fa-graduation-cap"></i> Education Levels
+                </h3>
+                <div class="list-container">
+                    <ul class="data-list">
+                        {% for level, count in education_data %}
+                        <li>
+                            <span class="list-label">{{ level }}</span>
+                            <span class="list-value">{{ count }}</span>
+                            <div class="list-bar">
+                                <div class="list-progress" style="width: {{ (count / total_alive * 100)|round }}%"></div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
 
+            <!-- Vital Statistics -->
+            <div class="stats-row">
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-baby"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Births This Year</h3>
+                        <p class="stat-value">{{ births_this_year }}</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card danger">
+                    <div class="stat-icon">
+                        <i class="fas fa-cross"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>Deaths This Year</h3>
+                        <p class="stat-value">{{ deaths_this_year }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

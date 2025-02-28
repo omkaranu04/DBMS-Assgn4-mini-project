@@ -1,21 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Health Data</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Data - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/health.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Health Data</h1>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
 
-        <!-- Disease-Specific Count Chart -->
-        <h2>Disease-Specific Count This Month:</h2>
-        <ul>
-            {% for disease, count in disease_data %}
-            <li>{{ disease }}: {{ count }}</li>
-            {% endfor %}
-        </ul>
+    <div class="main-content">
+        <div class="health-container">
+            <div class="page-title">
+                <h2>Health Data</h2>
+                <p class="subtitle">Village health statistics and disease monitoring information</p>
+            </div>
 
+            <!-- Disease Statistics Dashboard -->
+            <div class="health-dashboard">
+                <div class="dashboard-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-heartbeat"></i> Disease-Specific Count This Year
+                    </h3>
+                </div>
+                
+                {% if disease_data %}
+                <div class="disease-grid">
+                    {% for disease, count in disease_data %}
+                    <div class="disease-card">
+                        <div class="disease-icon">
+                            <i class="fas fa-virus"></i>
+                        </div>
+                        <div class="disease-details">
+                            <h4>{{ disease }}</h4>
+                            <p class="disease-count">{{ count }} cases</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Disease Bar Chart -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Disease Distribution</h3>
+                    <div class="bar-chart">
+                        {% for disease, count in disease_data %}
+                        <div class="chart-item">
+                            <div class="chart-label">{{ disease }}</div>
+                            <div class="chart-bar-container">
+                                <div class="chart-bar" style="width: {{ (count / disease_data|map(attribute=1)|list|max * 100) if disease_data|map(attribute=1)|list|max > 0 else 0 }}%">
+                                    <span class="chart-value">{{ count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-data">
+                    <i class="fas fa-clipboard-check"></i>
+                    <p>No disease cases reported this month.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Health Tips Section -->
+            <div class="health-tips">
+                <h3 class="section-title">
+                    <i class="fas fa-notes-medical"></i> Health Tips
+                </h3>
+                <div class="tips-container">
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-hand-sparkles"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>Maintain Hygiene</h4>
+                            <p>Wash hands regularly with soap and water for at least 20 seconds.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-walking"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>Stay Active</h4>
+                            <p>Aim for at least 30 minutes of physical activity every day.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tip-card">
+                        <div class="tip-icon">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <div class="tip-content">
+                            <h4>Healthy Diet</h4>
+                            <p>Eat a balanced diet rich in fruits, vegetables, and whole grains.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

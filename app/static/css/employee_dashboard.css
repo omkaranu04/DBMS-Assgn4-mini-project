@@ -1,0 +1,268 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.2em;
+    max-width: 60%;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styling */
+.btn {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.7em;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px 40px;
+    box-sizing: border-box;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* Page Title */
+.page-title {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.page-title h2 {
+    color: #0056b3;
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.subtitle {
+    color: #6c757d;
+    margin: 0;
+    font-size: 1.1em;
+}
+
+/* Section Title */
+.section-title {
+    color: #0056b3;
+    margin: 20px 0;
+    font-size: 1.4em;
+    border-bottom: 2px solid #e1e4e8;
+    padding-bottom: 10px;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* Dashboard Card */
+.dashboard-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+    background-color: #f0f2f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-size: 2em;
+    color: #0056b3;
+    min-width: 80px;
+}
+
+.card-content {
+    padding: 15px;
+    flex: 1;
+}
+
+.card-content h4 {
+    color: #0056b3;
+    margin: 0 0 8px 0;
+    font-size: 1.1em;
+}
+
+.card-content p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+/* Icon Colors */
+.dashboard-card:nth-child(1) .card-icon {
+    color: #28a745; /* Citizens - Green */
+}
+
+.dashboard-card:nth-child(2) .card-icon {
+    color: #fd7e14; /* Certificates - Orange */
+}
+
+.dashboard-card:nth-child(3) .card-icon {
+    color: #e83e8c; /* Welfare - Pink */
+}
+
+.dashboard-card:nth-child(4) .card-icon {
+    color: #6f42c1; /* Agriculture - Purple */
+}
+
+.dashboard-card:nth-child(5) .card-icon {
+    color: #dc3545; /* Health - Red */
+}
+
+.dashboard-card:nth-child(6) .card-icon {
+    color: #20c997; /* Taxation - Teal */
+}
+
+.dashboard-card:nth-child(7) .card-icon {
+    color: #0056b3; /* Meetings - Blue */
+}
+
+.dashboard-card:nth-child(8) .card-icon {
+    color: #ffc107; /* Complaints - Yellow */
+}
+
+.dashboard-card:nth-child(9) .card-icon {
+    color: #6c757d; /* Resources - Gray */
+}
+
+.dashboard-card:nth-child(10) .card-icon {
+    color: #17a2b8; /* Government - Cyan */
+}
+
+.dashboard-card:nth-child(11) .card-icon {
+    color: #e83e8c; /* Avail Welfare - Pink */
+}
+
+.dashboard-card:nth-child(12) .card-icon {
+    color: #343a40; /* Death Certificate - Dark */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1em;
+        max-width: 50%;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.65em;
+    }
+    
+    .page-title h2 {
+        font-size: 1.6em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .card-icon {
+        padding: 15px;
+        font-size: 1.5em;
+        min-width: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    header h1 {
+        margin-bottom: 10px;
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .main-content {
+        padding-top: 130px;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-card {
+        max-width: 100%;
+    }
+}

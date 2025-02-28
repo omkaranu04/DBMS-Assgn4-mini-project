@@ -3,20 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Government Official Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Government Official Dashboard - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/govt_official_dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Government Official Dashboard</h1>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+        </div>
+    </header>
 
-        <!-- Buttons for different sections -->
-        <button onclick="location.href='{{ url_for('main.census') }}'">Census</button>
-        <button onclick="location.href='{{ url_for('main.taxation') }}'">Taxation</button>
-        <button onclick="location.href='{{ url_for('main.health') }}'">Health</button>
-        <button onclick="location.href='{{ url_for('main.welfare_schemes') }}'">Welfare Schemes</button>
-        <button onclick="location.href='{{ url_for('main.agriculture_data') }}'">Agriculture Data</button>
-        <button onclick="location.href='{{ url_for('main.institutions') }}'">Institutions</button>
+    <div class="main-content">
+        <div class="dashboard-container">
+            <div class="page-title">
+                <h2>Government Official Dashboard</h2>
+                <p class="subtitle">Access and monitor village data for government oversight and planning.</p>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card" onclick="location.href='{{ url_for('main.census') }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Census</h4>
+                        <p>View population statistics, demographics, and household data</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{{ url_for('main.taxation') }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Taxation</h4>
+                        <p>Monitor tax collection, revenue generation, and compliance</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{{ url_for('main.health') }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Health</h4>
+                        <p>Access health statistics, vaccination records, and medical facilities data</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{{ url_for('main.welfare_schemes') }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Welfare Schemes</h4>
+                        <p>Track implementation of government welfare programs and beneficiaries</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{{ url_for('main.agriculture_data') }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-tractor"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Agriculture Data</h4>
+                        <p>Monitor crop production, land usage, and agricultural resources</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="location.href='{{ url_for('main.institutions') }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-school"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Institutions</h4>
+                        <p>View data on schools, healthcare centers, and other public institutions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

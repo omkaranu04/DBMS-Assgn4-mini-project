@@ -1,0 +1,311 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.2em;
+    max-width: 60%;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styling */
+.btn {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.7em;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px 40px;
+    box-sizing: border-box;
+}
+
+.welfare-container {
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* Page Title */
+.page-title {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.page-title h2 {
+    color: #0056b3;
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.subtitle {
+    color: #6c757d;
+    margin: 0;
+    font-size: 1.1em;
+}
+
+/* Welfare Summary */
+.welfare-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.summary-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 250px;
+}
+
+.summary-icon {
+    font-size: 2.5em;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #e83e8c;
+    color: white;
+}
+
+.summary-content {
+    flex: 1;
+}
+
+.summary-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1em;
+    color: #495057;
+}
+
+.summary-value {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 0;
+    color: #e83e8c;
+}
+
+/* Schemes Section */
+.schemes-section {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.section-title {
+    color: #0056b3;
+    margin: 0 0 20px 0;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 10px;
+    color: #e83e8c;
+}
+
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.schemes-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
+}
+
+.schemes-table th {
+    background-color: #f0f2f5;
+    color: #0056b3;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #e1e4e8;
+}
+
+.schemes-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.schemes-table tr:last-child td {
+    border-bottom: none;
+}
+
+.schemes-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.budget-cell {
+    font-weight: bold;
+    color: #e83e8c;
+}
+
+/* Empty Message */
+.empty-message {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Scheme Cards (for mobile view) */
+.schemes-cards {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.scheme-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.scheme-header {
+    background-color: #f0f2f5;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scheme-header h4 {
+    margin: 0;
+    color: #0056b3;
+}
+
+.scheme-id {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.scheme-body {
+    padding: 15px;
+}
+
+.scheme-description {
+    margin: 0 0 15px 0;
+    color: #495057;
+}
+
+.scheme-budget {
+    font-weight: bold;
+    color: #e83e8c;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1em;
+        max-width: 50%;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.65em;
+    }
+    
+    .page-title h2 {
+        font-size: 1.6em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    .summary-card {
+        min-width: 100%;
+    }
+    
+    .schemes-section {
+        display: none;
+    }
+    
+    .schemes-cards {
+        display: flex;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    header h1 {
+        margin-bottom: 10px;
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .main-content {
+        padding-top: 130px;
+    }
+}

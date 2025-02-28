@@ -544,6 +544,10 @@ def taxation():
                SUM(Tax_Amount) AS total_tax 
         FROM Taxation
     """)).fetchone()
+    
+    # print("Not Paid Tax Count:", not_paid_tax_count)
+    # print("People Not Paid Tax:", people_not_paid_tax)
+    # print("Tax Summary:", tax_summary)
 
     return render_template(
         'taxation.html',
@@ -554,12 +558,11 @@ def taxation():
 
 @main_bp.route('/health', methods=['GET'])
 def health():
-    # Disease-specific count chart for this month
+    # Disease-specific count chart for this year
     disease_data = db.session.execute(text("""
         SELECT Medical_Condition, COUNT(*) 
         FROM Health_CheckUp 
-        WHERE EXTRACT(MONTH FROM Date_of_Visit) = EXTRACT(MONTH FROM CURRENT_DATE)
-          AND EXTRACT(YEAR FROM Date_of_Visit) = EXTRACT(YEAR FROM CURRENT_DATE)
+        WHERE EXTRACT(YEAR FROM Date_of_Visit) = EXTRACT(YEAR FROM CURRENT_DATE)
         GROUP BY Medical_Condition
     """)).fetchall()
 
@@ -567,14 +570,18 @@ def health():
 
 @main_bp.route('/welfare_schemes', methods=['GET'])
 def welfare_schemes():
+    # Fetch all welfare schemes
     schemes = db.session.execute(text("SELECT * FROM Welfare_Schemes")).fetchall()
     
-    return render_template('welfare_schemes.html', schemes=schemes)
+    # Fetch the total budget
+    total_budget = db.session.execute(text("SELECT SUM(budget) FROM Welfare_Schemes")).scalar() or 0
+
+    return render_template('welfare_schemes.html', schemes=schemes, total_budget=total_budget)
 
 @main_bp.route('/agriculture_data', methods=['GET'])
 def agriculture_data():
     # Total land area under cultivation
-    total_land_area = db.session.execute(text("SELECT SUM(Area_in_Acres) FROM Agricultural_Land")).scalar()
+    total_land_area = db.session.execute(text("SELECT SUM(Area_in_Acres) FROM Agricultural_Land")).scalar() or 0
 
     # Crop name - land area chart data
     crop_data = db.session.execute(text("""
@@ -591,13 +598,26 @@ def agriculture_data():
 
 @main_bp.route('/institutions', methods=['GET'])
 def institutions():
+    # Get counts by institution type
     institution_counts = db.session.execute(text("""
        SELECT Institute_Type, COUNT(*)
        FROM Government_Institutions 
        GROUP BY Institute_Type;
     """)).fetchall()
     
-    return render_template('institutions.html', institution_counts=institution_counts)
+    # Get detailed institution data
+    institutions_by_type = {}
+    for inst_type, _ in institution_counts:
+        institutions_by_type[inst_type] = db.session.execute(text("""
+            SELECT * FROM Government_Institutions 
+            WHERE Institute_Type = :type
+        """), {"type": inst_type}).fetchall()
+    
+    return render_template(
+        'institutions.html', 
+        institution_counts=institution_counts,
+        institutions_by_type=institutions_by_type
+    )
 
 
 

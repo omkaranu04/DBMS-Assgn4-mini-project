@@ -1,0 +1,363 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.2em;
+    max-width: 60%;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styling */
+.btn {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.7em;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px 40px;
+    box-sizing: border-box;
+}
+
+.health-container {
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* Page Title */
+.page-title {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.page-title h2 {
+    color: #0056b3;
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.subtitle {
+    color: #6c757d;
+    margin: 0;
+    font-size: 1.1em;
+}
+
+/* Health Dashboard */
+.health-dashboard {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.dashboard-header {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    color: #0056b3;
+    margin: 0;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 10px;
+    color: #dc3545;
+}
+
+/* Disease Grid */
+.disease-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.disease-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.disease-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.disease-icon {
+    background-color: #dc3545;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    margin-right: 15px;
+}
+
+.disease-details {
+    flex: 1;
+}
+
+.disease-details h4 {
+    margin: 0 0 5px 0;
+    color: #495057;
+}
+
+.disease-count {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #dc3545;
+    margin: 0;
+}
+
+/* Chart Container */
+.chart-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.chart-title {
+    color: #0056b3;
+    margin: 0 0 20px 0;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.chart-item {
+    display: flex;
+    align-items: center;
+}
+
+.chart-label {
+    width: 120px;
+    font-weight: 600;
+    color: #495057;
+    padding-right: 15px;
+}
+
+.chart-bar-container {
+    flex: 1;
+    height: 25px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.chart-bar {
+    height: 100%;
+    background-color: #dc3545;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    color: white;
+    font-weight: bold;
+    transition: width 1s ease;
+}
+
+.chart-value {
+    font-size: 0.9em;
+}
+
+/* Empty Data */
+.empty-data {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+}
+
+.empty-data i {
+    font-size: 3em;
+    margin-bottom: 15px;
+    color: #28a745;
+}
+
+.empty-data p {
+    font-size: 1.1em;
+    margin: 0;
+}
+
+/* Health Tips Section */
+.health-tips {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.tips-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.tip-card {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.tip-card:hover {
+    transform: translateY(-3px);
+}
+
+.tip-icon {
+    background-color: #28a745;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    margin-right: 15px;
+}
+
+.tip-content {
+    flex: 1;
+}
+
+.tip-content h4 {
+    margin: 0 0 5px 0;
+    color: #28a745;
+}
+
+.tip-content p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1em;
+        max-width: 50%;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.65em;
+    }
+    
+    .page-title h2 {
+        font-size: 1.6em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    .disease-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-label {
+        width: 100px;
+    }
+    
+    .tips-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    header h1 {
+        margin-bottom: 10px;
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .main-content {
+        padding-top: 130px;
+    }
+    
+    .chart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .chart-label {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}

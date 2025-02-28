@@ -1,24 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Agriculture Data</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agriculture Data - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agriculture_data.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Agriculture Data</h1>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
 
-        <!-- Total Land Area -->
-        <p>Total Land Area Under Cultivation: {{ total_land_area }} acres</p>
+    <div class="main-content">
+        <div class="agriculture-container">
+            <div class="page-title">
+                <h2>Agriculture Data</h2>
+                <p class="subtitle">Cultivation statistics and crop distribution information for the village</p>
+            </div>
 
-        <!-- Crop Name - Land Area Chart -->
-        <h2>Crop Name - Land Area Chart:</h2>
-        <ul>
-            {% for crop, area in crop_data %}
-            <li>{{ crop }}: {{ area }} acres</li>
-            {% endfor %}
-        </ul>
+            <!-- Agriculture Summary -->
+            <div class="agriculture-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-tractor"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Land Under Cultivation</h3>
+                        <p class="summary-value">{{ total_land_area }} acres</p>
+                    </div>
+                </div>
+                
+                {% if crop_data %}
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Number of Crops</h3>
+                        <p class="summary-value">{{ crop_data|length }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
 
+            <!-- Crop Distribution -->
+            {% if crop_data %}
+            <div class="crop-distribution">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-pie"></i> Crop Distribution
+                </h3>
+                
+                <div class="distribution-grid">
+                    {% for crop in crop_data %}
+                    <div class="crop-card">
+                        <div class="crop-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="crop-details">
+                            <h4>{{ crop[0] }}</h4>  <!-- Crop Type -->
+                            <p class="crop-area">{{ crop[1] }} acres</p>  <!-- Area -->
+                            <div class="progress-bar">
+                                <div class="progress" style="width: {{ (crop[1] / total_land_area * 100)|round }}%"></div>
+                            </div>
+                            <p class="crop-percentage">{{ (crop[1] / total_land_area * 100)|round }}% of total area</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Crop Bar Chart -->
+            <div class="chart-section">
+                <h3 class="section-title">
+                    <i class="fas fa-chart-bar"></i> Crop Area Comparison
+                </h3>
+                
+                <div class="bar-chart">
+                    {% for crop in crop_data %}
+                    <div class="chart-item">
+                        <div class="chart-label">{{ crop[0] }}</div>  <!-- Crop Type -->
+                        <div class="chart-bar-container">
+                            <div class="chart-bar" style="width: {{ (crop[1] / (crop_data|map(attribute=1)|list|max) * 100) if crop_data|map(attribute=1)|list|max > 0 else 0 }}%">
+                                <span class="chart-value">{{ crop[1] }} acres</span>  <!-- Area -->
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-data">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>No crop data available at this time.</p>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>
