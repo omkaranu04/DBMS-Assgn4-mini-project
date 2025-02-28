@@ -73,11 +73,7 @@ def panchayat_employees():
     if 'user' not in session:
         return redirect(url_for('main.login'))
 
-<<<<<<< HEAD
-        # Custom sorting to display Sarpanch first, Naib Sarpanch second, and others afterwards
-=======
     # Custom sorting to display Sarpanch first, Naib Sarpanch second, and others afterwards
->>>>>>> 0eaabd59c6b2e5be6b7ae8cd9c6c04aafa9b597f
     employees = db.session.execute(
         text("""
             SELECT * FROM Panchayat_Users
