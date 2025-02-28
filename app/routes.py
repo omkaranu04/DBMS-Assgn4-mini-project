@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session, make_response
 from .forms import LoginForm, PanchayatEmployeeForm, GovernmentOfficialForm
 from .models import SystemUsersTop, PanchayatUsers, Citizens, Certificates, Welfare_Schemes, Agricultural_Land, Health_CheckUp, Taxation, Meetings, Complaints, Household, Resources, Government_Institutions
-from sqlalchemy import text
+from sqlalchemy import text, true
 from . import db
 from datetime import datetime
+import re
 
 main_bp = Blueprint('main', __name__)
 
@@ -640,6 +641,8 @@ def manage_citizens():
 
 @main_bp.route('/add_citizen', methods=['GET', 'POST'])
 def add_citizen():
+    form_data = request.form.to_dict() if request.method == 'POST' else {}
+    
     if request.method == 'POST':
         # Get and strip form data
         aadhar_no = request.form.get('aadhar_no', '').strip()
@@ -657,43 +660,54 @@ def add_citizen():
         # Validate required fields
         if not all([aadhar_no, name, dob_str, gender, house_no, education_level, income_str, employment]):
             flash("All required fields must be filled!", "danger")
-            return redirect(url_for('main.add_citizen'))
+            return render_template('add_citizen.html', form_data=form_data)
 
         # Validate Aadhar Number (12 digits)
         if len(aadhar_no) != 12 or not aadhar_no.isdigit():
-            flash("Aadhar number must be exactly 12 digits!", "danger")
-            return redirect(url_for('main.add_citizen'))
+            flash("Aadhar number must be exactly 12 digits!", "aadhar_no_error")
+            return render_template('add_citizen.html', form_data=form_data)
+
+        # Check if Citizen Already Exists
+        existing_citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if existing_citizen:
+            flash("Citizen with this Aadhar number already exists!", "aadhar_no_error")
+            return render_template('add_citizen.html', form_data=form_data)
 
         # Validate Date of Birth (YYYY-MM-DD format)
         try:
             dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
         except ValueError:
             flash("Invalid date format! Use YYYY-MM-DD.", "danger")
-            return redirect(url_for('main.add_citizen'))
+            return render_template('add_citizen.html', form_data=form_data)
 
         # Convert House Number to Integer
         if not house_no.isdigit():
-            flash("House number must be a number!", "danger")
-            return redirect(url_for('main.add_citizen'))
+            flash("House number must be a number!", "house_no_error")
+            return render_template('add_citizen.html', form_data=form_data)
         house_no = int(house_no)
+
+        # Check if Household Number exists
+        household = db.session.query(Household).filter_by(house_no=house_no).first()
+        if not household:
+            flash("Household number does not exist!", "house_no_error")
+            return render_template('add_citizen.html', form_data=form_data)
+        
+        # Check if email is '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if email_id and not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email_id):
+            flash("Invalid email address!", "email_id_error")
+            return render_template('add_citizen.html', form_data=form_data)        
 
         # Convert Income to Numeric
         try:
             income = int(income_str)
         except ValueError:
             flash("Income must be a valid number!", "danger")
-            return redirect(url_for('main.add_citizen'))
+            return render_template('add_citizen.html', form_data=form_data)
 
         # Validate Phone Number
-        if phone_no and (not phone_no.isdigit() or len(phone_no) > 15):
-            flash("Invalid phone number! It must contain only numbers and be at most 15 digits.", "danger")
-            return redirect(url_for('main.add_citizen'))
-
-        # Check if Citizen Already Exists
-        existing_citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
-        if existing_citizen:
-            flash("Citizen with this Aadhar number already exists!", "danger")
-            return redirect(url_for('main.add_citizen'))
+        if phone_no and (not phone_no.isdigit() or len(phone_no) != 10 or phone_no[0] not in '69'):
+            flash("Invalid phone number! It must contain only numbers, be exactly 10 digits, and start with 6 or 9.", "phone_no_error")
+            return render_template('add_citizen.html', form_data=form_data)
 
         # Create New Citizen Entry
         new_citizen = Citizens(
@@ -734,15 +748,14 @@ def add_citizen():
         # Commit Changes
         try:
             db.session.commit()
-            flash("Citizen added successfully with a birth certificate!", "success")
+            # flash("Citizen added successfully with a birth certificate!", "success")
             return redirect(url_for('main.manage_citizens'))
         except Exception as e:
             db.session.rollback()
             flash(f"Error adding citizen: {str(e)}", "danger")
-            return redirect(url_for('main.add_citizen'))
+            return render_template('add_citizen.html', form_data=form_data)
 
-    return render_template('add_citizen.html')
-
+    return render_template('add_citizen.html', form_data=form_data)
 @main_bp.route('/delete_citizen', methods=['GET', 'POST'])
 def delete_citizen():
     if 'user' not in session:
@@ -863,11 +876,11 @@ def modify_citizen_submit(aadhar_no):
         citizen.education_level = request.form.get('education_level', '').strip()
         citizen.income = request.form.get('income', '').strip()
         citizen.employment = request.form.get('employment', '').strip()
-        citizen.is_alive = 'is_alive' in request.form
+        citizen.is_alive = citizen.is_alive  # Keep the same    
         
         db.session.commit()
         
-        flash("Citizen information updated successfully!", "success")
+        # flash("Citizen information updated successfully!", "success")
         return redirect(url_for('main.manage_citizens'))
     
     except Exception as e:
@@ -1900,7 +1913,7 @@ def submit_complaint():
         )
         db.session.commit()
         
-        flash("Complaint submitted successfully!", "success")
+        # flash("Complaint submitted successfully!", "success")
     except Exception as e:
         db.session.rollback()
         flash(f"An error occurred: {str(e)}", "danger")
