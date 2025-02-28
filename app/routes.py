@@ -111,16 +111,20 @@ def add_edit_panchayat_employee(username=None):
         form_password = request.form.get('password', '').strip()
         form_designation = request.form.get('designation', '').strip()
 
-        # Aadhar number remains unchanged
-        form_aadhar_no = request.form.get('aadhar_no', form_aadhar_no).strip()
+        # Aadhar number remains unchanged during edit
+        if not username:  # Only set aadhar number during addition
+            form_aadhar_no = request.form.get('aadhar_no', '').strip()
 
         # Validation checks
         if not form_username or not form_designation:
             flash('Username and designation are required!', 'danger')
+        elif not username and not form_password:  # Password is mandatory when adding a new user
+            flash('Password is required when adding a new Panchayat Employee!', 'danger')
         else:
             if username:  # Editing existing employee
+                # Use old password if new password is blank
                 update_password = form_password if form_password else old_password
-                password_message = "Password kept the same!" if not form_password else "Password updated successfully!"
+                password_message = "Password updated successfully!" if form_password else "Password kept the same!"
 
                 db.session.execute(
                     text("""
@@ -159,9 +163,9 @@ def add_edit_panchayat_employee(username=None):
     # Form data for rendering
     form_data = {
         'username': form_username,
-        'password': "",  # Always keep blank
+        'password': "",  # Always keep blank for security reasons
         'designation': form_designation,
-        'aadhar_no': form_aadhar_no  # This should be disabled in the form
+        'aadhar_no': form_aadhar_no  # This should be disabled in the HTML for edits
     }
 
     return render_template('panchayat_employees_form.html', form_data=form_data, username=username)

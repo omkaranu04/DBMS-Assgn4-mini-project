@@ -12,22 +12,22 @@
             
             <div class="form-group">
                 <label for="username">Username:</label>
-                <input type="text" id="username" name="username" class="form-control" value="{{ form_data.username }}">
+                <input type="text" id="username" name="username" class="form-control" value="{{ form_data.username }}" required>
             </div>
             
             <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" class="form-control" value="{{ form_data.password }}">
+                <input type="password" id="password" name="password" class="form-control" value="{{ form_data.password }}" {% if username %}placeholder="Leave blank to keep old password"{% else %}required{% endif %}>
             </div>
             
             <div class="form-group">
                 <label for="aadhar_no">Aadhar Number:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" value="{{ form_data.aadhar_no }}">
+                <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" value="{{ form_data.aadhar_no }}" {% if username %}disabled{% endif %}>
             </div>
             
             <div class="form-group">
                 <label for="designation">Designation:</label>
-                <select id="designation" name="designation" class="form-control">
+                <select id="designation" name="designation" class="form-control" required>
                     <option value="Sarpanch" {% if form_data.designation == "Sarpanch" %}selected{% endif %}>Sarpanch</option>
                     <option value="Naib Sarpanch" {% if form_data.designation == "Naib Sarpanch" %}selected{% endif %}>Naib Sarpanch</option>
                     <option value="Panchayat Secretary" {% if form_data.designation == "Panchayat Secretary" %}selected{% endif %}>Panchayat Secretary</option>
