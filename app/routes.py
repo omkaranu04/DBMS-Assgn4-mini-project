@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, make_response
 from .forms import LoginForm, PanchayatEmployeeForm, GovernmentOfficialForm
 from .models import SystemUsersTop, PanchayatUsers, Citizens, Certificates, Welfare_Schemes, Agricultural_Land, Health_CheckUp, Taxation, Meetings, Complaints, Household, Resources, Government_Institutions
 from sqlalchemy import text
@@ -993,159 +993,599 @@ def delete_certificate_confirm(certificate_id):
 
 @main_bp.route('/manage_welfare_schemes', methods=['GET', 'POST'])
 def manage_welfare_schemes():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
     if request.method == 'POST':
         action = request.form.get('action')
-        if action == 'add':
-            # Add welfare scheme logic
-            new_scheme = Welfare_Schemes(
-                scheme_type=request.form.get('scheme_type'),
-                budget=request.form.get('budget'),
-                scheme_description=request.form.get('description')
-            )
-            db.session.add(new_scheme)
-            db.session.commit()
-            flash("Welfare Scheme added successfully!", "success")
-
-        elif action == 'delete':
+        
+        if action == 'delete':
             # Delete welfare scheme logic
             scheme_id = request.form.get('scheme_id')
             scheme = Welfare_Schemes.query.filter_by(scheme_id=scheme_id).first()
+            
             if scheme:
-                db.session.delete(scheme)
-                db.session.commit()
-                flash("Welfare Scheme deleted successfully!", "success")
+                try:
+                    # First delete any avails records that reference this scheme
+                    db.session.execute(
+                        text("DELETE FROM Avails WHERE Scheme_ID = :scheme_id"),
+                        {'scheme_id': scheme_id}
+                    )
+                    
+                    # Then delete the scheme
+                    db.session.delete(scheme)
+                    db.session.commit()
+                    flash("Welfare Scheme deleted successfully!", "success")
+                except Exception as e:
+                    db.session.rollback()
+                    flash(f"Error deleting scheme: {str(e)}", "danger")
             else:
                 flash("Welfare Scheme not found!", "danger")
-
-        elif action == 'modify':
-            # Modify welfare scheme logic
-            scheme_id = request.form.get('scheme_id')
-            scheme = Welfare_Schemes.query.filter_by(scheme_id=scheme_id).first()
-            if scheme:
-                scheme.scheme_type = request.form.get('new_scheme_type') or scheme.scheme_type
-                scheme.budget = request.form.get('new_budget') or scheme.budget
-                scheme.scheme_description = request.form.get('new_description') or scheme.scheme_description
-                db.session.commit()
-                flash("Welfare Scheme modified successfully!", "success")
-            else:
-                flash("Welfare Scheme not found!", "danger")
-
-    schemes_list = Welfare_Schemes.query.all()
+    
+    # Get all welfare schemes
+    schemes_list = Welfare_Schemes.query.order_by(Welfare_Schemes.scheme_id).all()
     return render_template('manage_welfare_schemes.html', schemes=schemes_list)
+
+@main_bp.route('/add_welfare_scheme', methods=['GET', 'POST'])
+def add_welfare_scheme():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    if request.method == 'POST':
+        scheme_type = request.form.get('scheme_type', '').strip()
+        budget = request.form.get('budget', '').strip()
+        description = request.form.get('description', '').strip()
+        
+        # Validate inputs
+        if not all([scheme_type, budget, description]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.add_welfare_scheme'))
+        
+        try:
+            # Create new welfare scheme
+            new_scheme = Welfare_Schemes(
+                scheme_type=scheme_type,
+                budget=budget,
+                scheme_description=description
+            )
+            
+            db.session.add(new_scheme)
+            db.session.commit()
+            
+            flash("Welfare Scheme added successfully!", "success")
+            return redirect(url_for('main.manage_welfare_schemes'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error adding welfare scheme: {str(e)}", "danger")
+            return redirect(url_for('main.add_welfare_scheme'))
+    
+    return render_template('add_welfare_scheme.html')
+
+@main_bp.route('/modify_welfare_scheme/<int:scheme_id>', methods=['GET'])
+def modify_welfare_scheme(scheme_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    scheme = Welfare_Schemes.query.get(scheme_id)
+    if not scheme:
+        flash("Welfare Scheme not found!", "danger")
+        return redirect(url_for('main.manage_welfare_schemes'))
+    
+    return render_template('modify_welfare_scheme.html', scheme=scheme)
+
+@main_bp.route('/modify_welfare_scheme_submit/<int:scheme_id>', methods=['POST'])
+def modify_welfare_scheme_submit(scheme_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    scheme = Welfare_Schemes.query.get(scheme_id)
+    if not scheme:
+        flash("Welfare Scheme not found!", "danger")
+        return redirect(url_for('main.manage_welfare_schemes'))
+    
+    try:
+        scheme_type = request.form.get('scheme_type', '').strip()
+        budget = request.form.get('budget', '').strip()
+        description = request.form.get('description', '').strip()
+        
+        if not all([scheme_type, budget, description]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.modify_welfare_scheme', scheme_id=scheme_id))
+        
+        # Update scheme
+        scheme.scheme_type = scheme_type
+        scheme.budget = budget
+        scheme.scheme_description = description
+        
+        db.session.commit()
+        
+        flash("Welfare Scheme updated successfully!", "success")
+        return redirect(url_for('main.manage_welfare_schemes'))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error updating welfare scheme: {str(e)}", "danger")
+        return redirect(url_for('main.modify_welfare_scheme', scheme_id=scheme_id))
 
 @main_bp.route('/manage_agriculture_land', methods=['GET', 'POST'])
 def manage_agriculture_land():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+        
     if request.method == 'POST':
         action = request.form.get('action')
-        if action == 'add':
-            # Add agriculture land logic
-            new_land = Agricultural_Land(
-                aadhar_no=request.form.get('aadhar_no'),
-                area_in_acres=request.form.get('area_in_acres'),
-                crop_type=request.form.get('crop_type'),
-                soil_type=request.form.get('soil_type')
-            )
-            db.session.add(new_land)
-            db.session.commit()
-            flash("Agriculture Land added successfully!", "success")
-
-        elif action == 'delete':
+        
+        if action == 'delete':
             # Delete agriculture land logic
             land_id = request.form.get('land_id')
             land = Agricultural_Land.query.filter_by(land_id=land_id).first()
+            
             if land:
-                db.session.delete(land)
-                db.session.commit()
-                flash("Agriculture Land deleted successfully!", "success")
+                try:
+                    db.session.delete(land)
+                    db.session.commit()
+                    flash("Agricultural land record deleted successfully!", "success")
+                except Exception as e:
+                    db.session.rollback()
+                    flash(f"Error deleting land record: {str(e)}", "danger")
             else:
-                flash("Agriculture Land not found!", "danger")
-
-        elif action == 'modify':
-            # Modify agriculture land logic
-            land_id = request.form.get('land_id')
-            land = Agricultural_Land.query.filter_by(land_id=land_id).first()
-            if land:
-                land.area_in_acres = request.form.get('area_in_acres') or land.area_in_acres
-                land.crop_type = request.form.get('crop_type') or land.crop_type
-                land.soil_type = request.form.get('soil_type') or land.soil_type
-                db.session.commit()
-                flash("Agriculture Land modified successfully!", "success")
-            else:
-                flash("Agriculture Land not found!", "danger")
-
-    lands_list = Agricultural_Land.query.all()
+                flash("Agricultural land record not found!", "danger")
+    
+    # Join with Citizens table to get owner names
+    lands_data = db.session.execute(
+        text("""
+        SELECT al.Land_ID, al.Aadhar_No, c.Name, al.Area_in_Acres, al.Crop_Type, al.Soil_Type
+        FROM Agricultural_Land al
+        JOIN Citizens c ON al.Aadhar_No = c.Aadhar_No
+        ORDER BY al.Land_ID
+        """)
+    ).fetchall()
+    
+    # Convert to list of dictionaries for template
+    lands_list = []
+    for land in lands_data:
+        lands_list.append({
+            'land_id': land[0],
+            'aadhar_no': land[1],
+            'citizen_name': land[2],
+            'area_in_acres': land[3],
+            'crop_type': land[4],
+            'soil_type': land[5]
+        })
+    
     return render_template('manage_agriculture_land.html', lands=lands_list)
 
-@main_bp.route('/manage_health_data', methods=['GET', 'POST'])
+@main_bp.route('/add_agriculture_land', methods=['GET', 'POST'])
+def add_agriculture_land():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    if request.method == 'POST':
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        area_in_acres = request.form.get('area_in_acres', '').strip()
+        crop_type = request.form.get('crop_type', '').strip()
+        soil_type = request.form.get('soil_type', '').strip()
+        
+        # Validate inputs
+        if not all([aadhar_no, area_in_acres, crop_type, soil_type]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.add_agriculture_land'))
+        
+        # Check if citizen exists
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar number does not exist!", "danger")
+            return redirect(url_for('main.add_agriculture_land'))
+        
+        try:
+            # Create new agricultural land record
+            new_land = Agricultural_Land(
+                aadhar_no=aadhar_no,
+                area_in_acres=area_in_acres,
+                crop_type=crop_type,
+                soil_type=soil_type
+            )
+            
+            db.session.add(new_land)
+            db.session.commit()
+            
+            flash("Agricultural land added successfully!", "success")
+            return redirect(url_for('main.manage_agriculture_land'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error adding agricultural land: {str(e)}", "danger")
+            return redirect(url_for('main.add_agriculture_land'))
+    
+    return render_template('add_agriculture_land.html')
+
+@main_bp.route('/modify_agriculture_land/<int:land_id>', methods=['GET'])
+def modify_agriculture_land(land_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    land = Agricultural_Land.query.get(land_id)
+    if not land:
+        flash("Agricultural land record not found!", "danger")
+        return redirect(url_for('main.manage_agriculture_land'))
+    
+    citizen = Citizens.query.filter_by(aadhar_no=land.aadhar_no).first()
+    
+    return render_template('modify_agriculture_land.html', land=land, citizen=citizen)
+
+@main_bp.route('/modify_agriculture_land_submit/<int:land_id>', methods=['POST'])
+def modify_agriculture_land_submit(land_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    land = Agricultural_Land.query.get(land_id)
+    if not land:
+        flash("Agricultural land record not found!", "danger")
+        return redirect(url_for('main.manage_agriculture_land'))
+    
+    try:
+        area_in_acres = request.form.get('area_in_acres', '').strip()
+        crop_type = request.form.get('crop_type', '').strip()
+        soil_type = request.form.get('soil_type', '').strip()
+        
+        if not all([area_in_acres, crop_type, soil_type]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.modify_agriculture_land', land_id=land_id))
+        
+        # Update land record
+        land.area_in_acres = area_in_acres
+        land.crop_type = crop_type
+        land.soil_type = soil_type
+        
+        db.session.commit()
+        
+        flash("Agricultural land updated successfully!", "success")
+        return redirect(url_for('main.manage_agriculture_land'))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error updating agricultural land: {str(e)}", "danger")
+        return redirect(url_for('main.modify_agriculture_land', land_id=land_id))
+
+@main_bp.route('/manage_health_data', methods=['GET'])
 def manage_health_data():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    return render_template('manage_health_data.html')
+
+@main_bp.route('/add_health_data', methods=['GET', 'POST'])
+def add_health_data():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
     if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'add':
-            # Add health data logic
-            new_health_data = Health_CheckUp(
-                aadhar_no=request.form.get('aadhar_no'),
-                medical_condition=request.form.get('medical_condition'),
-                prescription=request.form.get('prescription'),
-                date_of_visit=request.form.get('date_of_visit')
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        medical_condition = request.form.get('medical_condition', '').strip()
+        prescription = request.form.get('prescription', '').strip()
+        date_of_visit = request.form.get('date_of_visit', '').strip()
+        
+        # Validate inputs
+        if not all([aadhar_no, medical_condition, prescription, date_of_visit]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.add_health_data'))
+        
+        # Check if citizen exists
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar number does not exist!", "danger")
+            return redirect(url_for('main.add_health_data'))
+        
+        try:
+            # Create new health record
+            new_record = Health_CheckUp(
+                aadhar_no=aadhar_no,
+                medical_condition=medical_condition,
+                prescription=prescription,
+                date_of_visit=date_of_visit
             )
-            db.session.add(new_health_data)
+            
+            db.session.add(new_record)
             db.session.commit()
-            flash("Health data added successfully!", "success")
+            
+            flash("Health record added successfully!", "success")
+            return redirect(url_for('main.manage_health_data'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error adding health record: {str(e)}", "danger")
+            return redirect(url_for('main.add_health_data'))
+    
+    return render_template('add_health_data.html')
 
-        elif action == 'delete':
-            # Delete health data logic
-            checkup_id = request.form.get('checkup_id')
-            health_data = Health_CheckUp.query.filter_by(checkup_id=checkup_id).first()
-            if health_data:
-                db.session.delete(health_data)
-                db.session.commit()
-                flash("Health data deleted successfully!", "success")
-            else:
-                flash("Health data not found!", "danger")
+@main_bp.route('/find_health_records', methods=['GET', 'POST'])
+def find_health_records():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    citizen = None
+    health_records = None
+    
+    if request.method == 'POST':
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        
+        if not aadhar_no:
+            flash("Aadhar number is required!", "danger")
+            return redirect(url_for('main.find_health_records'))
+        
+        # Find citizen
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar number does not exist!", "danger")
+            return redirect(url_for('main.find_health_records'))
+        
+        # Get health records for this citizen
+        health_records = Health_CheckUp.query.filter_by(aadhar_no=aadhar_no).order_by(Health_CheckUp.date_of_visit.desc()).all()
+    
+    return render_template('find_health_records.html', citizen=citizen, health_records=health_records)
 
-    health_list = Health_CheckUp.query.all()
-    return render_template('manage_health_data.html', health=health_list)
+@main_bp.route('/modify_health_record/<int:checkup_id>', methods=['GET'])
+def modify_health_record(checkup_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    record = Health_CheckUp.query.get(checkup_id)
+    if not record:
+        flash("Health record not found!", "danger")
+        return redirect(url_for('main.manage_health_data'))
+    
+    citizen = Citizens.query.filter_by(aadhar_no=record.aadhar_no).first()
+    
+    return render_template('modify_health_record.html', record=record, citizen=citizen)
 
-@main_bp.route('/manage_taxation_data', methods=['GET', 'POST'])
+@main_bp.route('/modify_health_record_submit/<int:checkup_id>', methods=['POST'])
+def modify_health_record_submit(checkup_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    record = Health_CheckUp.query.get(checkup_id)
+    if not record:
+        flash("Health record not found!", "danger")
+        return redirect(url_for('main.manage_health_data'))
+    
+    try:
+        medical_condition = request.form.get('medical_condition', '').strip()
+        prescription = request.form.get('prescription', '').strip()
+        date_of_visit = request.form.get('date_of_visit', '').strip()
+        
+        if not all([medical_condition, prescription, date_of_visit]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.modify_health_record', checkup_id=checkup_id))
+        
+        # Store the aadhar_no before updating the record
+        aadhar_no = record.aadhar_no
+        
+        # Update record
+        record.medical_condition = medical_condition
+        record.prescription = prescription
+        record.date_of_visit = date_of_visit
+        
+        db.session.commit()
+        
+        flash("Health record updated successfully!", "success")
+        
+        # Create a response with a form that auto-submits to find_health_records with the aadhar_no
+        response = make_response("""
+        <html>
+        <body>
+            <form id="redirectForm" method="POST" action="/find_health_records">
+                <input type="hidden" name="aadhar_no" value="{}">
+            </form>
+            <script>
+                document.getElementById('redirectForm').submit();
+            </script>
+        </body>
+        </html>
+        """.format(aadhar_no))
+        
+        return response
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error updating health record: {str(e)}", "danger")
+        return redirect(url_for('main.modify_health_record', checkup_id=checkup_id))
+
+@main_bp.route('/delete_health_record', methods=['POST'])
+def delete_health_record():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        checkup_id = request.form.get('checkup_id')
+        record = Health_CheckUp.query.get(checkup_id)
+        
+        if not record:
+            flash("Health record not found!", "danger")
+            return redirect(url_for('main.manage_health_data'))
+        
+        aadhar_no = record.aadhar_no
+        
+        db.session.delete(record)
+        db.session.commit()
+        
+        flash("Health record deleted successfully!", "success")
+        
+        # Redirect back to the same citizen's records
+        return redirect(url_for('main.find_health_records'))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting health record: {str(e)}", "danger")
+        return redirect(url_for('main.find_health_records'))
+
+@main_bp.route('/manage_taxation_data', methods=['GET'])
 def manage_taxation_data():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    return render_template('manage_taxation_data.html')
+
+@main_bp.route('/add_taxation_data', methods=['GET', 'POST'])
+def add_taxation_data():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
     if request.method == 'POST':
-        action = request.form.get('action')
-        if action == 'add':
-            # Add taxation data logic
-            new_tax = Taxation(
-                aadhar_no=request.form.get('aadhar_no'),
-                tax_amount=request.form.get('tax_amount'),
-                payment_status=bool(request.form.get('payment_status'))
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        tax_amount = request.form.get('tax_amount', '').strip()
+        payment_status = 'payment_status' in request.form
+        
+        # Validate inputs
+        if not all([aadhar_no, tax_amount]):
+            flash("All fields are required!", "danger")
+            return redirect(url_for('main.add_taxation_data'))
+        
+        # Check if citizen exists
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar number does not exist!", "danger")
+            return redirect(url_for('main.add_taxation_data'))
+        
+        # Check if taxation record already exists for this citizen
+        existing_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
+        if existing_record:
+            flash("Taxation record already exists for this citizen!", "danger")
+            return redirect(url_for('main.add_taxation_data'))
+        
+        try:
+            # Create new taxation record
+            new_record = Taxation(
+                aadhar_no=aadhar_no,
+                tax_amount=tax_amount,
+                payment_status=payment_status
             )
-            db.session.add(new_tax)
+            
+            db.session.add(new_record)
             db.session.commit()
-            flash("Taxation data added successfully!", "success")
+            
+            flash("Taxation record added successfully!", "success")
+            return redirect(url_for('main.manage_taxation_data'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error adding taxation record: {str(e)}", "danger")
+            return redirect(url_for('main.add_taxation_data'))
+    
+    return render_template('add_taxation_data.html')
 
-        elif action == 'delete':
-            # Delete taxation data logic
-            aadhar_no = request.form.get('aadhar_no')
-            tax = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
-            if tax:
-                db.session.delete(tax)
-                db.session.commit()
-                flash("Taxation data deleted successfully!", "success")
-            else:
-                flash("Taxation data not found!", "danger")
+@main_bp.route('/find_taxation_records', methods=['GET', 'POST'])
+def find_taxation_records():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    citizen = None
+    taxation_record = None
+    
+    if request.method == 'POST':
+        aadhar_no = request.form.get('aadhar_no', '').strip()
+        
+        if not aadhar_no:
+            flash("Aadhar number is required!", "danger")
+            return redirect(url_for('main.find_taxation_records'))
+        
+        # Find citizen
+        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+        if not citizen:
+            flash("Citizen with this Aadhar number does not exist!", "danger")
+            return redirect(url_for('main.find_taxation_records'))
+        
+        # Get taxation record for this citizen
+        taxation_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
+    
+    return render_template('find_taxation_records.html', citizen=citizen, taxation_record=taxation_record)
 
-        elif action == 'modify':
-            # Modify taxation data logic
-            aadhar_no = request.form.get('aadhar_no')
-            tax = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
-            if tax:
-                tax.tax_amount = request.form.get('tax_amount') or tax.tax_amount
-                tax.payment_status = bool(request.form.get('payment_status')) if 'payment_status' in request.form else tax.payment_status
-                db.session.commit()
-                flash("Taxation data modified successfully!", "success")
-            else:
-                flash("Taxation data not found!", "danger")
+@main_bp.route('/modify_taxation_record/<string:aadhar_no>', methods=['GET'])
+def modify_taxation_record(aadhar_no):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    taxation_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
+    if not taxation_record:
+        flash("Taxation record not found!", "danger")
+        return redirect(url_for('main.manage_taxation_data'))
+    
+    citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+    
+    return render_template('modify_taxation_record.html', taxation_record=taxation_record, citizen=citizen)
 
-    taxation_list = Taxation.query.all()
-    return render_template('manage_taxation_data.html', taxation=taxation_list)
+@main_bp.route('/modify_taxation_record_submit/<string:aadhar_no>', methods=['POST'])
+def modify_taxation_record_submit(aadhar_no):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    taxation_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
+    if not taxation_record:
+        flash("Taxation record not found!", "danger")
+        return redirect(url_for('main.manage_taxation_data'))
+    
+    try:
+        tax_amount = request.form.get('tax_amount', '').strip()
+        payment_status = 'payment_status' in request.form
+        
+        if not tax_amount:
+            flash("Tax amount is required!", "danger")
+            return redirect(url_for('main.modify_taxation_record', aadhar_no=aadhar_no))
+        
+        # Update record
+        taxation_record.tax_amount = tax_amount
+        taxation_record.payment_status = payment_status
+        
+        db.session.commit()
+        
+        flash("Taxation record updated successfully!", "success")
+        
+        # Redirect back to find_taxation_records with the aadhar_no as POST parameter
+        response = make_response("""
+        <html>
+        <body>
+            <form id="redirectForm" method="POST" action="/find_taxation_records">
+                <input type="hidden" name="aadhar_no" value="{}">
+            </form>
+            <script>
+                document.getElementById('redirectForm').submit();
+            </script>
+        </body>
+        </html>
+        """.format(aadhar_no))
+        
+        return response
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error updating taxation record: {str(e)}", "danger")
+        return redirect(url_for('main.modify_taxation_record', aadhar_no=aadhar_no))
+
+@main_bp.route('/delete_taxation_record', methods=['POST'])
+def delete_taxation_record():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        aadhar_no = request.form.get('aadhar_no')
+        taxation_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
+        
+        if not taxation_record:
+            flash("Taxation record not found!", "danger")
+            return redirect(url_for('main.manage_taxation_data'))
+        
+        db.session.delete(taxation_record)
+        db.session.commit()
+        
+        flash("Taxation record deleted successfully!", "success")
+        
+        # Redirect back to the find taxation records page
+        return redirect(url_for('main.find_taxation_records'))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting taxation record: {str(e)}", "danger")
+        return redirect(url_for('main.find_taxation_records'))
 
 @main_bp.route('/manage_meeting_details', methods=['GET', 'POST'])
 def manage_meeting_details():

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Health Record</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Modify Health Record</h1>
+    
+    <div class="container">
+        {% if record %}
+        <div class="citizen-info">
+            <h2>Citizen Information</h2>
+            <p><strong>Name:</strong> {{ citizen.name }}</p>
+            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('main.modify_health_record_submit', checkup_id=record.checkup_id) }}">
+            <div class="form-group">
+                <label for="checkup_id">CheckUp ID:</label>
+                <input type="text" id="checkup_id" value="{{ record.checkup_id }}" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label for="medical_condition">Medical Condition:</label>
+                <input type="text" id="medical_condition" name="medical_condition" value="{{ record.medical_condition }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="prescription">Prescription:</label>
+                <textarea id="prescription" name="prescription" rows="4" required>{{ record.prescription }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_of_visit">Date of Visit:</label>
+                <input type="date" id="date_of_visit" name="date_of_visit" value="{{ record.date_of_visit }}" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Health Record</button>
+                <a href="{{ url_for('main.find_health_records') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-danger">Health record not found!</div>
+        <a href="{{ url_for('main.manage_health_data') }}" class="btn btn-primary">Back to Manage Health Data</a>
+        {% endif %}
+    </div>
+</body>
+</html>

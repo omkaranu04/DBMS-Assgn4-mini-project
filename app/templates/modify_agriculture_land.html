@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Agricultural Land</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Modify Agricultural Land</h1>
+    
+    <div class="container">
+        {% if land %}
+        <div class="land-info">
+            <h2>Land Information</h2>
+            <p><strong>Land ID:</strong> {{ land.land_id }}</p>
+            <p><strong>Owner:</strong> {{ citizen.name }} ({{ land.aadhar_no }})</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('main.modify_agriculture_land_submit', land_id=land.land_id) }}">
+            <div class="form-group">
+                <label for="area_in_acres">Area in Acres:</label>
+                <input type="number" id="area_in_acres" name="area_in_acres" min="1" max="60" value="{{ land.area_in_acres }}" required>
+                <small>Must be between 1 and 60 acres</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="crop_type">Crop Type:</label>
+                <select id="crop_type" name="crop_type" required>
+                    <option value="">--Select--</option>
+                    <option value="Rice" {% if land.crop_type == 'Rice' %}selected{% endif %}>Rice</option>
+                    <option value="Wheat" {% if land.crop_type == 'Wheat' %}selected{% endif %}>Wheat</option>
+                    <option value="Sugarcane" {% if land.crop_type == 'Sugarcane' %}selected{% endif %}>Sugarcane</option>
+                    <option value="Cotton" {% if land.crop_type == 'Cotton' %}selected{% endif %}>Cotton</option>
+                    <option value="Jute" {% if land.crop_type == 'Jute' %}selected{% endif %}>Jute</option>
+                    <option value="Maize" {% if land.crop_type == 'Maize' %}selected{% endif %}>Maize</option>
+                    <option value="Millets" {% if land.crop_type == 'Millets' %}selected{% endif %}>Millets</option>
+                    <option value="Pulses" {% if land.crop_type == 'Pulses' %}selected{% endif %}>Pulses</option>
+                    <option value="Mustard" {% if land.crop_type == 'Mustard' %}selected{% endif %}>Mustard</option>
+                    <option value="Groundnut" {% if land.crop_type == 'Groundnut' %}selected{% endif %}>Groundnut</option>
+                    <option value="Mango" {% if land.crop_type == 'Mango' %}selected{% endif %}>Mango</option>
+                    <option value="Banana" {% if land.crop_type == 'Banana' %}selected{% endif %}>Banana</option>
+                    <option value="Coconut" {% if land.crop_type == 'Coconut' %}selected{% endif %}>Coconut</option>
+                    <option value="Vegetables" {% if land.crop_type == 'Vegetables' %}selected{% endif %}>Vegetables</option>
+                    <option value="Grapes" {% if land.crop_type == 'Grapes' %}selected{% endif %}>Grapes</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="soil_type">Soil Type:</label>
+                <select id="soil_type" name="soil_type" required>
+                    <option value="">--Select--</option>
+                    <option value="Alluvial" {% if land.soil_type == 'Alluvial' %}selected{% endif %}>Alluvial</option>
+                    <option value="Black" {% if land.soil_type == 'Black' %}selected{% endif %}>Black</option>
+                    <option value="Red" {% if land.soil_type == 'Red' %}selected{% endif %}>Red</option>
+                    <option value="Laterite" {% if land.soil_type == 'Laterite' %}selected{% endif %}>Laterite</option>
+                    <option value="Peaty Soil" {% if land.soil_type == 'Peaty Soil' %}selected{% endif %}>Peaty Soil</option>
+                    <option value="Desert Soil" {% if land.soil_type == 'Desert Soil' %}selected{% endif %}>Desert Soil</option>
+                    <option value="Mountain Soil" {% if land.soil_type == 'Mountain Soil' %}selected{% endif %}>Mountain Soil</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Land</button>
+                <a href="{{ url_for('main.manage_agriculture_land') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-danger">Land record not found!</div>
+        <a href="{{ url_for('main.manage_agriculture_land') }}" class="btn btn-primary">Back to Manage Agricultural Land</a>
+        {% endif %}
+    </div>
+</body>
+</html>

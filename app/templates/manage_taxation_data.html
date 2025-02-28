@@ -1,56 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Taxation Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <h1>Manage Taxation Data</h1>
-
-    <!-- Add Taxation Data Form -->
-    <h2>Add Taxation Data</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="add">
-        <label>Aadhar No:</label><input type="text" name="aadhar_no" required><br>
-        <label>Tax Amount:</label><input type="number" name="tax_amount" required><br>
-        <label>Payment Status:</label><input type="checkbox" name="payment_status"><br>
-        <button type="submit">Add Tax Data</button>
-    </form>
-
-    <!-- Delete Taxation Data Form -->
-    <h2>Delete Taxation Data</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="delete">
-        <label>Aadhar No:</label><input type="text" name="aadhar_no" required><br>
-        <button type="submit">Delete Tax Data</button>
-    </form>
-
-    <!-- Modify Taxation Data Form -->
-    <h2>Modify Taxation Data</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="modify">
-        <label>Aadhar No (to modify):</label><input type="text" name="aadhar_no" required><br>
-        <!-- Only fill fields you want to modify -->
-        <label>Tax Amount:</label><input type="number" name="tax_amount"><br>
-        <label>Payment Status:</label><input type="checkbox" name="payment_status"><br>
-        <button type="submit">Modify Tax Data</button>
-    </form>
-
-    <!-- View All Tax Records -->
-    <h2>All Tax Records</h2>
-    <table border="1">
-        <tr>
-            <th>Aadhar No</th>
-            <th>Tax Amount</th>
-            <th>Payment Status</th>
-        </tr>
-        {% for tax in taxation %}
-        <tr>
-            <td>{{ tax.Aadhar_No }}</td>
-            <td>{{ tax.Tax_Amount }}</td>
-            <td>{{ 'Paid' if tax.Payment_Status else 'Not Paid' }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
+    
+    <div class="action-buttons">
+        <a href="{{ url_for('main.add_taxation_data') }}" class="btn btn-primary">Add New Taxation Data</a>
+        <a href="{{ url_for('main.find_taxation_records') }}" class="btn btn-info">Find Taxation Records</a>
+    </div>
+    
+    <div class="info-box">
+        <p>Select an action from above to manage taxation records.</p>
+        <ul>
+            <li><strong>Add New Taxation Data:</strong> Create a new taxation record for a citizen</li>
+            <li><strong>Find Taxation Records:</strong> Search for taxation records by Aadhar number to modify or delete</li>
+        </ul>
+    </div>
 </body>
 </html>

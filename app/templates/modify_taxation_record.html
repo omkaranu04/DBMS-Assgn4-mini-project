@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Taxation Record</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Modify Taxation Record</h1>
+    
+    <div class="container">
+        {% if taxation_record %}
+        <div class="citizen-info">
+            <h2>Citizen Information</h2>
+            <p><strong>Name:</strong> {{ citizen.name }}</p>
+            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('main.modify_taxation_record_submit', aadhar_no=taxation_record.aadhar_no) }}">
+            <div class="form-group">
+                <label for="aadhar_no">Aadhar No:</label>
+                <input type="text" id="aadhar_no" value="{{ taxation_record.aadhar_no }}" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label for="tax_amount">Tax Amount:</label>
+                <input type="number" id="tax_amount" name="tax_amount" min="0" value="{{ taxation_record.tax_amount }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="payment_status">Payment Status:</label>
+                <input type="checkbox" id="payment_status" name="payment_status" {% if taxation_record.payment_status %}checked{% endif %}>
+                <span class="checkbox-label">Paid</span>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Taxation Record</button>
+                <a href="{{ url_for('main.find_taxation_records') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-danger">Taxation record not found!</div>
+        <a href="{{ url_for('main.manage_taxation_data') }}" class="btn btn-primary">Back to Manage Taxation Data</a>
+        {% endif %}
+    </div>
+</body>
+</html>

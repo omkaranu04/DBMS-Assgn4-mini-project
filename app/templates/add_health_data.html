@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Health Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Add New Health Data</h1>
+    
+    <div class="container">
+        <form method="POST" action="{{ url_for('main.add_health_data') }}">
+            <div class="form-group">
+                <label for="aadhar_no">Aadhar No:</label>
+                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+            </div>
+            
+            <div class="form-group">
+                <label for="medical_condition">Medical Condition:</label>
+                <input type="text" id="medical_condition" name="medical_condition" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="prescription">Prescription:</label>
+                <textarea id="prescription" name="prescription" rows="4" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_of_visit">Date of Visit:</label>
+                <input type="date" id="date_of_visit" name="date_of_visit" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Health Record</button>
+                <a href="{{ url_for('main.manage_health_data') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,62 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Manage Agriculture Land</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Agricultural Land</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Manage Agriculture Land</h1>
-
-    <!-- Add Agriculture Land Form -->
-    <h2>Add Agriculture Land</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="add">
-        <label>Aadhar No:</label><input type="text" name="aadhar_no" required><br>
-        <label>Area in Acres:</label><input type="number" name="area_in_acres" required><br>
-        <label>Crop Type:</label><input type="text" name="crop_type" required><br>
-        <label>Soil Type:</label><input type="text" name="soil_type"><br>
-        <button type="submit">Add Land</button>
-    </form>
-
-    <!-- Delete Agriculture Land Form -->
-    <h2>Delete Agriculture Land</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="delete">
-        <label>Land ID:</label><input type="text" name="land_id" required><br>
-        <button type="submit">Delete Land</button>
-    </form>
-
-    <!-- Modify Agriculture Land Form -->
-    <h2>Modify Agriculture Land</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="modify">
-        <label>Land ID (to modify):</label><input type="text" name="land_id" required><br>
-        <!-- Only fill fields you want to modify -->
-        <label>Area in Acres:</label><input type="number" name="area_in_acres"><br>
-        <label>Crop Type:</label><input type="text" name="crop_type"><br>
-        <label>Soil Type:</label><input type="text" name="soil_type"><br>
-        <button type="submit">Modify Land</button>
-    </form>
-
-    <!-- View Agriculture Lands -->
-    <h2>All Agriculture Lands</h2>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Aadhar No</th>
-            <th>Area (Acres)</th>
-            <th>Crop Type</th>
-            <th>Soil Type</th>
-        </tr>
-        {% for land in lands %}
-        <tr>
-            <td>{{ land.Land_ID }}</td>
-            <td>{{ land.Aadhar_No }}</td>
-            <td>{{ land.Area_in_Acres }}</td>
-            <td>{{ land.Crop_Type }}</td>
-            <td>{{ land.Soil_Type }}</td>
-        </tr>
-        {% endfor %}
+    <h1>Manage Agricultural Land</h1>
+    
+    <div class="action-buttons">
+        <a href="{{ url_for('main.add_agriculture_land') }}" class="btn btn-primary">Add New Land</a>
+    </div>
+    
+    <h2>All Agricultural Lands</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Land ID</th>
+                <th>Aadhar No</th>
+                <th>Owner Name</th>
+                <th>Area (Acres)</th>
+                <th>Crop Type</th>
+                <th>Soil Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for land in lands %}
+            <tr>
+                <td>{{ land.land_id }}</td>
+                <td>{{ land.aadhar_no }}</td>
+                <td>{{ land.citizen_name }}</td>
+                <td>{{ land.area_in_acres }}</td>
+                <td>{{ land.crop_type }}</td>
+                <td>{{ land.soil_type }}</td>
+                <td>
+                    <a href="{{ url_for('main.modify_agriculture_land', land_id=land.land_id) }}" class="btn btn-sm btn-warning">Modify</a>
+                    <form method="POST" action="{{ url_for('main.manage_agriculture_land') }}" style="display:inline;">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="land_id" value="{{ land.land_id }}">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this land record?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
-
 </body>
 </html>

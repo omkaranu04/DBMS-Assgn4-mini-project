@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Taxation Data</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Add New Taxation Data</h1>
+    
+    <div class="container">
+        <form method="POST" action="{{ url_for('main.add_taxation_data') }}">
+            <div class="form-group">
+                <label for="aadhar_no">Aadhar No:</label>
+                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+            </div>
+            
+            <div class="form-group">
+                <label for="tax_amount">Tax Amount:</label>
+                <input type="number" id="tax_amount" name="tax_amount" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="payment_status">Payment Status:</label>
+                <input type="checkbox" id="payment_status" name="payment_status">
+                <span class="checkbox-label">Paid</span>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Taxation Record</button>
+                <a href="{{ url_for('main.manage_taxation_data') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
