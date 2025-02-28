@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Certificate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Add New Certificate</h1>
+    
+    <div class="container">
+        <form method="POST" action="{{ url_for('main.add_certificate') }}">
+            <div class="form-group">
+                <label for="aadhar_no">Aadhar No:</label>
+                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+            </div>
+            
+            <div class="form-group">
+                <label for="certificate_type">Certificate Type:</label>
+                <select id="certificate_type" name="certificate_type" required>
+                    <option value="">--Select--</option>
+                    <option value="Birth">Birth</option>
+                    <option value="Death">Death</option>
+                    <option value="Caste">Caste</option>
+                    <option value="Domicile">Domicile</option>
+                    <option value="Residence">Residence</option>
+                    <option value="Character">Character</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_of_issue">Date of Issue:</label>
+                <input type="date" id="date_of_issue" name="date_of_issue" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Certificate</button>
+                <a href="{{ url_for('main.manage_certificates') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

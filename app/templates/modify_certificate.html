@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify Certificate</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Modify Certificate</h1>
+    
+    <div class="container">
+        {% if certificate %}
+        <div class="citizen-info">
+            <h2>Citizen Information</h2>
+            <p><strong>Name:</strong> {{ citizen.name }}</p>
+            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('main.modify_certificate_submit', certificate_id=certificate.certificate_id) }}">
+            <div class="form-group">
+                <label for="certificate_id">Certificate ID:</label>
+                <input type="text" id="certificate_id" value="{{ certificate.certificate_id }}" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label for="certificate_type">Certificate Type:</label>
+                <select id="certificate_type" name="certificate_type" required>
+                    <option value="">--Select--</option>
+                    <option value="Birth" {% if certificate.certificate_type == 'Birth' %}selected{% endif %}>Birth</option>
+                    <option value="Death" {% if certificate.certificate_type == 'Death' %}selected{% endif %}>Death</option>
+                    <option value="Caste" {% if certificate.certificate_type == 'Caste' %}selected{% endif %}>Caste</option>
+                    <option value="Domicile" {% if certificate.certificate_type == 'Domicile' %}selected{% endif %}>Domicile</option>
+                    <option value="Residence" {% if certificate.certificate_type == 'Residence' %}selected{% endif %}>Residence</option>
+                    <option value="Character" {% if certificate.certificate_type == 'Character' %}selected{% endif %}>Character</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="date_of_issue">Date of Issue:</label>
+                <input type="date" id="date_of_issue" name="date_of_issue" value="{{ certificate.date_of_issue }}" required>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Certificate</button>
+                <a href="{{ url_for('main.find_certificates') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert alert-danger">Certificate not found!</div>
+        <a href="{{ url_for('main.manage_certificates') }}" class="btn btn-primary">Back to Manage Certificates</a>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -4,64 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Citizens</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <h1>Manage Citizens</h1>
-
-    <!-- Add Citizen Form -->
-    <h2>Add Citizen</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="add">
-        <label>Aadhar No:</label><input type="text" name="aadhar_no" required><br>
-        <label>Name:</label><input type="text" name="name" required><br>
-        <label>DOB:</label><input type="date" name="dob" required><br>
-        <label>Gender:</label>
-        <select name="gender" required>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select><br>
-        <label>House No:</label><input type="text" name="house_no"><br>
-        <label>Phone No:</label><input type="text" name="phone_no"><br>
-        <label>Email ID:</label><input type="email" name="email_id"><br>
-        <label>Education Level:</label><input type="text" name="education_level"><br>
-        <label>Income:</label><input type="number" name="income"><br>
-        <label>Employment:</label><input type="text" name="employment"><br>
-        <label>Is Alive:</label><input type="checkbox" name="is_alive"><br>
-        <button type="submit">Add Citizen</button>
-    </form>
-
-    <!-- Delete Citizen Form -->
-    <h2>Delete Citizen</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="delete">
-        <label>Aadhar No:</label><input type="text" name="aadhar_no" required><br>
-        <button type="submit">Delete Citizen</button>
-    </form>
-
-    <!-- Modify Citizen Form -->
-    <h2>Modify Citizen</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="modify">
-        <label>Aadhar No (to modify):</label><input type="text" name="aadhar_no" required><br>
-        <!-- Only fill fields you want to modify -->
-        <label>Name:</label><input type="text" name="name"><br>
-        <label>DOB:</label><input type="date" name="dob"><br>
-        <label>Gender:</label>
-        <select name="gender">
-            <option value="">--Select--</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select><br>
-        <label>House No:</label><input type="text" name="house_no"><br>
-        <label>Phone No:</label><input type="text" name="phone_no"><br>
-        <label>Email ID:</label><input type="email" name="email_id"><br>
-        <label>Education Level:</label><input type="text" name="education_level"><br>
-        <label>Income:</label><input type="number" name="income"><br>
-        <label>Employment:</label><input type="text" name="employment"><br>
-        <label>Is Alive:</label><input type="checkbox" name="is_alive"><br>
-        <button type="submit">Modify Citizen</button>
-    </form>
-
+    
+    <div class="action-buttons">
+        <a href="{{ url_for('main.add_citizen') }}" class="btn btn-primary">Add New Citizen</a>
+        <a href="{{ url_for('main.delete_citizen') }}" class="btn btn-danger">Delete Citizen</a>
+        <a href="{{ url_for('main.modify_citizen') }}" class="btn btn-warning">Modify Citizen</a>
+    </div>
+    
+    <h2>Citizens List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Aadhar No</th>
+                <th>Name</th>
+                <th>DOB</th>
+                <th>Gender</th>
+                <th>House No</th>
+                <th>Phone No</th>
+                <th>Email ID</th>
+                <th>Education Level</th>
+                <th>Income</th>
+                <th>Employment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for citizen in citizens %}
+            <tr>
+                <td>{{ citizen.aadhar_no }}</td>
+                <td>{{ citizen.name }}</td>
+                <td>{{ citizen.dob }}</td>
+                <td>{{ citizen.gender }}</td>
+                <td>{{ citizen.house_no }}</td>
+                <td>{{ citizen.phone_no }}</td>
+                <td>{{ citizen.email_id }}</td>
+                <td>{{ citizen.education_level }}</td>
+                <td>{{ citizen.income }}</td>
+                <td>{{ citizen.employment }}</td>
+                <td>
+                    <a href="{{ url_for('main.modify_citizen', aadhar_no=citizen.aadhar_no) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{{ url_for('main.delete_citizen', aadhar_no=citizen.aadhar_no) }}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
-

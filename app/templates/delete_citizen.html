@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Citizen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Delete Citizen</h1>
+    
+    <div class="container">
+        {% if citizen %}
+        <div class="citizen-details">
+            <h2>Citizen Details</h2>
+            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+            <p><strong>Name:</strong> {{ citizen.name }}</p>
+            <p><strong>Date of Birth:</strong> {{ citizen.dob }}</p>
+            <p><strong>Gender:</strong> {{ citizen.gender }}</p>
+            <p><strong>Status:</strong> {{ "Alive" if citizen.is_alive else "Deceased" }}</p>
+            
+            <div class="warning-box">
+                <h3>Warning!</h3>
+                <p>Deleting this citizen will permanently remove all their records including:</p>
+                <ul>
+                    <li>Personal information</li>
+                    <li>Certificates</li>
+                    <li>Tax records</li>
+                    <li>Health records</li>
+                    <li>Complaints</li>
+                    <li>Welfare scheme enrollments</li>
+                </ul>
+                <p>This action cannot be undone.</p>
+            </div>
+            
+            <form method="POST" action="{{ url_for('main.delete_citizen_confirm', aadhar_no=citizen.aadhar_no) }}">
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                    <a href="{{ url_for('main.manage_citizens') }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <form method="POST" action="{{ url_for('main.delete_citizen') }}">
+            <div class="form-group">
+                <label for="aadhar_no">Enter Aadhar No to Delete:</label>
+                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Find Citizen</button>
+                <a href="{{ url_for('main.manage_citizens') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+</body>
+</html>
