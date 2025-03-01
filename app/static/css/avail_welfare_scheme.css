@@ -414,3 +414,118 @@ label i {
 .close-btn:hover {
     opacity: 1;
 }
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    color: #212529;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table th,
+.table td {
+    border: 1px solid #dee2e6;
+    padding: 0.75rem;
+    vertical-align: top;
+    text-align: left;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.table td {
+    background-color: white;
+    border-color: #dee2e6;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: #f1f1f1;
+}
+
+.table-striped tbody tr:nth-of-type(odd) td {
+    background-color: #f9f9f9;
+}
+
+.table thead th {
+    border-bottom-width: 2px;
+    background-color: #343a40;
+    color: white;
+}
+
+.table th {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.table th {
+    border-top: 0;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
+    border-top: 1px solid #dee2e6;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.table td {
+    background-color: white;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: #f1f1f1;
+}
+
+.table-striped tbody tr:nth-of-type(odd) td {
+    background-color: #f9f9f9;
+}

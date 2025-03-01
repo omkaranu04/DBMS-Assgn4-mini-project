@@ -32,17 +32,10 @@
             Add, delete, and view village infrastructure resources
           </p>
         </div>
-        {% with messages = get_flashed_messages(with_categories=true,
-        category_filter=['resource']) %} {% if messages %} {% for category,
-        message in messages %}
-        <div
-          class="alert alert-{{ category[9:] if category.startswith('resource_') else 'info' }}"
-          role="alert"
-        >
-          {{ message }}
-        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
         {% endfor %} {% endif %} {% endwith %}
-
         <div class="card-container">
           <!-- Add Resource Form -->
           <div class="card">

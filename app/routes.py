@@ -1900,9 +1900,15 @@ def manage_resources():
         
         if action == 'add':
             resource_name = request.form.get('resource_name')
-            existing_resource = Resources.query.filter_by(resource_name=resource_name).first()
+            existing_resource = db.session.execute(
+                text("SELECT * FROM Resources WHERE Resource_Name = :resource_name"),
+                {'resource_name': resource_name}
+            ).fetchone()
+
             if existing_resource:
-                flash(f"A resource with the name '{resource_name}' already exists!", "danger")
+                flash("A resource with this name already exists in the database!", "danger")
+                return redirect(url_for('main.manage_resources'))
+                # flash("Resource added successfully!", "success")
             else:
                 new_resource = Resources(
                     resource_name=resource_name,
@@ -1910,7 +1916,6 @@ def manage_resources():
                 )
                 db.session.add(new_resource)
                 db.session.commit()
-                # flash("Resource added successfully!", "success")
 
         elif action == 'delete':
             # Delete resource logic
@@ -2054,7 +2059,13 @@ def view_government_bodies():
 
 @main_bp.route('/avail_welfare_scheme', methods=['GET'])
 def avail_welfare_scheme():
-    return render_template('avail_welfare_scheme.html')
+    # Fetch all welfare schemes from the database
+    schemes = db.session.execute(
+        text("SELECT Scheme_ID, Scheme_Type, Scheme_Description FROM Welfare_Schemes ORDER BY Scheme_ID")
+    ).fetchall()
+    
+    return render_template('avail_welfare_scheme.html', schemes=schemes)
+
 
 @main_bp.route('/submit_scheme', methods=['POST'])
 def submit_scheme():
