@@ -198,7 +198,7 @@ def add_edit_panchayat_employee(username=None):
                     )
                     db.session.commit()
                     # flash(f'Employee updated! {password_message}', 'success')
-                    # return redirect(url_for('main.panchayat_employees'))
+                    return redirect(url_for('main.panchayat_employees'))
                 else:  # Adding a new employee
                     # Check if username already exists
                     existing_user = db.session.execute(
@@ -231,8 +231,7 @@ def add_edit_panchayat_employee(username=None):
                                 }
                             )
                             db.session.commit()
-                            # flash('New employee added successfully!', 'success')
-                            # return redirect(url_for('main.panchayat_employees'))
+                            return redirect(url_for('main.panchayat_employees'))
             
             except Exception as e:
                 db.session.rollback()
@@ -564,6 +563,7 @@ def census():
     employment_data = db.session.execute(text("""
         SELECT Employment, COUNT(*) 
         FROM Citizens 
+        WHERE Is_Alive = TRUE
         GROUP BY Employment
     """)).fetchall()
 
@@ -588,6 +588,7 @@ def census():
     education_data = db.session.execute(text("""
         SELECT Education_Level, COUNT(*) 
         FROM Citizens 
+        WHERE Is_Alive = TRUE
         GROUP BY Education_Level
     """)).fetchall()
 
@@ -1004,7 +1005,7 @@ def modify_citizen_submit(aadhar_no):
         
         db.session.commit()
         
-        flash("Citizen information updated successfully! Tax amount recalculated based on new income.", "success")
+        # flash("Citizen information updated successfully! Tax amount recalculated based on new income.", "success")
         return redirect(url_for('main.manage_citizens'))
     
     except Exception as e:
@@ -2124,6 +2125,10 @@ def submit_scheme():
             flash("Invalid Aadhar Number!", "danger")
             return redirect(url_for('main.avail_welfare_scheme'))
 
+        if not citizen.is_alive:
+            flash("Citizen is not alive!", "danger")
+            return redirect(url_for('main.avail_welfare_scheme'))
+        
         # Check if already availed
         existing_avail = db.session.execute(text("""
             SELECT * FROM Avails 
@@ -2342,6 +2347,27 @@ def process_death_declaration():
             DELETE FROM Panchayat_Users WHERE Aadhar_No = :aadhar_no
             """),
            {'aadhar_no': aadhar_no}
+        )
+        
+        db.session.execute(
+            text("""
+                 DELETE FROM Avails WHERE Aadhar_No = :aadhar_no
+                 """),
+            {'aadhar_no': aadhar_no}
+        )
+        
+        db.session.execute(
+            text("""
+                 DELETE FROM Complaints WHERE Aadhar_No = :aadhar_no
+                 """),
+            {'aadhar_no': aadhar_no}
+        )
+        
+        db.session.execute(
+            text("""
+                 DELETE FROM Taxation WHERE Aadhar_No = :aadhar_no
+                 """),
+            {'aadhar_no': aadhar_no}
         )
         
         db.session.commit()
