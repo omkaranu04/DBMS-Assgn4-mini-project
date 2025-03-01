@@ -197,7 +197,7 @@ def add_edit_panchayat_employee(username=None):
                         }
                     )
                     db.session.commit()
-                    flash(f'Employee updated! {password_message}', 'success')
+                    # flash(f'Employee updated! {password_message}', 'success')
                     # return redirect(url_for('main.panchayat_employees'))
                 else:  # Adding a new employee
                     # Check if username already exists
@@ -231,7 +231,7 @@ def add_edit_panchayat_employee(username=None):
                                 }
                             )
                             db.session.commit()
-                            flash('New employee added successfully!', 'success')
+                            # flash('New employee added successfully!', 'success')
                             # return redirect(url_for('main.panchayat_employees'))
             
             except Exception as e:
@@ -914,7 +914,7 @@ def delete_citizen_confirm(aadhar_no):
         db.session.delete(citizen)
         db.session.commit()
         
-        flash("Citizen and all related records deleted successfully!", "success")
+        # flash("Citizen and all related records deleted successfully!", "success")
         return redirect(url_for('main.manage_citizens'))
     
     except Exception as e:
@@ -1058,7 +1058,7 @@ def add_certificate():
             
             db.session.add(new_certificate)
             db.session.commit()
-            flash("Certificate added successfully!", "success")
+            # flash("Certificate added successfully!", "success")
             return redirect(url_for('main.find_certificates'))
         except Exception as e:
             db.session.rollback()
@@ -1147,7 +1147,7 @@ def modify_certificate_submit(certificate_id):
                 citizen.is_alive = False
         
         db.session.commit()
-        flash("Certificate updated successfully!", "success")
+        # flash("Certificate updated successfully!", "success")
         return redirect(url_for('main.find_certificates'))
         
     except Exception as e:
@@ -1186,7 +1186,7 @@ def delete_certificate_confirm(certificate_id):
         db.session.delete(certificate)
         db.session.commit()
         
-        flash("Certificate deleted successfully!", "success")
+        # flash("Certificate deleted successfully!", "success")
         
         # Redirect back to find certificates with the same Aadhar number
         return redirect(url_for('main.find_certificates'))
@@ -1220,7 +1220,7 @@ def manage_welfare_schemes():
                     # Then delete the scheme
                     db.session.delete(scheme)
                     db.session.commit()
-                    flash("Welfare Scheme deleted successfully!", "success")
+                    # flash("Welfare Scheme deleted successfully!", "success")
                 except Exception as e:
                     db.session.rollback()
                     flash(f"Error deleting scheme: {str(e)}", "danger")
@@ -1269,7 +1269,7 @@ def add_welfare_scheme():
             
             db.session.add(new_scheme)
             db.session.commit()
-            flash("Welfare Scheme added successfully!", "success")
+            # flash("Welfare Scheme added successfully!", "success")
             return redirect(url_for('main.manage_welfare_schemes'))
         except Exception as e:
             db.session.rollback()
@@ -1329,7 +1329,7 @@ def modify_welfare_scheme_submit(scheme_id):
         scheme.scheme_description = description
         
         db.session.commit()
-        flash("Welfare Scheme updated successfully!", "success")
+        # flash("Welfare Scheme updated successfully!", "success")
         return redirect(url_for('main.manage_welfare_schemes'))
     except Exception as e:
         db.session.rollback()
@@ -1353,7 +1353,7 @@ def manage_agriculture_land():
                 try:
                     db.session.delete(land)
                     db.session.commit()
-                    flash("Agricultural land record deleted successfully!", "success")
+                    # flash("Agricultural land record deleted successfully!", "success")
                 except Exception as e:
                     db.session.rollback()
                     flash(f"Error deleting land record: {str(e)}", "danger")
@@ -1418,7 +1418,7 @@ def add_agriculture_land():
             db.session.add(new_land)
             db.session.commit()
             
-            flash("Agricultural land added successfully!", "success")
+            # flash("Agricultural land added successfully!", "danger")
             return redirect(url_for('main.manage_agriculture_land'))
             
         except Exception as e:
@@ -1468,7 +1468,7 @@ def modify_agriculture_land_submit(land_id):
         
         db.session.commit()
         
-        flash("Agricultural land updated successfully!", "success")
+        # flash("Agricultural land updated successfully!", "success")
         return redirect(url_for('main.manage_agriculture_land'))
         
     except Exception as e:
@@ -1528,7 +1528,7 @@ def add_health_data():
             db.session.add(new_record)
             db.session.commit()
             
-            flash("Health record added successfully!", "success")
+            # flash("Health record added successfully!", "success")
             return redirect(url_for('main.manage_health_data'))
             
         except Exception as e:
@@ -1607,7 +1607,7 @@ def modify_health_record_submit(checkup_id):
         
         db.session.commit()
         
-        flash("Health record updated successfully!", "success")
+        # flash("Health record updated successfully!", "success")
         
         # Create a response with a form that auto-submits to find_health_records with the aadhar_no
         response = make_response("""
@@ -1648,7 +1648,7 @@ def delete_health_record():
         db.session.delete(record)
         db.session.commit()
         
-        flash("Health record deleted successfully!", "success")
+        # flash("Health record deleted successfully!", "success")
         
         # Redirect back to the same citizen's records
         return redirect(url_for('main.find_health_records'))
@@ -1670,6 +1670,9 @@ def add_taxation_data():
     if 'user' not in session:
         return redirect(url_for('main.login'))
     
+    error_message = None
+    prefilled_aadhar = request.args.get('aadhar_no', '')
+    
     if request.method == 'POST':
         aadhar_no = request.form.get('aadhar_no', '').strip()
         tax_amount = request.form.get('tax_amount', '').strip()
@@ -1677,20 +1680,20 @@ def add_taxation_data():
         
         # Validate inputs
         if not all([aadhar_no, tax_amount]):
-            flash("All fields are required!", "danger")
-            return redirect(url_for('main.add_taxation_data'))
+            error_message = "All fields are required!"
+            return render_template('add_taxation_data.html', error_message=error_message, prefilled_aadhar=aadhar_no)
         
         # Check if citizen exists
         citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
         if not citizen:
-            flash("Citizen with this Aadhar number does not exist!", "danger")
-            return redirect(url_for('main.add_taxation_data'))
+            error_message = "Citizen with this Aadhar number does not exist!"
+            return render_template('add_taxation_data.html', error_message=error_message, prefilled_aadhar=aadhar_no)
         
         # Check if taxation record already exists for this citizen
         existing_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
         if existing_record:
-            flash("Taxation record already exists for this citizen!", "danger")
-            return redirect(url_for('main.add_taxation_data'))
+            error_message = "Taxation record already exists for this citizen!"
+            return render_template('add_taxation_data.html', error_message=error_message, prefilled_aadhar=aadhar_no)
         
         try:
             # Create new taxation record
@@ -1703,15 +1706,15 @@ def add_taxation_data():
             db.session.add(new_record)
             db.session.commit()
             
-            flash("Taxation record added successfully!", "success")
+            # flash("Taxation record added successfully!", "success")
             return redirect(url_for('main.manage_taxation_data'))
             
         except Exception as e:
             db.session.rollback()
-            flash(f"Error adding taxation record: {str(e)}", "danger")
-            return redirect(url_for('main.add_taxation_data'))
+            error_message = f"Error adding taxation record: {str(e)}"
+            return render_template('add_taxation_data.html', error_message=error_message, prefilled_aadhar=aadhar_no)
     
-    return render_template('add_taxation_data.html')
+    return render_template('add_taxation_data.html', error_message=error_message, prefilled_aadhar=prefilled_aadhar)
 
 @main_bp.route('/find_taxation_records', methods=['GET', 'POST'])
 def find_taxation_records():
@@ -1720,24 +1723,27 @@ def find_taxation_records():
     
     citizen = None
     taxation_record = None
+    error_message = None
     
     if request.method == 'POST':
         aadhar_no = request.form.get('aadhar_no', '').strip()
         
         if not aadhar_no:
-            flash("Aadhar number is required!", "danger")
-            return redirect(url_for('main.find_taxation_records'))
-        
-        # Find citizen
-        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
-        if not citizen:
-            flash("Citizen with this Aadhar number does not exist!", "danger")
-            return redirect(url_for('main.find_taxation_records'))
-        
-        # Get taxation record for this citizen
-        taxation_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
+            error_message = "Aadhar number is required!"
+        else:
+            # Find citizen
+            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+            
+            if not citizen:
+                error_message = "Citizen with this Aadhar number does not exist!"
+            else:
+                # Get taxation record for this citizen
+                taxation_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
     
-    return render_template('find_taxation_records.html', citizen=citizen, taxation_record=taxation_record)
+    return render_template('find_taxation_records.html', 
+                          citizen=citizen, 
+                          taxation_record=taxation_record, 
+                          error_message=error_message)
 
 @main_bp.route('/modify_taxation_record/<string:aadhar_no>', methods=['GET'])
 def modify_taxation_record(aadhar_no):
@@ -1777,7 +1783,7 @@ def modify_taxation_record_submit(aadhar_no):
         
         db.session.commit()
         
-        flash("Taxation record updated successfully!", "success")
+        # flash("Taxation record updated successfully!", "success")
         
         # Redirect back to find_taxation_records with the aadhar_no as POST parameter
         response = make_response("""
@@ -1816,7 +1822,7 @@ def delete_taxation_record():
         db.session.delete(taxation_record)
         db.session.commit()
         
-        flash("Taxation record deleted successfully!", "success")
+        # flash("Taxation record deleted successfully!", "success")
         
         # Redirect back to the find taxation records page
         return redirect(url_for('main.find_taxation_records'))
@@ -1838,7 +1844,7 @@ def manage_meeting_details():
             )
             db.session.add(new_meeting)
             db.session.commit()
-            flash("Meeting details added successfully!", "success")
+            # flash("Meeting details added successfully!", "success")
 
         elif action == 'delete':
             # Delete meeting details logic
@@ -1847,7 +1853,7 @@ def manage_meeting_details():
             if meeting:
                 db.session.delete(meeting)
                 db.session.commit()
-                flash("Meeting details deleted successfully!", "success")
+                # flash("Meeting details deleted successfully!", "success")
             else:
                 flash("Meeting not found!", "danger")
 
@@ -1868,7 +1874,7 @@ def manage_complaints():
             if complaint:
                 db.session.delete(complaint)
                 db.session.commit()
-                flash("Complaint deleted successfully!", "success")
+                # flash("Complaint deleted successfully!", "success")
             else:
                 flash("Complaint not found!", "danger")
 
@@ -1902,7 +1908,7 @@ def manage_resources():
                 )
                 db.session.add(new_resource)
                 db.session.commit()
-                flash("Resource added successfully!", "success")
+                # flash("Resource added successfully!", "success")
 
         elif action == 'delete':
             # Delete resource logic
@@ -1911,7 +1917,7 @@ def manage_resources():
             if resource:
                 db.session.delete(resource)
                 db.session.commit()
-                flash("Resource deleted successfully!", "success")
+                # flash("Resource deleted successfully!", "success")
             else:
                 flash("Resource not found!", "danger")
 
@@ -1923,7 +1929,7 @@ def manage_resources():
             if resource:
                 resource.last_inspected_date = new_inspection_date
                 db.session.commit()
-                flash("Resource updated successfully!", "success")
+                # flash("Resource updated successfully!", "success")
             else:
                 flash("Resource not found!", "danger")
 
@@ -1987,7 +1993,7 @@ def add_government_institution():
                         }
                     )
                     db.session.commit()
-                    flash("Government institution added successfully!", "success")
+                    # flash("Government institution added successfully!", "success")
                     # Only redirect on success
                     return redirect(url_for('main.view_government_bodies'))
                     
@@ -2023,7 +2029,7 @@ def delete_government_institution(institute_name):
                 {'name': institute_name}
             )
             db.session.commit()
-            flash(f"Institution '{institute_name}' deleted successfully!", "success")
+            # flash(f"Institution '{institute_name}' deleted successfully!", "success")
         else:
             flash(f"Institution '{institute_name}' not found!", "danger")
             
@@ -2094,7 +2100,7 @@ def submit_scheme():
         """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id})
 
         db.session.commit()
-        flash("Welfare Scheme availed successfully!", "success")
+        # flash("Welfare Scheme availed successfully!", "success")
     
     except Exception as e:
         db.session.rollback()
@@ -2137,7 +2143,7 @@ def remove_scheme_beneficiary():
         """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id})
 
         db.session.commit()
-        flash("Beneficiary removed from the welfare scheme successfully!", "success")
+        # flash("Beneficiary removed from the welfare scheme successfully!", "success")
     
     except Exception as e:
         db.session.rollback()
@@ -2291,7 +2297,7 @@ def process_death_declaration():
         )
         
         db.session.commit()
-        flash("Death has been recorded successfully. Death certificate has been issued.", "success")
+        # flash("Death has been recorded successfully. Death certificate has been issued.", "success")
         
     except Exception as e:
         db.session.rollback()

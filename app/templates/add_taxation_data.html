@@ -1,61 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Taxation Data - GPMS</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_taxation_data.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/add_taxation_data.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <header>
-        <h1>GPMS - The Smart Way to Handle a Village</h1>
-        <div class="header-buttons">
-            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-            <a href="javascript:history.back()" class="btn">Go Back</a>
-        </div>
+      <h1>GPMS - The Smart Way to Handle a Village</h1>
+      <div class="header-buttons">
+        <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+        <a href="javascript:history.back()" class="btn">Go Back</a>
+      </div>
     </header>
 
     <div class="main-content">
-        <div class="taxation-container">
-            <div class="page-title">
-                <h2>Add New Taxation Data</h2>
-                <p class="subtitle">Create a new tax record for a citizen</p>
-            </div>
-            
-            <div class="taxation-form-wrapper">
-                <div class="form-icon">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                </div>
-                
-                <form method="POST" action="{{ url_for('main.add_taxation_data') }}" class="taxation-form">
-                    <div class="form-group">
-                        <label for="aadhar_no">
-                            <i class="fas fa-id-card"></i> Aadhar No:
-                        </label>
-                        <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
-                        <small class="form-hint">Enter 12-digit Aadhar number of the citizen</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="tax_amount">
-                            <i class="fas fa-rupee-sign"></i> Tax Amount:
-                        </label>
-                        <input type="number" id="tax_amount" name="tax_amount" min="0" class="form-control" required>
-                        <small class="form-hint">Enter the tax amount in rupees</small>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-plus-circle"></i> Add Taxation Record
-                        </button>
-                        <a href="{{ url_for('main.manage_taxation_data') }}" class="btn-secondary">
-                            <i class="fas fa-times"></i> Cancel
-                        </a>
-                    </div>
-                </form>
-            </div>
+      <div class="taxation-container">
+        <div class="page-title">
+          <h2>Add New Taxation Data</h2>
+          <p class="subtitle">Create a new tax record for a citizen</p>
         </div>
+
+        {% if error_message %}
+        <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+        {% endif %}
+
+        <div class="taxation-form-wrapper">
+          <div class="form-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+          </div>
+
+          <form
+            method="POST"
+            action="{{ url_for('main.add_taxation_data') }}"
+            class="taxation-form"
+          >
+            <div class="form-group">
+              <label for="aadhar_no">
+                <i class="fas fa-id-card"></i> Aadhar No:
+              </label>
+              <input
+                type="text"
+                id="aadhar_no"
+                name="aadhar_no"
+                class="form-control"
+                required
+                pattern="[1-9][0-9]{11}"
+                title="12-digit Aadhar number starting with non-zero digit"
+              />
+              <small class="form-hint"
+                >Enter 12-digit Aadhar number of the citizen</small
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="tax_amount">
+                <i class="fas fa-rupee-sign"></i> Tax Amount:
+              </label>
+              <input
+                type="number"
+                id="tax_amount"
+                name="tax_amount"
+                min="0"
+                class="form-control"
+                required
+              />
+              <small class="form-hint">Enter the tax amount in rupees</small>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-plus-circle"></i> Add Taxation Record
+              </button>
+              <a
+                href="{{ url_for('main.manage_taxation_data') }}"
+                class="btn-secondary"
+              >
+                <i class="fas fa-times"></i> Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
