@@ -849,6 +849,7 @@ def add_citizen():
             return render_template('add_citizen.html', form_data=form_data)
 
     return render_template('add_citizen.html', form_data=form_data)
+
 @main_bp.route('/delete_citizen', methods=['GET', 'POST'])
 def delete_citizen():
     if 'user' not in session:

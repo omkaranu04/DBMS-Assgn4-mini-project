@@ -11,89 +11,112 @@
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
         <div class="header-buttons">
-            <a href="{{ url_for('main.login') }}" class="btn">Login</a>
-            <a href="javascript:history.back()" class="btn">Go Back</a>
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="{{ url_for('main.dashboard_employees') }}" class="btn">Go Back</a>
         </div>
     </header>
 
     <div class="main-content">
         <div class="welfare-container">
             <div class="page-title">
-                <h2>Avail Welfare Scheme</h2>
-                <p class="subtitle">Manage welfare scheme beneficiaries</p>
+                <h2>Welfare Scheme Management</h2>
+                <p class="subtitle">Add or remove citizens from welfare schemes</p>
             </div>
             
-            <div class="card-container">
-                <!-- Form to Avail Scheme -->
+            <!-- Flash Messages Section -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">
+                                <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                                {{ message }}
+                                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <div class="cards-container">
+                <!-- Add Beneficiary Card -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fas fa-hand-holding-heart"></i>
-                        <h3>Avail Scheme</h3>
+                        <i class="fas fa-user-plus"></i>
+                        <h3>Add Beneficiary to Scheme</h3>
                     </div>
                     <div class="card-body">
-                        <form action="/submit_scheme" method="post" class="welfare-form">
+                        <form action="{{ url_for('main.submit_scheme') }}" method="post" class="scheme-form">
                             <div class="form-group">
                                 <label for="scheme_id">
-                                    <i class="fas fa-hashtag"></i> Scheme ID:
+                                    <i class="fas fa-tag"></i> Scheme ID:
                                 </label>
-                                <input type="text" id="scheme_id" name="scheme_id" class="form-control" required>
+                                <input type="number" class="form-control" id="scheme_id" name="scheme_id" required />
                                 <small class="form-hint">Enter the ID of the welfare scheme</small>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="citizen_aadhar_no">
-                                    <i class="fas fa-id-card"></i> Citizen Aadhar No:
+                                    <i class="fas fa-id-card"></i> Citizen Aadhar Number:
                                 </label>
-                                <input type="text" id="citizen_aadhar_no" name="citizen_aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
-                                <small class="form-hint">Enter the 12-digit Aadhar number of the beneficiary</small>
+                                <input type="text" class="form-control" id="citizen_aadhar_no" name="citizen_aadhar_no" required />
+                                <small class="form-hint">Enter the 12-digit Aadhar number of the citizen</small>
                             </div>
-                            
+
                             <button type="submit" class="btn-primary">
-                                <i class="fas fa-plus-circle"></i> Avail Scheme
+                                <i class="fas fa-plus"></i> Add Beneficiary
                             </button>
                         </form>
                     </div>
                 </div>
 
-                <!-- Form to Remove Beneficiary -->
+                <!-- Remove Beneficiary Card -->
                 <div class="card">
                     <div class="card-header">
                         <i class="fas fa-user-minus"></i>
-                        <h3>Remove Scheme Beneficiary</h3>
+                        <h3>Remove Beneficiary from Scheme</h3>
                     </div>
                     <div class="card-body">
-                        <form action="/remove_scheme_beneficiary" method="post" class="welfare-form">
+                        <form action="{{ url_for('main.remove_scheme_beneficiary') }}" method="post" class="scheme-form">
                             <div class="form-group">
                                 <label for="remove_scheme_id">
-                                    <i class="fas fa-hashtag"></i> Scheme ID:
+                                    <i class="fas fa-tag"></i> Scheme ID:
                                 </label>
-                                <input type="text" id="remove_scheme_id" name="scheme_id" class="form-control" required>
+                                <input type="number" class="form-control" id="remove_scheme_id" name="scheme_id" required />
                                 <small class="form-hint">Enter the ID of the welfare scheme</small>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="remove_citizen_aadhar_no">
-                                    <i class="fas fa-id-card"></i> Citizen Aadhar No:
+                                    <i class="fas fa-id-card"></i> Citizen Aadhar Number:
                                 </label>
-                                <input type="text" id="remove_citizen_aadhar_no" name="citizen_aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
-                                <small class="form-hint">Enter the 12-digit Aadhar number of the beneficiary to remove</small>
+                                <input type="text" class="form-control" id="remove_citizen_aadhar_no" name="citizen_aadhar_no" required />
+                                <small class="form-hint">Enter the 12-digit Aadhar number of the citizen</small>
                             </div>
-                            
+
                             <button type="submit" class="btn-danger">
-                                <i class="fas fa-user-minus"></i> Remove Beneficiary
+                                <i class="fas fa-minus"></i> Remove Beneficiary
                             </button>
                         </form>
                     </div>
                 </div>
             </div>
-            
-            <!-- Back Button -->
-            <div class="back-section">
-                <a href="{{ url_for('main.dashboard_employees') }}" class="back-button">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
-                </a>
-            </div>
         </div>
     </div>
+
+    <script>
+        // Auto-hide flash messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const flashMessages = document.querySelectorAll('.alert');
+                flashMessages.forEach(function(message) {
+                    message.style.opacity = '0';
+                    setTimeout(function() {
+                        message.style.display = 'none';
+                    }, 500);
+                });
+            }, 5000);
+        });
+    </script>
 </body>
 </html>
