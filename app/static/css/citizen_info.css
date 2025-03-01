@@ -453,3 +453,24 @@ textarea.form-control {
         justify-content: center;
     }
 }
+
+.deceased-notice {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px 20px;
+    margin: 0 0 25px 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.deceased-notice i {
+    font-size: 1.5em;
+}
+
+.deceased-notice p {
+    margin: 0;
+    font-weight: 500;
+}

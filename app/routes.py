@@ -901,6 +901,8 @@ def delete_citizen_confirm(aadhar_no):
         # Delete complaints
         Complaints.query.filter_by(aadhar_no=aadhar_no).delete()
         
+        PanchayatUsers.query.filter_by(aadhar_no=aadhar_no).delete()
+        
         # Delete welfare scheme enrollments
         db.session.execute(
             text("DELETE FROM Avails WHERE Aadhar_No = :aadhar_no"),
@@ -914,7 +916,7 @@ def delete_citizen_confirm(aadhar_no):
         db.session.delete(citizen)
         db.session.commit()
         
-        flash("Citizen and all related records deleted successfully!", "success")
+        # flash("Citizen and all related records deleted successfully!", "success")
         return redirect(url_for('main.manage_citizens'))
     
     except Exception as e:
@@ -2290,8 +2292,15 @@ def process_death_declaration():
             {'aadhar_no': aadhar_no, 'death_date': death_date}
         )
         
+        db.session.execute(
+           text("""
+            DELETE FROM Panchayat_Users WHERE Aadhar_No = :aadhar_no
+            """),
+           {'aadhar_no': aadhar_no}
+        )
+        
         db.session.commit()
-        flash("Death has been recorded successfully. Death certificate has been issued.", "success")
+        # flash("Death has been recorded successfully. Death certificate has been issued.", "success")
         
     except Exception as e:
         db.session.rollback()

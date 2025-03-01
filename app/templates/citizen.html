@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/citizen_info.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -18,11 +20,17 @@
 
     <div class="main-content">
         <div class="citizen-container">
+            {% if not citizen[11] %}
+            <div class="deceased-notice">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>You're viewing the information of a deceased citizen.</p>
+            </div>
+            {% endif %}
             <div class="page-title">
                 <h2>Citizen Information</h2>
                 <p class="subtitle">Complete profile and records</p>
             </div>
-            
+
             <!-- Personal Information Section -->
             <div class="profile-card">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -42,7 +50,8 @@
                         </div>
                         <div class="info-item">
                             <span class="info-label"><i class="fas fa-map-marker-alt"></i> Address:</span>
-                            <span class="info-value">{% if household %}{{ household[1] }}{% else %}Not available{% endif %}</span>
+                            <span class="info-value">{% if household %}{{ household[1] }}{% else %}Not available{% endif
+                                %}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label"><i class="fas fa-phone"></i> Phone:</span>
@@ -224,13 +233,13 @@
                     {% else %}
                     <p class="empty-message">No complaints found.</p>
                     {% endif %}
-                    
+
                     <!-- Complaint Form -->
                     <div class="complaint-form-container">
                         <h4><i class="fas fa-plus-circle"></i> Raise a New Complaint</h4>
                         <form action="{{ url_for('main.submit_complaint') }}" method="post" class="complaint-form">
                             <input type="hidden" name="aadhar_no" value="{{ citizen[0] }}">
-                            
+
                             <div class="form-group">
                                 <label for="resource_id">
                                     <i class="fas fa-cogs"></i> Select Resource:
@@ -242,14 +251,15 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="complaint_desc">
                                     <i class="fas fa-comment-alt"></i> Complaint Description:
                                 </label>
-                                <textarea class="form-control" id="complaint_desc" name="complaint_desc" rows="3" required></textarea>
+                                <textarea class="form-control" id="complaint_desc" name="complaint_desc" rows="3"
+                                    required></textarea>
                             </div>
-                            
+
                             <button type="submit" class="btn-primary">
                                 <i class="fas fa-paper-plane"></i> Submit Complaint
                             </button>
@@ -316,10 +326,11 @@
                             <i class="fas fa-landmark"></i> Administrative
                         </button>
                     </div>
-                    
+
                     <!-- Educational Institutions Tab -->
                     <div id="educational-tab" class="institution-tab-content active">
-                        <h4 class="institution-category-title"><i class="fas fa-graduation-cap"></i> Educational Institutions</h4>
+                        <h4 class="institution-category-title"><i class="fas fa-graduation-cap"></i> Educational
+                            Institutions</h4>
                         {% if education_institutions %}
                         <div class="table-responsive">
                             <table class="data-table">
@@ -345,7 +356,7 @@
                         <p class="empty-message">No educational institutions found.</p>
                         {% endif %}
                     </div>
-                    
+
                     <!-- Health Institutions Tab -->
                     <div id="health-tab" class="institution-tab-content">
                         <h4 class="institution-category-title"><i class="fas fa-hospital"></i> Health Institutions</h4>
@@ -374,10 +385,11 @@
                         <p class="empty-message">No health institutions found.</p>
                         {% endif %}
                     </div>
-                    
+
                     <!-- Banking Institutions Tab -->
                     <div id="banking-tab" class="institution-tab-content">
-                        <h4 class="institution-category-title"><i class="fas fa-university"></i> Banking Institutions</h4>
+                        <h4 class="institution-category-title"><i class="fas fa-university"></i> Banking Institutions
+                        </h4>
                         {% if banking_institutions %}
                         <div class="table-responsive">
                             <table class="data-table">
@@ -403,10 +415,11 @@
                         <p class="empty-message">No banking institutions found.</p>
                         {% endif %}
                     </div>
-                    
+
                     <!-- Administrative Institutions Tab -->
                     <div id="administrative-tab" class="institution-tab-content">
-                        <h4 class="institution-category-title"><i class="fas fa-landmark"></i> Administrative Institutions</h4>
+                        <h4 class="institution-category-title"><i class="fas fa-landmark"></i> Administrative
+                            Institutions</h4>
                         {% if admin_institutions %}
                         <div class="table-responsive">
                             <table class="data-table">
@@ -441,12 +454,12 @@
         function toggleSection(header) {
             // Toggle active class on the header
             header.classList.toggle('active');
-            
+
             // Find the next sibling (section-body) and toggle its active class
             const sectionBody = header.nextElementSibling;
             sectionBody.classList.toggle('active');
         }
-        
+
         // Institution tabs functionality
         function showInstitutionTab(tabName) {
             // Hide all tabs
@@ -454,19 +467,20 @@
             tabContents.forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // Remove active class from all tab buttons
             const tabButtons = document.querySelectorAll('.tab-btn');
             tabButtons.forEach(button => {
                 button.classList.remove('active');
             });
-            
+
             // Show selected tab
             document.getElementById(`${tabName}-tab`).classList.add('active');
-            
+
             // Add active class to clicked button
             event.currentTarget.classList.add('active');
         }
     </script>
 </body>
+
 </html>
