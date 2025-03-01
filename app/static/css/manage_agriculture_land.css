@@ -1,0 +1,371 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+/* Header Styling */
+header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.2em;
+    max-width: 60%;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button Styling */
+.btn {
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 0.7em;
+    white-space: nowrap;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    padding: 100px 20px 40px;
+    box-sizing: border-box;
+}
+
+.land-container {
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* Page Title */
+.page-title {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.page-title h2 {
+    color: #0056b3;
+    margin: 0 0 10px 0;
+    font-size: 2em;
+}
+
+.subtitle {
+    color: #6c757d;
+    margin: 0;
+    font-size: 1.1em;
+}
+
+/* Action Panel */
+.action-panel {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.add-land-btn {
+    background-color: #6f42c1;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.add-land-btn:hover {
+    background-color: #5e37a6;
+}
+
+/* Land Section */
+.land-section {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.section-header {
+    background-color: #f0f2f5;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #0056b3;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.count-badge {
+    background-color: #6f42c1;
+    color: white;
+    border-radius: 50px;
+    padding: 3px 8px;
+    font-size: 0.8em;
+}
+
+/* Table Styling */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.land-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.land-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #e1e4e8;
+}
+
+.land-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.land-table tr:last-child td {
+    border-bottom: none;
+}
+
+.land-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.area-cell {
+    font-weight: 600;
+    color: #6f42c1;
+}
+
+.crop-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+/* Actions Cell */
+.actions-cell {
+    white-space: nowrap;
+    display: flex;
+    gap: 5px;
+}
+
+.table-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.table-btn.edit {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.table-btn.edit:hover {
+    background-color: #e0a800;
+}
+
+.table-btn.delete {
+    background-color: #dc3545;
+    border: none;
+    cursor: pointer;
+}
+
+.table-btn.delete:hover {
+    background-color: #c82333;
+}
+
+.delete-form {
+    display: inline;
+}
+
+/* Empty Lands */
+.empty-lands {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-icon {
+    font-size: 3em;
+    color: #6f42c1;
+    margin-bottom: 15px;
+}
+
+.empty-lands p {
+    color: #6c757d;
+    margin: 0 0 20px 0;
+    font-size: 1.1em;
+}
+
+.btn-primary {
+    background-color: #6f42c1;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #5e37a6;
+}
+
+/* Info Box */
+.info-box {
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.info-header {
+    background-color: #6f42c1;
+    color: white;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-header i {
+    font-size: 1.2em;
+}
+
+.info-header h3 {
+    margin: 0;
+    font-size: 1.1em;
+}
+
+.info-content {
+    padding: 15px 20px;
+}
+
+.info-content p {
+    margin: 0 0 10px 0;
+    color: #495057;
+    line-height: 1.5;
+}
+
+.info-content ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.info-content li {
+    margin-bottom: 8px;
+    color: #495057;
+    line-height: 1.5;
+}
+
+.info-content li:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1em;
+        max-width: 50%;
+    }
+    
+    .btn {
+        padding: 6px 10px;
+        font-size: 0.65em;
+    }
+    
+    .page-title h2 {
+        font-size: 1.6em;
+    }
+    
+    .subtitle {
+        font-size: 0.9em;
+    }
+    
+    .actions-cell {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    header h1 {
+        margin-bottom: 10px;
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .main-content {
+        padding-top: 130px;
+    }
+    
+    .action-panel {
+        justify-content: center;
+    }
+}

@@ -3,23 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Certificates</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Manage Certificates - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_certificates.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Manage Certificates</h1>
-    
-    <div class="action-buttons">
-        <a href="{{ url_for('main.add_certificate') }}" class="btn btn-primary">Add New Certificate</a>
-        <a href="{{ url_for('main.find_certificates') }}" class="btn btn-info">Find Certificates</a>
-    </div>
-    
-    <div class="info-box">
-        <p>Select an action from above to manage citizen certificates.</p>
-        <ul>
-            <li><strong>Add New Certificate:</strong> Create a new certificate for a citizen</li>
-            <li><strong>Find Certificates:</strong> Search for certificates by Aadhar number to modify or delete</li>
-        </ul>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="certificates-container">
+            <div class="page-title">
+                <h2>Manage Certificates</h2>
+                <p class="subtitle">Create, find, modify, and delete citizen certificates</p>
+            </div>
+            
+            <div class="action-cards">
+                <a href="{{ url_for('main.add_certificate') }}" class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Add New Certificate</h3>
+                        <p>Create a new certificate for a citizen</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('main.find_certificates') }}" class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Find Certificates</h3>
+                        <p>Search for certificates by Aadhar number to modify or delete</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Certificate Management Information</h3>
+                </div>
+                
+                <div class="info-content">
+                    <p>Certificates are official documents issued to citizens for various purposes. The system supports the following certificate types:</p>
+                    
+                    <div class="certificate-types">
+                        <div class="certificate-type">
+                            <i class="fas fa-baby"></i>
+                            <span>Birth Certificate</span>
+                        </div>
+                        
+                        <div class="certificate-type">
+                            <i class="fas fa-cross"></i>
+                            <span>Death Certificate</span>
+                        </div>
+                        
+                        <div class="certificate-type">
+                            <i class="fas fa-users"></i>
+                            <span>Caste Certificate</span>
+                        </div>
+                        
+                        <div class="certificate-type">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Domicile Certificate</span>
+                        </div>
+                        
+                        <div class="certificate-type">
+                            <i class="fas fa-home"></i>
+                            <span>Residence Certificate</span>
+                        </div>
+                        
+                        <div class="certificate-type">
+                            <i class="fas fa-user-check"></i>
+                            <span>Character Certificate</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-note">
+                        <p><strong>Note:</strong> All certificates require valid citizen information. Make sure the citizen is registered in the system before issuing a certificate.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

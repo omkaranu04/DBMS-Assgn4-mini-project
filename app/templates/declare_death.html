@@ -1,47 +1,65 @@
-<div class="container mt-4">
-  <h2>Declare Death Certificate</h2>
-
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">Enter Death Details</h5>
-    </div>
-    <div class="card-body">
-      <form
-        action="{{ url_for('main.process_death_declaration') }}"
-        method="post"
-      >
-        <div class="form-group mb-3">
-          <label for="aadhar_no">Aadhar Number:</label>
-          <input
-            type="text"
-            class="form-control"
-            id="aadhar_no"
-            name="aadhar_no"
-            required
-            pattern="[1-9][0-9]{11}"
-            title="Please enter a valid 12-digit Aadhar number"
-          />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Declare Death Certificate - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/declare_death.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">Logout</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
+    </header>
 
-        <div class="form-group mb-3">
-          <label for="death_date">Date of Death:</label>
-          <input
-            type="date"
-            class="form-control"
-            id="death_date"
-            name="death_date"
-            required
-          />
+    <div class="main-content">
+        <div class="death-container">
+            <div class="page-title">
+                <h2>Declare Death Certificate</h2>
+                <p class="subtitle">Register a citizen's death and issue a death certificate</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-file-medical"></i>
+                    <h3>Enter Death Details</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('main.process_death_declaration') }}" method="post" class="death-form">
+                        <div class="form-group">
+                            <label for="aadhar_no">
+                                <i class="fas fa-id-card"></i> Aadhar Number:
+                            </label>
+                            <input type="text" class="form-control" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="Please enter a valid 12-digit Aadhar number">
+                            <small class="form-hint">Enter the 12-digit Aadhar number of the deceased</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="death_date">
+                                <i class="fas fa-calendar-day"></i> Date of Death:
+                            </label>
+                            <input type="date" class="form-control" id="death_date" name="death_date" required>
+                            <small class="form-hint">Enter the date when the death occurred</small>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-file-medical"></i> Submit Death Certificate
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Back Button -->
+            <div class="back-section">
+                <a href="{{ url_for('main.dashboard_employees') }}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
         </div>
-
-        <button type="submit" class="btn btn-primary">
-          Submit Death Certificate
-        </button>
-      </form>
     </div>
-  </div>
-
-  <a href="{{ url_for('main.dashboard_employees') }}" class="btn btn-secondary"
-    >Back to Dashboard</a
-  >
-</div>
+</body>
+</html>

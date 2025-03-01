@@ -3,23 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Taxation Data</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Manage Taxation Data - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_taxation_data.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Manage Taxation Data</h1>
-    
-    <div class="action-buttons">
-        <a href="{{ url_for('main.add_taxation_data') }}" class="btn btn-primary">Add New Taxation Data</a>
-        <a href="{{ url_for('main.find_taxation_records') }}" class="btn btn-info">Find Taxation Records</a>
-    </div>
-    
-    <div class="info-box">
-        <p>Select an action from above to manage taxation records.</p>
-        <ul>
-            <li><strong>Add New Taxation Data:</strong> Create a new taxation record for a citizen</li>
-            <li><strong>Find Taxation Records:</strong> Search for taxation records by Aadhar number to modify or delete</li>
-        </ul>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="taxation-container">
+            <div class="page-title">
+                <h2>Manage Taxation Data</h2>
+                <p class="subtitle">Track and manage citizen tax records and payment information</p>
+            </div>
+            
+            <div class="action-cards">
+                <a href="{{ url_for('main.add_taxation_data') }}" class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Add New Taxation Data</h3>
+                        <p>Create a new taxation record for a citizen</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+                
+                <a href="{{ url_for('main.find_taxation_records') }}" class="action-card">
+                    <div class="card-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Find Taxation Records</h3>
+                        <p>Search for taxation records by Aadhar number to modify or delete</p>
+                    </div>
+                    <div class="card-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

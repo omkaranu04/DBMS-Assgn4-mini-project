@@ -3,42 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Certificate</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Delete Certificate - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/delete_certificate.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Delete Certificate</h1>
-    
-    <div class="container">
-        {% if certificate %}
-        <div class="citizen-info">
-            <h2>Citizen Information</h2>
-            <p><strong>Name:</strong> {{ citizen.name }}</p>
-            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">Login</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
-        
-        <div class="certificate-details">
-            <h2>Certificate Details</h2>
-            <p><strong>Certificate ID:</strong> {{ certificate.certificate_id }}</p>
-            <p><strong>Certificate Type:</strong> {{ certificate.certificate_type }}</p>
-            <p><strong>Date of Issue:</strong> {{ certificate.date_of_issue }}</p>
-        </div>
-        
-        <div class="warning-box">
-            <h3>Warning!</h3>
-            <p>Are you sure you want to delete this certificate? This action cannot be undone.</p>
-        </div>
-        
-        <form method="POST" action="{{ url_for('main.delete_certificate_confirm', certificate_id=certificate.certificate_id) }}">
-            <div class="form-actions">
-                <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                <a href="{{ url_for('main.find_certificates') }}" class="btn btn-secondary">Cancel</a>
+    </header>
+
+    <div class="main-content">
+        <div class="delete-container">
+            <div class="page-title">
+                <h2>Delete Certificate</h2>
+                <p class="subtitle">Remove a certificate from the system</p>
             </div>
-        </form>
-        {% else %}
-        <div class="alert alert-danger">Certificate not found!</div>
-        <a href="{{ url_for('main.manage_certificates') }}" class="btn btn-primary">Back to Manage Certificates</a>
-        {% endif %}
+            
+            {% if certificate %}
+            <div class="certificate-details-container">
+                <!-- Citizen Information Card -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Citizen Information</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value">{{ citizen.name }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Aadhar No:</span>
+                            <span class="info-value">{{ citizen.aadhar_no }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Certificate Details Card -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <i class="fas fa-certificate"></i>
+                        <h3>Certificate Details</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Certificate ID:</span>
+                            <span class="info-value">{{ certificate.certificate_id }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Certificate Type:</span>
+                            <span class="info-value certificate-type-badge">{{ certificate.certificate_type }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Date of Issue:</span>
+                            <span class="info-value">{{ certificate.date_of_issue }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Warning Box -->
+                <div class="warning-box">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    
+                    <div class="warning-content">
+                        <h3>Warning!</h3>
+                        <p>Are you sure you want to delete this certificate? This action cannot be undone.</p>
+                        <p>Deleting this certificate will permanently remove it from the citizen's records.</p>
+                    </div>
+                </div>
+                
+                <!-- Confirmation Form -->
+                <form method="POST" action="{{ url_for('main.delete_certificate_confirm', certificate_id=certificate.certificate_id) }}" class="confirmation-form">
+                    <div class="form-actions">
+                        <button type="submit" class="btn-danger">
+                            <i class="fas fa-trash-alt"></i> Confirm Delete
+                        </button>
+                        <a href="{{ url_for('main.find_certificates') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div class="alert-container">
+                <div class="alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Certificate not found!</span>
+                </div>
+                
+                <div class="alert-actions">
+                    <a href="{{ url_for('main.manage_certificates') }}" class="btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Manage Certificates
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

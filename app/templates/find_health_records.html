@@ -3,67 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Health Records</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Find Health Records - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/find_health_records.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Find Health Records</h1>
-    
-    <div class="container">
-        <form method="POST" action="{{ url_for('main.find_health_records') }}">
-            <div class="form-group">
-                <label for="aadhar_no">Enter Aadhar No:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="health-container">
+            <div class="page-title">
+                <h2>Find Health Records</h2>
+                <p class="subtitle">Search for citizen health records by Aadhar number</p>
             </div>
             
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Find Records</button>
-                <a href="{{ url_for('main.manage_health_data') }}" class="btn btn-secondary">Cancel</a>
+            <div class="search-section">
+                <form method="POST" action="{{ url_for('main.find_health_records') }}" class="search-form">
+                    <div class="form-group">
+                        <label for="aadhar_no">
+                            <i class="fas fa-id-card"></i> Enter Aadhar No:
+                        </label>
+                        <div class="search-input-group">
+                            <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                            <button type="submit" class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <small class="form-hint">Enter 12-digit Aadhar number to find health records</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-search"></i> Find Records
+                        </button>
+                        <a href="{{ url_for('main.manage_health_data') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
-        
-        {% if citizen %}
-        <div class="citizen-info">
-            <h2>Citizen Information</h2>
-            <p><strong>Name:</strong> {{ citizen.name }}</p>
-            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
-            <p><strong>Status:</strong> {{ "Alive" if citizen.is_alive else "Deceased" }}</p>
+            
+            {% if citizen %}
+            <div class="results-section">
+                <!-- Citizen Information Card -->
+                <div class="citizen-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Citizen Information</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value">{{ citizen.name }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Aadhar No:</span>
+                            <span class="info-value">{{ citizen.aadhar_no }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Status:</span>
+                            <span class="info-value status-badge {% if citizen.is_alive %}alive{% else %}deceased{% endif %}">
+                                {{ "Alive" if citizen.is_alive else "Deceased" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Health Records List -->
+                {% if health_records %}
+                <div class="records-list">
+                    <div class="list-header">
+                        <h3>
+                            <i class="fas fa-notes-medical"></i> Health Records
+                            <span class="count-badge">{{ health_records|length }}</span>
+                        </h3>
+                        
+                        <a href="{{ url_for('main.add_health_data') }}" class="add-btn">
+                            <i class="fas fa-plus"></i> Add New
+                        </a>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="records-table">
+                            <thead>
+                                <tr>
+                                    <th>CheckUp ID</th>
+                                    <th>Medical Condition</th>
+                                    <th>Prescription</th>
+                                    <th>Date of Visit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in health_records %}
+                                <tr>
+                                    <td>{{ record.checkup_id }}</td>
+                                    <td class="condition-cell">{{ record.medical_condition }}</td>
+                                    <td class="prescription-cell">
+                                        <div class="prescription-content">{{ record.prescription }}</div>
+                                        <button class="view-more-btn" onclick="togglePrescription(this)">View More</button>
+                                    </td>
+                                    <td>{{ record.date_of_visit }}</td>
+                                    <td class="actions-cell">
+                                        <a href="{{ url_for('main.modify_health_record', checkup_id=record.checkup_id) }}" class="table-btn edit" title="Modify">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="POST" action="{{ url_for('main.delete_health_record') }}" class="delete-form">
+                                            <input type="hidden" name="checkup_id" value="{{ record.checkup_id }}">
+                                            <button type="submit" class="table-btn delete" title="Delete" onclick="return confirm('Are you sure you want to delete this health record?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-records">
+                    <div class="empty-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <p>No health records found for this citizen.</p>
+                    <a href="{{ url_for('main.add_health_data') }}" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add First Health Record
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
-        
-        {% if health_records %}
-        <h2>Health Records</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>CheckUp ID</th>
-                    <th>Medical Condition</th>
-                    <th>Prescription</th>
-                    <th>Date of Visit</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for record in health_records %}
-                <tr>
-                    <td>{{ record.checkup_id }}</td>
-                    <td>{{ record.medical_condition }}</td>
-                    <td>{{ record.prescription }}</td>
-                    <td>{{ record.date_of_visit }}</td>
-                    <td>
-                        <a href="{{ url_for('main.modify_health_record', checkup_id=record.checkup_id) }}" class="btn btn-sm btn-warning">Modify</a>
-                        <form method="POST" action="{{ url_for('main.delete_health_record') }}" style="display:inline;">
-                            <input type="hidden" name="checkup_id" value="{{ record.checkup_id }}">
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this health record?')">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div class="alert alert-info">No health records found for this citizen.</div>
-        {% endif %}
-        {% endif %}
     </div>
+
+    <script>
+        function togglePrescription(button) {
+            const prescriptionContent = button.previousElementSibling;
+            
+            if (prescriptionContent.style.maxHeight) {
+                prescriptionContent.style.maxHeight = null;
+                button.textContent = "View More";
+            } else {
+                prescriptionContent.style.maxHeight = prescriptionContent.scrollHeight + "px";
+                button.textContent = "View Less";
+            }
+        }
+    </script>
 </body>
 </html>

@@ -3,62 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Certificates</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Find Certificates - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/find_certificates.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Find Certificates</h1>
-    
-    <div class="container">
-        <form method="POST" action="{{ url_for('main.find_certificates') }}">
-            <div class="form-group">
-                <label for="aadhar_no">Enter Aadhar No:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="certificates-container">
+            <div class="page-title">
+                <h2>Find Certificates</h2>
+                <p class="subtitle">Search for citizen certificates by Aadhar number</p>
             </div>
             
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Find Certificates</button>
-                <a href="{{ url_for('main.manage_certificates') }}" class="btn btn-secondary">Cancel</a>
+            <div class="search-section">
+                <form method="POST" action="{{ url_for('main.find_certificates') }}" class="search-form">
+                    <div class="form-group">
+                        <label for="aadhar_no">
+                            <i class="fas fa-id-card"></i> Enter Aadhar No:
+                        </label>
+                        <div class="search-input-group">
+                            <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                            <button type="submit" class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <small class="form-hint">Enter 12-digit Aadhar number to find certificates</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-search"></i> Find Certificates
+                        </button>
+                        <a href="{{ url_for('main.manage_certificates') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
-        
-        {% if citizen %}
-        <div class="citizen-info">
-            <h2>Citizen Information</h2>
-            <p><strong>Name:</strong> {{ citizen.name }}</p>
-            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
-            <p><strong>Status:</strong> {{ "Alive" if citizen.is_alive else "Deceased" }}</p>
+            
+            {% if citizen %}
+            <div class="results-section">
+                <!-- Citizen Information Card -->
+                <div class="citizen-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Citizen Information</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value">{{ citizen.name }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Aadhar No:</span>
+                            <span class="info-value">{{ citizen.aadhar_no }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Status:</span>
+                            <span class="info-value status-badge {% if citizen.is_alive %}alive{% else %}deceased{% endif %}">
+                                {{ "Alive" if citizen.is_alive else "Deceased" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Certificates List -->
+                {% if certificates %}
+                <div class="certificates-list">
+                    <div class="list-header">
+                        <h3>
+                            <i class="fas fa-certificate"></i> Certificates
+                            <span class="count-badge">{{ certificates|length }}</span>
+                        </h3>
+                        
+                        <a href="{{ url_for('main.add_certificate') }}" class="add-btn">
+                            <i class="fas fa-plus"></i> Add New
+                        </a>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="certificates-table">
+                            <thead>
+                                <tr>
+                                    <th>Certificate ID</th>
+                                    <th>Type</th>
+                                    <th>Date of Issue</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cert in certificates %}
+                                <tr>
+                                    <td>{{ cert.certificate_id }}</td>
+                                    <td>
+                                        <span class="certificate-type-badge">{{ cert.certificate_type }}</span>
+                                    </td>
+                                    <td>{{ cert.date_of_issue }}</td>
+                                    <td class="actions-cell">
+                                        <a href="{{ url_for('main.modify_certificate', certificate_id=cert.certificate_id) }}" class="table-btn edit" title="Modify">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ url_for('main.delete_certificate', certificate_id=cert.certificate_id) }}" class="table-btn delete" title="Delete" onclick="return confirm('Are you sure you want to delete this certificate?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-certificates">
+                    <div class="empty-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <p>No certificates found for this citizen.</p>
+                    <a href="{{ url_for('main.add_certificate') }}" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add New Certificate
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
-        
-        {% if certificates %}
-        <h2>Certificates</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Certificate ID</th>
-                    <th>Type</th>
-                    <th>Date of Issue</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cert in certificates %}
-                <tr>
-                    <td>{{ cert.certificate_id }}</td>
-                    <td>{{ cert.certificate_type }}</td>
-                    <td>{{ cert.date_of_issue }}</td>
-                    <td>
-                        <a href="{{ url_for('main.modify_certificate', certificate_id=cert.certificate_id) }}" class="btn btn-sm btn-warning">Modify</a>
-                        <a href="{{ url_for('main.delete_certificate', certificate_id=cert.certificate_id) }}" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div class="alert alert-info">No certificates found for this citizen.</div>
-        {% endif %}
-        {% endif %}
     </div>
 </body>
 </html>

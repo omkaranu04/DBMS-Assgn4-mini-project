@@ -3,53 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modify Certificate</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Modify Certificate - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modify_certificate.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Modify Certificate</h1>
-    
-    <div class="container">
-        {% if certificate %}
-        <div class="citizen-info">
-            <h2>Citizen Information</h2>
-            <p><strong>Name:</strong> {{ citizen.name }}</p>
-            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
-        
-        <form method="POST" action="{{ url_for('main.modify_certificate_submit', certificate_id=certificate.certificate_id) }}">
-            <div class="form-group">
-                <label for="certificate_id">Certificate ID:</label>
-                <input type="text" id="certificate_id" value="{{ certificate.certificate_id }}" disabled>
+    </header>
+
+    <div class="main-content">
+        <div class="certificate-container">
+            <div class="page-title">
+                <h2>Modify Certificate</h2>
+                <p class="subtitle">Update certificate information in the system</p>
             </div>
             
-            <div class="form-group">
-                <label for="certificate_type">Certificate Type:</label>
-                <select id="certificate_type" name="certificate_type" required>
-                    <option value="">--Select--</option>
-                    <option value="Birth" {% if certificate.certificate_type == 'Birth' %}selected{% endif %}>Birth</option>
-                    <option value="Death" {% if certificate.certificate_type == 'Death' %}selected{% endif %}>Death</option>
-                    <option value="Caste" {% if certificate.certificate_type == 'Caste' %}selected{% endif %}>Caste</option>
-                    <option value="Domicile" {% if certificate.certificate_type == 'Domicile' %}selected{% endif %}>Domicile</option>
-                    <option value="Residence" {% if certificate.certificate_type == 'Residence' %}selected{% endif %}>Residence</option>
-                    <option value="Character" {% if certificate.certificate_type == 'Character' %}selected{% endif %}>Character</option>
-                </select>
+            {% if certificate %}
+            <div class="certificate-form-container">
+                <!-- Citizen Information Card -->
+                <div class="citizen-info-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Citizen Information</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value">{{ citizen.name }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Aadhar No:</span>
+                            <span class="info-value">{{ citizen.aadhar_no }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Certificate Form -->
+                <form method="POST" action="{{ url_for('main.modify_certificate_submit', certificate_id=certificate.certificate_id) }}" class="certificate-form">
+                    <div class="form-group">
+                        <label for="certificate_id">
+                            <i class="fas fa-id-card"></i> Certificate ID:
+                        </label>
+                        <input type="text" id="certificate_id" value="{{ certificate.certificate_id }}" class="form-control disabled" disabled>
+                        <small class="form-hint">Certificate ID cannot be changed</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="certificate_type">
+                            <i class="fas fa-certificate"></i> Certificate Type:
+                        </label>
+                        <select id="certificate_type" name="certificate_type" class="form-control" required>
+                            <option value="">--Select--</option>
+                            <option value="Birth" {% if certificate.certificate_type == 'Birth' %}selected{% endif %}>Birth</option>
+                            <option value="Death" {% if certificate.certificate_type == 'Death' %}selected{% endif %}>Death</option>
+                            <option value="Caste" {% if certificate.certificate_type == 'Caste' %}selected{% endif %}>Caste</option>
+                            <option value="Domicile" {% if certificate.certificate_type == 'Domicile' %}selected{% endif %}>Domicile</option>
+                            <option value="Residence" {% if certificate.certificate_type == 'Residence' %}selected{% endif %}>Residence</option>
+                            <option value="Character" {% if certificate.certificate_type == 'Character' %}selected{% endif %}>Character</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date_of_issue">
+                            <i class="fas fa-calendar-alt"></i> Date of Issue:
+                        </label>
+                        <input type="date" id="date_of_issue" name="date_of_issue" value="{{ certificate.date_of_issue }}" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Update Certificate
+                        </button>
+                        <a href="{{ url_for('main.find_certificates') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="date_of_issue">Date of Issue:</label>
-                <input type="date" id="date_of_issue" name="date_of_issue" value="{{ certificate.date_of_issue }}" required>
+            {% else %}
+            <div class="alert-container">
+                <div class="alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Certificate not found!</span>
+                </div>
+                
+                <div class="alert-actions">
+                    <a href="{{ url_for('main.manage_certificates') }}" class="btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Manage Certificates
+                    </a>
+                </div>
             </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update Certificate</button>
-                <a href="{{ url_for('main.find_certificates') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-        {% else %}
-        <div class="alert alert-danger">Certificate not found!</div>
-        <a href="{{ url_for('main.manage_certificates') }}" class="btn btn-primary">Back to Manage Certificates</a>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

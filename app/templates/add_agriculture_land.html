@@ -3,66 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Agricultural Land</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Add Agricultural Land - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_agriculture_land.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Add New Agricultural Land</h1>
-    
-    <div class="container">
-        <form method="POST" action="{{ url_for('main.add_agriculture_land') }}">
-            <div class="form-group">
-                <label for="aadhar_no">Aadhar No:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="land-container">
+            <div class="page-title">
+                <h2>Add New Agricultural Land</h2>
+                <p class="subtitle">Register a new agricultural land record in the system</p>
             </div>
             
-            <div class="form-group">
-                <label for="area_in_acres">Area in Acres:</label>
-                <input type="number" id="area_in_acres" name="area_in_acres" min="1" max="60" required>
-                <small>Must be between 1 and 60 acres</small>
+            <div class="land-form-wrapper">
+                <div class="form-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                
+                <form method="POST" action="{{ url_for('main.add_agriculture_land') }}" class="land-form">
+                    <div class="form-group">
+                        <label for="aadhar_no">
+                            <i class="fas fa-id-card"></i> Aadhar No:
+                        </label>
+                        <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                        <small class="form-hint">Enter 12-digit Aadhar number of the land owner</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="area_in_acres">
+                            <i class="fas fa-ruler-combined"></i> Area in Acres:
+                        </label>
+                        <input type="number" id="area_in_acres" name="area_in_acres" min="1" max="60" class="form-control" required>
+                        <small class="form-hint">Must be between 1 and 60 acres</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="crop_type">
+                            <i class="fas fa-leaf"></i> Crop Type:
+                        </label>
+                        <select id="crop_type" name="crop_type" class="form-control" required>
+                            <option value="">--Select--</option>
+                            <option value="Rice">Rice</option>
+                            <option value="Wheat">Wheat</option>
+                            <option value="Sugarcane">Sugarcane</option>
+                            <option value="Cotton">Cotton</option>
+                            <option value="Jute">Jute</option>
+                            <option value="Maize">Maize</option>
+                            <option value="Millets">Millets</option>
+                            <option value="Pulses">Pulses</option>
+                            <option value="Mustard">Mustard</option>
+                            <option value="Groundnut">Groundnut</option>
+                            <option value="Mango">Mango</option>
+                            <option value="Banana">Banana</option>
+                            <option value="Coconut">Coconut</option>
+                            <option value="Vegetables">Vegetables</option>
+                            <option value="Grapes">Grapes</option>
+                        </select>
+                        <small class="form-hint">Select the primary crop grown on this land</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="soil_type">
+                            <i class="fas fa-mountain"></i> Soil Type:
+                        </label>
+                        <select id="soil_type" name="soil_type" class="form-control" required>
+                            <option value="">--Select--</option>
+                            <option value="Alluvial">Alluvial</option>
+                            <option value="Black">Black</option>
+                            <option value="Red">Red</option>
+                            <option value="Laterite">Laterite</option>
+                            <option value="Peaty Soil">Peaty Soil</option>
+                            <option value="Desert Soil">Desert Soil</option>
+                            <option value="Mountain Soil">Mountain Soil</option>
+                        </select>
+                        <small class="form-hint">Select the soil type of the land</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus-circle"></i> Add Land
+                        </button>
+                        <a href="{{ url_for('main.manage_agriculture_land') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="crop_type">Crop Type:</label>
-                <select id="crop_type" name="crop_type" required>
-                    <option value="">--Select--</option>
-                    <option value="Rice">Rice</option>
-                    <option value="Wheat">Wheat</option>
-                    <option value="Sugarcane">Sugarcane</option>
-                    <option value="Cotton">Cotton</option>
-                    <option value="Jute">Jute</option>
-                    <option value="Maize">Maize</option>
-                    <option value="Millets">Millets</option>
-                    <option value="Pulses">Pulses</option>
-                    <option value="Mustard">Mustard</option>
-                    <option value="Groundnut">Groundnut</option>
-                    <option value="Mango">Mango</option>
-                    <option value="Banana">Banana</option>
-                    <option value="Coconut">Coconut</option>
-                    <option value="Vegetables">Vegetables</option>
-                    <option value="Grapes">Grapes</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="soil_type">Soil Type:</label>
-                <select id="soil_type" name="soil_type" required>
-                    <option value="">--Select--</option>
-                    <option value="Alluvial">Alluvial</option>
-                    <option value="Black">Black</option>
-                    <option value="Red">Red</option>
-                    <option value="Laterite">Laterite</option>
-                    <option value="Peaty Soil">Peaty Soil</option>
-                    <option value="Desert Soil">Desert Soil</option>
-                    <option value="Mountain Soil">Mountain Soil</option>
-                </select>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Add Land</button>
-                <a href="{{ url_for('main.manage_agriculture_land') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
 </body>
 </html>

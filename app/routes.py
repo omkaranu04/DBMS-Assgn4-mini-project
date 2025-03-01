@@ -721,6 +721,16 @@ def add_citizen():
         )
         db.session.add(new_certificate)
 
+        # Check Income for Taxation
+        if income >= 10000:
+            tax_amount = income * 0.18  # Calculate 18% tax
+            new_taxation = Taxation(
+                aadhar_no=aadhar_no,
+                tax_amount=int(tax_amount),
+                payment_status=False  # Default payment status is false
+            )
+            db.session.add(new_taxation)
+
         # Commit Changes
         try:
             db.session.commit()
@@ -1482,7 +1492,7 @@ def add_taxation_data():
     if request.method == 'POST':
         aadhar_no = request.form.get('aadhar_no', '').strip()
         tax_amount = request.form.get('tax_amount', '').strip()
-        payment_status = 'payment_status' in request.form
+        payment_status = False
         
         # Validate inputs
         if not all([aadhar_no, tax_amount]):
@@ -1669,23 +1679,29 @@ def manage_complaints():
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'delete':
-            # Delete complaint logic with password confirmation
+            # Delete complaint logic
             complaint_id = request.form.get('complaint_id')
-            password = request.form.get('password')
             
-            # Validate password (this is just an example, replace with real validation)
-            if password == session['user_password']:
-                complaint = Complaints.query.filter_by(complaint_id=complaint_id).first()
-                if complaint:
-                    db.session.delete(complaint)
-                    db.session.commit()
-                    flash("Complaint deleted successfully!", "success")
-                else:
-                    flash("Complaint not found!", "danger")
+            # Find the complaint by ID
+            complaint = Complaints.query.filter_by(complaint_id=complaint_id).first()
+            if complaint:
+                db.session.delete(complaint)
+                db.session.commit()
+                flash("Complaint deleted successfully!", "success")
             else:
-                flash("Incorrect password!", "danger")
+                flash("Complaint not found!", "danger")
 
-    complaints_list = Complaints.query.all()
+    # Query to get complaint details along with citizen and resource names
+    complaints_list = db.session.query(
+        Complaints.complaint_id,
+        Resources.resource_name,
+        Citizens.name.label('citizen_name'),
+        Complaints.complaint_desc,
+        Complaints.complain_date
+    ).join(Citizens, Citizens.aadhar_no == Complaints.aadhar_no) \
+     .join(Resources, Resources.resource_id == Complaints.resource_id) \
+     .all()
+
     return render_template('manage_complaints.html', complaints=complaints_list)
 
 @main_bp.route('/manage_resources', methods=['GET', 'POST'])
@@ -1704,7 +1720,7 @@ def manage_resources():
             flash("Resource added successfully!", "success")
 
         elif action == 'delete':
-            # Delete resource logic with password confirmation
+            # Delete resource logic
             resource_id = request.form.get('resource_id')
             resource = Resources.query.filter_by(resource_id=resource_id).first()
             if resource:
@@ -1713,7 +1729,18 @@ def manage_resources():
                 flash("Resource deleted successfully!", "success")
             else:
                 flash("Resource not found!", "danger")
-            
+
+        elif action == 'edit':
+            # Edit resource logic
+            resource_id = request.form.get('resource_id')
+            new_inspection_date = request.form.get('last_inspected_date')
+            resource = Resources.query.filter_by(resource_id=resource_id).first()
+            if resource:
+                resource.last_inspected_date = new_inspection_date
+                db.session.commit()
+                flash("Resource updated successfully!", "success")
+            else:
+                flash("Resource not found!", "danger")
 
     # Fetch all resources for display
     resources_list = Resources.query.all()

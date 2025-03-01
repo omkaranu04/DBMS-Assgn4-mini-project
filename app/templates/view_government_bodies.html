@@ -1,100 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>View Government Bodies</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Government Bodies - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view_government_bodies.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
-{% block content %}
-<div class="container mt-4">
-  <h2>Government Bodies</h2>
-
-  <!-- Existing Government Bodies Table -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">Existing Government Institutions</h5>
-    </div>
-    <div class="card-body">
-      {% if institutions %}
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Institution Type</th>
-            <th>Institution Name</th>
-            <th>Location</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for institution in institutions %}
-          <tr>
-            <td>{{ institution[0] }}</td>
-            <td>{{ institution[1] }}</td>
-            <td>{{ institution[2] }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <p class="text-muted">No government bodies found.</p>
-      {% endif %}
-    </div>
-  </div>
-
-  <!-- Add New Government Institution Form -->
-  <div class="card mb-4">
-    <div class="card-header">
-      <h5 class="mb-0">Add New Government Institution</h5>
-    </div>
-    <div class="card-body">
-      <form
-        action="{{ url_for('main.add_government_institution') }}"
-        method="post"
-      >
-        <div class="form-group mb-3">
-          <label for="institute_type">Institution Type:</label>
-          <select
-            class="form-control"
-            id="institute_type"
-            name="institute_type"
-            required
-          >
-            <option value="">-- Select Type --</option>
-            <option value="Educational">Educational</option>
-            <option value="Health">Health</option>
-            <option value="Banking">Banking</option>
-            <option value="Administration">Administration</option>
-          </select>
+<body>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
+    </header>
 
-        <div class="form-group mb-3">
-          <label for="institute_name">Institution Name:</label>
-          <input
-            type="text"
-            class="form-control"
-            id="institute_name"
-            name="institute_name"
-            required
-          />
+    <div class="main-content">
+        <div class="bodies-container">
+            <div class="page-title">
+                <h2>Government Bodies</h2>
+                <p class="subtitle">View and manage government institutions in the village</p>
+            </div>
+            
+            <!-- Existing Government Bodies Table -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-building"></i>
+                    <h3>Existing Government Institutions</h3>
+                </div>
+                <div class="card-body">
+                    {% if institutions %}
+                    <div class="table-responsive">
+                        <table class="institutions-table">
+                            <thead>
+                                <tr>
+                                    <th>Institution Type</th>
+                                    <th>Institution Name</th>
+                                    <th>Location</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for institution in institutions %}
+                                <tr>
+                                    <td>
+                                        <span class="institution-badge">{{ institution[0] }}</span>
+                                    </td>
+                                    <td>{{ institution[1] }}</td>
+                                    <td>{{ institution[2] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-institutions">
+                        <div class="empty-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <p>No government bodies found.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Add New Government Institution Form -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Add New Government Institution</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('main.add_government_institution') }}" method="post" class="institution-form">
+                        <div class="form-group">
+                            <label for="institute_type">
+                                <i class="fas fa-sitemap"></i> Institution Type:
+                            </label>
+                            <select class="form-control" id="institute_type" name="institute_type" required>
+                                <option value="">-- Select Type --</option>
+                                <option value="Educational">Educational</option>
+                                <option value="Health">Health</option>
+                                <option value="Banking">Banking</option>
+                                <option value="Administration">Administration</option>
+                            </select>
+                            <small class="form-hint">Select the category of the institution</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="institute_name">
+                                <i class="fas fa-signature"></i> Institution Name:
+                            </label>
+                            <input type="text" class="form-control" id="institute_name" name="institute_name" required />
+                            <small class="form-hint">Enter the official name of the institution</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="institute_location">
+                                <i class="fas fa-map-marker-alt"></i> Location:
+                            </label>
+                            <input type="text" class="form-control" id="institute_location" name="institute_location" required />
+                            <small class="form-hint">Enter the physical location or address</small>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus"></i> Add Institution
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="back-section">
+                <a href="{{ url_for('main.dashboard_employees') }}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
         </div>
-
-        <div class="form-group mb-3">
-          <label for="institute_location">Location:</label>
-          <input
-            type="text"
-            class="form-control"
-            id="institute_location"
-            name="institute_location"
-            required
-          />
-        </div>
-
-        <button type="submit" class="btn btn-primary">Add Institution</button>
-      </form>
     </div>
-  </div>
-
-  <a href="{{ url_for('main.dashboard_employees') }}" class="btn btn-secondary"
-    >Back to Dashboard</a
-  >
-</div>
-{% endblock %}
+</body>
+</html>

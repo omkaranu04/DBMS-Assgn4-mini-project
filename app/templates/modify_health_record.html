@@ -3,50 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modify Health Record</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Modify Health Record - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modify_health_record.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Modify Health Record</h1>
-    
-    <div class="container">
-        {% if record %}
-        <div class="citizen-info">
-            <h2>Citizen Information</h2>
-            <p><strong>Name:</strong> {{ citizen.name }}</p>
-            <p><strong>Aadhar No:</strong> {{ citizen.aadhar_no }}</p>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
-        
-        <form method="POST" action="{{ url_for('main.modify_health_record_submit', checkup_id=record.checkup_id) }}">
-            <div class="form-group">
-                <label for="checkup_id">CheckUp ID:</label>
-                <input type="text" id="checkup_id" value="{{ record.checkup_id }}" disabled>
+    </header>
+
+    <div class="main-content">
+        <div class="health-container">
+            <div class="page-title">
+                <h2>Modify Health Record</h2>
+                <p class="subtitle">Update existing health information for a citizen</p>
             </div>
             
-            <div class="form-group">
-                <label for="medical_condition">Medical Condition:</label>
-                <input type="text" id="medical_condition" name="medical_condition" value="{{ record.medical_condition }}" required>
+            {% if record %}
+            <div class="health-form-wrapper">
+                <!-- Citizen Information Card -->
+                <div class="citizen-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Citizen Information</h3>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value">{{ citizen.name }}</span>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-label">Aadhar No:</span>
+                            <span class="info-value">{{ citizen.aadhar_no }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Health Record Form -->
+                <form method="POST" action="{{ url_for('main.modify_health_record_submit', checkup_id=record.checkup_id) }}" class="health-form">
+                    <div class="form-group">
+                        <label for="checkup_id">
+                            <i class="fas fa-hashtag"></i> CheckUp ID:
+                        </label>
+                        <input type="text" id="checkup_id" value="{{ record.checkup_id }}" class="form-control disabled" disabled>
+                        <small class="form-hint">CheckUp ID cannot be changed</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medical_condition">
+                            <i class="fas fa-heartbeat"></i> Medical Condition:
+                        </label>
+                        <input type="text" id="medical_condition" name="medical_condition" value="{{ record.medical_condition }}" class="form-control" required>
+                        <small class="form-hint">Enter the diagnosed medical condition or disease</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prescription">
+                            <i class="fas fa-prescription"></i> Prescription:
+                        </label>
+                        <textarea id="prescription" name="prescription" rows="4" class="form-control" required>{{ record.prescription }}</textarea>
+                        <small class="form-hint">Enter medication details, dosage, and treatment instructions</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date_of_visit">
+                            <i class="fas fa-calendar-alt"></i> Date of Visit:
+                        </label>
+                        <input type="date" id="date_of_visit" name="date_of_visit" value="{{ record.date_of_visit }}" class="form-control" required>
+                        <small class="form-hint">Enter the date when the citizen visited for treatment</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Update Health Record
+                        </button>
+                        <a href="{{ url_for('main.find_health_records') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="prescription">Prescription:</label>
-                <textarea id="prescription" name="prescription" rows="4" required>{{ record.prescription }}</textarea>
+            {% else %}
+            <div class="alert-container">
+                <div class="alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Health record not found!</span>
+                </div>
+                
+                <div class="alert-actions">
+                    <a href="{{ url_for('main.manage_health_data') }}" class="btn-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Manage Health Data
+                    </a>
+                </div>
             </div>
-            
-            <div class="form-group">
-                <label for="date_of_visit">Date of Visit:</label>
-                <input type="date" id="date_of_visit" name="date_of_visit" value="{{ record.date_of_visit }}" required>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Update Health Record</button>
-                <a href="{{ url_for('main.find_health_records') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-        {% else %}
-        <div class="alert alert-danger">Health record not found!</div>
-        <a href="{{ url_for('main.manage_health_data') }}" class="btn btn-primary">Back to Manage Health Data</a>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

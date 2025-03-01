@@ -1,61 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Manage Complaints</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Complaints - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_complaints.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Manage Complaints</h1>
-
-        <!-- Delete Complaint Form -->
-        <h2>Delete Complaint</h2>
-        <form method="POST">
-            <input type="hidden" name="action" value="delete">
-            <label for="complaint_id">Complaint ID:</label>
-            <input type="text" id="complaint_id" name="complaint_id" required><br><br>
-
-            <!-- Password Confirmation -->
-            <label for="password">Confirm Your Password:</label>
-            <input type="password" id="password" name="password" required><br><br>
-
-            <button type="submit" class="btn btn-danger">Delete Complaint</button>
-        </form>
-
-        <!-- View All Complaints -->
-        <h2>All Complaints</h2>
-        {% if complaints %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Complaint ID</th>
-                    <th>Resource Name</th>
-                    <th>Citizen Name</th>
-                    <th>Description</th>
-                    <th>Date Filed</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for complaint in complaints %}
-                <tr>
-                    <td>{{ complaint.Complaint_ID }}</td>
-                    <td>{{ complaint.Resource_Name }}</td>
-                    <td>{{ complaint.Citizen_Name }}</td>
-                    <td>{{ complaint.Complaint_Desc }}</td>
-                    <td>{{ complaint.Complain_Date }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <p>No complaints found.</p>
-        {% endif %}
-
-        <!-- Back Button -->
-        <div class="mt-3">
-            <a href="{{ url_for('main.dashboard_employees') }}" class="btn btn-secondary">Back to Dashboard</a>
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">Login</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
         </div>
+    </header>
 
+    <div class="main-content">
+        <div class="complaints-container">
+            <div class="page-title">
+                <h2>Manage Complaints</h2>
+                <p class="subtitle">View and resolve citizen complaints about village resources</p>
+            </div>
+            
+            <!-- Delete Complaint Form -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-trash-alt"></i>
+                    <h3>Delete Complaint</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" class="complaint-form">
+                        <input type="hidden" name="action" value="delete">
+                        
+                        <div class="form-group">
+                            <label for="complaint_id">
+                                <i class="fas fa-hashtag"></i> Complaint ID:
+                            </label>
+                            <input type="text" id="complaint_id" name="complaint_id" class="form-control" required>
+                            <small class="form-hint">Enter the ID of the complaint to delete</small>
+                        </div>
+                        
+                        <button type="submit" class="btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete Complaint
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- View All Complaints -->
+            <div class="complaints-section">
+                <div class="section-header">
+                    <h3>
+                        <i class="fas fa-exclamation-circle"></i> All Complaints
+                        <span class="count-badge">{{ complaints|length if complaints else 0 }}</span>
+                    </h3>
+                </div>
+                
+                {% if complaints %}
+                    <div class="table-responsive">
+                        <table class="complaints-table">
+                            <thead>
+                                <tr>
+                                    <th>Complaint ID</th>
+                                    <th>Resource Name</th>
+                                    <th>Citizen Name</th>
+                                    <th>Complaint Description</th>
+                                    <th>Complaint Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for complaint in complaints %}
+                                <tr>
+                                    <td>{{ complaint.complaint_id }}</td>
+                                    <td>{{ complaint.resource_name }}</td>
+                                    <td>{{ complaint.citizen_name }}</td>
+                                    <td class="description-cell">{{ complaint.complaint_desc }}</td>
+                                    <td>{{ complaint.complain_date }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                <div class="empty-complaints">
+                    <div class="empty-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <p>No complaints found. All is well in the village!</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Back Button -->
+            <div class="back-section">
+                <a href="{{ url_for('main.dashboard_employees') }}" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

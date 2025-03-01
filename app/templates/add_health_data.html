@@ -3,39 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Health Data</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Add Health Data - GPMS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_health_data.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <h1>Add New Health Data</h1>
-    
-    <div class="container">
-        <form method="POST" action="{{ url_for('main.add_health_data') }}">
-            <div class="form-group">
-                <label for="aadhar_no">Aadhar No:</label>
-                <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+    <header>
+        <h1>GPMS - The Smart Way to Handle a Village</h1>
+        <div class="header-buttons">
+            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="javascript:history.back()" class="btn">Go Back</a>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="health-container">
+            <div class="page-title">
+                <h2>Add New Health Data</h2>
+                <p class="subtitle">Create a new health record for a citizen</p>
             </div>
             
-            <div class="form-group">
-                <label for="medical_condition">Medical Condition:</label>
-                <input type="text" id="medical_condition" name="medical_condition" required>
+            <div class="health-form-wrapper">
+                <div class="form-icon">
+                    <i class="fas fa-notes-medical"></i>
+                </div>
+                
+                <form method="POST" action="{{ url_for('main.add_health_data') }}" class="health-form">
+                    <div class="form-group">
+                        <label for="aadhar_no">
+                            <i class="fas fa-id-card"></i> Aadhar No:
+                        </label>
+                        <input type="text" id="aadhar_no" name="aadhar_no" class="form-control" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                        <small class="form-hint">Enter 12-digit Aadhar number of the citizen</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="medical_condition">
+                            <i class="fas fa-heartbeat"></i> Medical Condition:
+                        </label>
+                        <input type="text" id="medical_condition" name="medical_condition" class="form-control" required>
+                        <small class="form-hint">Enter the diagnosed medical condition or disease</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="prescription">
+                            <i class="fas fa-prescription"></i> Prescription:
+                        </label>
+                        <textarea id="prescription" name="prescription" rows="4" class="form-control" required></textarea>
+                        <small class="form-hint">Enter medication details, dosage, and treatment instructions</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date_of_visit">
+                            <i class="fas fa-calendar-alt"></i> Date of Visit:
+                        </label>
+                        <input type="date" id="date_of_visit" name="date_of_visit" class="form-control" required>
+                        <small class="form-hint">Enter the date when the citizen visited for treatment</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus-circle"></i> Add Health Record
+                        </button>
+                        <a href="{{ url_for('main.manage_health_data') }}" class="btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
-            
-            <div class="form-group">
-                <label for="prescription">Prescription:</label>
-                <textarea id="prescription" name="prescription" rows="4" required></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="date_of_visit">Date of Visit:</label>
-                <input type="date" id="date_of_visit" name="date_of_visit" required>
-            </div>
-            
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Add Health Record</button>
-                <a href="{{ url_for('main.manage_health_data') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        </div>
     </div>
 </body>
 </html>
