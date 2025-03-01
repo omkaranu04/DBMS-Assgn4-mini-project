@@ -12,6 +12,7 @@
         <h1>GPMS - The Smart Way to Handle a Village</h1>
         <div class="header-buttons">
             <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+            <a href="{{ url_for('main.about_us') }}" class="btn">About Us</a>
         </div>
     </header>
 
@@ -291,6 +292,148 @@
                     {% endif %}
                 </div>
             </div>
+
+            <!-- Government Institutions Section -->
+            <div class="profile-card">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <i class="fas fa-building section-icon"></i>
+                    <h3>Government Institutions</h3>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </div>
+                <div class="section-body">
+                    <!-- Tab Navigation -->
+                    <div class="institutions-tabs">
+                        <button class="tab-btn active" onclick="showInstitutionTab('educational')">
+                            <i class="fas fa-graduation-cap"></i> Educational
+                        </button>
+                        <button class="tab-btn" onclick="showInstitutionTab('health')">
+                            <i class="fas fa-hospital"></i> Health
+                        </button>
+                        <button class="tab-btn" onclick="showInstitutionTab('banking')">
+                            <i class="fas fa-university"></i> Banking
+                        </button>
+                        <button class="tab-btn" onclick="showInstitutionTab('administrative')">
+                            <i class="fas fa-landmark"></i> Administrative
+                        </button>
+                    </div>
+                    
+                    <!-- Educational Institutions Tab -->
+                    <div id="educational-tab" class="institution-tab-content active">
+                        <h4 class="institution-category-title"><i class="fas fa-graduation-cap"></i> Educational Institutions</h4>
+                        {% if education_institutions %}
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for institute in education_institutions %}
+                                    <tr>
+                                        <td>{{ institute[0] }}</td>
+                                        <td>{{ institute[1] }}</td>
+                                        <td>{{ institute[2] }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="empty-message">No educational institutions found.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Health Institutions Tab -->
+                    <div id="health-tab" class="institution-tab-content">
+                        <h4 class="institution-category-title"><i class="fas fa-hospital"></i> Health Institutions</h4>
+                        {% if health_institutions %}
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for institute in health_institutions %}
+                                    <tr>
+                                        <td>{{ institute[0] }}</td>
+                                        <td>{{ institute[1] }}</td>
+                                        <td>{{ institute[2] }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="empty-message">No health institutions found.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Banking Institutions Tab -->
+                    <div id="banking-tab" class="institution-tab-content">
+                        <h4 class="institution-category-title"><i class="fas fa-university"></i> Banking Institutions</h4>
+                        {% if banking_institutions %}
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for institute in banking_institutions %}
+                                    <tr>
+                                        <td>{{ institute[0] }}</td>
+                                        <td>{{ institute[1] }}</td>
+                                        <td>{{ institute[2] }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="empty-message">No banking institutions found.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Administrative Institutions Tab -->
+                    <div id="administrative-tab" class="institution-tab-content">
+                        <h4 class="institution-category-title"><i class="fas fa-landmark"></i> Administrative Institutions</h4>
+                        {% if admin_institutions %}
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for institute in admin_institutions %}
+                                    <tr>
+                                        <td>{{ institute[0] }}</td>
+                                        <td>{{ institute[1] }}</td>
+                                        <td>{{ institute[2] }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="empty-message">No administrative institutions found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -302,6 +445,27 @@
             // Find the next sibling (section-body) and toggle its active class
             const sectionBody = header.nextElementSibling;
             sectionBody.classList.toggle('active');
+        }
+        
+        // Institution tabs functionality
+        function showInstitutionTab(tabName) {
+            // Hide all tabs
+            const tabContents = document.querySelectorAll('.institution-tab-content');
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Add active class to clicked button
+            event.currentTarget.classList.add('active');
         }
     </script>
 </body>

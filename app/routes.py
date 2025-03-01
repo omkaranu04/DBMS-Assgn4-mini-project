@@ -16,30 +16,35 @@ def login():
         password = form.password.data.strip()
         user_type = form.user_type.data.strip()
 
-        if user_type in ['System Administrator', 'Government Official']:
+        if user_type == 'System Administrator':
             user = SystemUsersTop.query.filter_by(username=username).first()
             
-            if user and user.password == password:
-                session['user'] = username  # Store session info for logged-in user.
-                
-                # Check user_type and redirect accordingly
-                if user_type == 'System Administrator':
-                    return redirect(url_for('main.dashboard_administrator'))
-                elif user_type == 'Government Official':
-                    return redirect(url_for('main.dashboard_official'))
+            if user and user.password == password and user.user_type == 'System Administrator':
+                session['user'] = username
+                session['user_type'] = 'System Administrator'  # Store user type in session
+                return redirect(url_for('main.dashboard_administrator'))
             else:
-                flash('Invalid credentials for System Administrator or Government Official.', 'danger')
-                return redirect(url_for('main.login'))
+                flash('Invalid credentials for System Administrator.', 'danger')
+        
+        elif user_type == 'Government Official':
+            user = SystemUsersTop.query.filter_by(username=username).first()
+            
+            if user and user.password == password and user.user_type == 'Government Official':
+                session['user'] = username
+                session['user_type'] = 'Government Official'  # Store user type in session
+                return redirect(url_for('main.dashboard_official'))
+            else:
+                flash('Invalid credentials for Government Official.', 'danger')
 
         elif user_type == 'Panchayat Employee':
             user = PanchayatUsers.query.filter_by(username=username).first()
             
             if user and user.password == password:
-                session['user'] = username  # Store session info for logged-in user.
+                session['user'] = username
+                session['user_type'] = 'Panchayat Employee'  # Store user type in session
                 return redirect(url_for('main.dashboard_employees'))
             else:
                 flash('Invalid credentials for Panchayat Employee.', 'danger')
-                return redirect(url_for('main.login'))
 
         elif user_type == 'Citizen':
             citizen_user = Citizens.query.filter_by(aadhar_no=username).first()
@@ -47,15 +52,14 @@ def login():
             if citizen_user:                                                                                            
                 expected_password = f"{username[:4]}@{citizen_user.phone_no[-4:]}"
                 if password == expected_password:
-                    session['user'] = username  # Store session info for logged-in user.
+                    session['user'] = username
+                    session['user_type'] = 'Citizen'  # Store user type in session
                     return redirect(url_for('main.citizen', aadhar_no=username))
             
             flash('Invalid credentials for Citizen.', 'danger')
-            return redirect(url_for('main.login'))
 
         else:
             flash('Invalid User Type selected.', 'danger')
-            return redirect(url_for('main.login'))
 
     return render_template('login.html', form=form)
 

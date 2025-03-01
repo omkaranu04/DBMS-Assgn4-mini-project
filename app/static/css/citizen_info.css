@@ -329,6 +329,65 @@ textarea.form-control {
     padding: 20px;
 }
 
+/* Government Institution Tabs */
+.institutions-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e1e4e8;
+    padding-bottom: 15px;
+}
+
+.tab-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-weight: 600;
+    color: #495057;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.tab-btn i {
+    color: #0056b3;
+}
+
+.tab-btn.active {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    color: white;
+}
+
+.tab-btn.active i {
+    color: white;
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #e9ecef;
+}
+
+.institution-tab-content {
+    display: none;
+}
+
+.institution-tab-content.active {
+    display: block;
+}
+
+.institution-category-title {
+    color: #0056b3;
+    margin: 0 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1em;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     header h1 {
@@ -353,6 +412,14 @@ textarea.form-control {
         grid-template-columns: 1fr;
     }
 
+    .institutions-tabs {
+        justify-content: center;
+    }
+    
+    .tab-btn {
+        font-size: 0.9em;
+        padding: 8px 12px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -375,5 +442,14 @@ textarea.form-control {
     .main-content {
         padding-top: 130px;
     }
-
+    
+    .institutions-tabs {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .tab-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
