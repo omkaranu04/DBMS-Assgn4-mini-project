@@ -901,6 +901,8 @@ def delete_citizen_confirm(aadhar_no):
         # Delete complaints
         Complaints.query.filter_by(aadhar_no=aadhar_no).delete()
         
+        PanchayatUsers.query.filter_by(aadhar_no=aadhar_no).delete()
+        
         # Delete welfare scheme enrollments
         db.session.execute(
             text("DELETE FROM Avails WHERE Aadhar_No = :aadhar_no"),
@@ -2294,6 +2296,13 @@ def process_death_declaration():
             VALUES (:aadhar_no, 'Death', :death_date)
             """),
             {'aadhar_no': aadhar_no, 'death_date': death_date}
+        )
+        
+        db.session.execute(
+           text("""
+            DELETE FROM Panchayat_Users WHERE Aadhar_No = :aadhar_no
+            """),
+           {'aadhar_no': aadhar_no}
         )
         
         db.session.commit()
