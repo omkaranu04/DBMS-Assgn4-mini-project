@@ -47,6 +47,16 @@
                 
                 <!-- Certificate Form -->
                 <form method="POST" action="{{ url_for('main.modify_certificate_submit', certificate_id=certificate.certificate_id) }}" class="certificate-form">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
                     <div class="form-group">
                         <label for="certificate_id">
                             <i class="fas fa-id-card"></i> Certificate ID:

@@ -905,6 +905,10 @@ def add_certificate():
     if 'user' not in session:
         return redirect(url_for('main.login'))
     
+    error_message = None
+    # Get aadhar_no from query parameter if provided
+    prefilled_aadhar = request.args.get('aadhar_no', '')
+    
     if request.method == 'POST':
         aadhar_no = request.form.get('aadhar_no', '').strip()
         certificate_type = request.form.get('certificate_type', '').strip()
@@ -912,20 +916,48 @@ def add_certificate():
         
         # Validate inputs
         if not all([aadhar_no, certificate_type, date_of_issue]):
-            flash("All fields are required!", "danger")
-            return redirect(url_for('main.add_certificate'))
+            error_message = "All fields are required!"
+            return render_template('add_certificate.html', error_message=error_message, prefilled_aadhar=aadhar_no)
         
         # Check if citizen exists
         citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
-        if not citizen:
-            flash("Citizen with this Aadhar number does not exist!", "danger")
-            return redirect(url_for('main.add_certificate'))
         
-        # Special handling for Death certificates
-        if certificate_type == 'Death' and citizen.is_alive:
-            # Update citizen status to deceased
-            citizen.is_alive = False
+        if not citizen:
+            error_message = "Citizen with this Aadhar number does not exist!"
+            return render_template('add_certificate.html', error_message=error_message, prefilled_aadhar=aadhar_no)
+        
+        # Check for duplicate birth certificate
+        if certificate_type == 'Birth':
+            existing_birth = Certificates.query.filter_by(
+                aadhar_no=aadhar_no, 
+                certificate_type='Birth'
+            ).first()
             
+            if existing_birth:
+                error_message = "Birth certificate already exists for this citizen!"
+                return render_template('add_certificate.html', error_message=error_message, prefilled_aadhar=aadhar_no)
+            
+            # Validate birth certificate date matches DOB
+            if date_of_issue != citizen.dob.strftime('%Y-%m-%d'):
+                error_message = "For birth certificates, the date of issue must be the same as the citizen's date of birth!"
+                return render_template('add_certificate.html', error_message=error_message, prefilled_aadhar=aadhar_no)
+
+        
+        # Check for duplicate death certificate
+        if certificate_type == 'Death':
+            existing_death = Certificates.query.filter_by(
+                aadhar_no=aadhar_no, 
+                certificate_type='Death'
+            ).first()
+            
+            if existing_death:
+                error_message = "Death certificate already exists for this citizen!"
+                return render_template('add_certificate.html', error_message=error_message, prefilled_aadhar=aadhar_no)
+            
+            # Update citizen status to deceased
+            if citizen.is_alive:
+                citizen.is_alive = False
+        
         try:
             # Create new certificate
             new_certificate = Certificates(
@@ -936,16 +968,14 @@ def add_certificate():
             
             db.session.add(new_certificate)
             db.session.commit()
-            
             flash("Certificate added successfully!", "success")
-            return redirect(url_for('main.manage_certificates'))
-            
+            return redirect(url_for('main.find_certificates'))
         except Exception as e:
             db.session.rollback()
-            flash(f"Error adding certificate: {str(e)}", "danger")
-            return redirect(url_for('main.add_certificate'))
+            error_message = f"Error adding certificate: {str(e)}"
+            return render_template('add_certificate.html', error_message=error_message, prefilled_aadhar=aadhar_no)
     
-    return render_template('add_certificate.html')
+    return render_template('add_certificate.html', error_message=error_message, prefilled_aadhar=prefilled_aadhar)
 
 @main_bp.route('/find_certificates', methods=['GET', 'POST'])
 def find_certificates():
@@ -954,24 +984,27 @@ def find_certificates():
     
     citizen = None
     certificates = None
+    error_message = None
     
     if request.method == 'POST':
         aadhar_no = request.form.get('aadhar_no', '').strip()
         
         if not aadhar_no:
-            flash("Aadhar number is required!", "danger")
-            return redirect(url_for('main.find_certificates'))
-        
-        # Find citizen
-        citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
-        if not citizen:
-            flash("Citizen with this Aadhar number does not exist!", "danger")
-            return redirect(url_for('main.find_certificates'))
-        
-        # Get certificates for this citizen
-        certificates = Certificates.query.filter_by(aadhar_no=aadhar_no).all()
+            error_message = "Aadhar number is required!"
+        else:
+            # Find citizen
+            citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
+            
+            if not citizen:
+                error_message = "Citizen with this Aadhar number does not exist!"
+            else:
+                # Get certificates for this citizen
+                certificates = Certificates.query.filter_by(aadhar_no=aadhar_no).all()
     
-    return render_template('find_certificates.html', citizen=citizen, certificates=certificates)
+    return render_template('find_certificates.html', 
+                          citizen=citizen, 
+                          certificates=certificates, 
+                          error_message=error_message)
 
 @main_bp.route('/modify_certificate/<int:certificate_id>', methods=['GET'])
 def modify_certificate(certificate_id):
@@ -987,7 +1020,7 @@ def modify_certificate(certificate_id):
     
     return render_template('modify_certificate.html', certificate=certificate, citizen=citizen)
 
-@main_bp.route('/modify_certificate_submit/<int:certificate_id>', methods=['POST'])
+@main_bp.route('/modify_certificate_submit/<certificate_id>', methods=['POST'])
 def modify_certificate_submit(certificate_id):
     if 'user' not in session:
         return redirect(url_for('main.login'))
@@ -1005,18 +1038,25 @@ def modify_certificate_submit(certificate_id):
             flash("All fields are required!", "danger")
             return redirect(url_for('main.modify_certificate', certificate_id=certificate_id))
         
+        # Get citizen for DOB validation
+        citizen = Citizens.query.filter_by(aadhar_no=certificate.aadhar_no).first()
+        
+        # Validate birth certificate date matches DOB
+        if certificate_type == 'Birth':
+            if date_of_issue != citizen.dob.strftime('%Y-%m-%d'):
+                flash("For birth certificates, the date of issue must be the same as the citizen's date of birth!", "danger")
+                return redirect(url_for('main.modify_certificate', certificate_id=certificate_id))
+
         # Update certificate
         certificate.certificate_type = certificate_type
         certificate.date_of_issue = date_of_issue
         
         # Special handling for Death certificates
         if certificate_type == 'Death':
-            citizen = Citizens.query.filter_by(aadhar_no=certificate.aadhar_no).first()
             if citizen and citizen.is_alive:
                 citizen.is_alive = False
         
         db.session.commit()
-        
         flash("Certificate updated successfully!", "success")
         return redirect(url_for('main.find_certificates'))
         
@@ -1116,6 +1156,19 @@ def add_welfare_scheme():
             flash("All fields are required!", "danger")
             return redirect(url_for('main.add_welfare_scheme'))
         
+        # Check for duplicate scheme description (case-insensitive)
+        existing_scheme = db.session.execute(
+            text("SELECT * FROM Welfare_Schemes WHERE LOWER(scheme_description) = LOWER(:description)"),
+            {"description": description}
+        ).fetchone()
+        
+        if existing_scheme:
+            flash("A welfare scheme with this description already exists!", "danger")
+            return render_template('add_welfare_scheme.html', 
+                                  scheme_type=scheme_type, 
+                                  budget=budget, 
+                                  description=description)
+        
         try:
             # Create new welfare scheme
             new_scheme = Welfare_Schemes(
@@ -1126,10 +1179,8 @@ def add_welfare_scheme():
             
             db.session.add(new_scheme)
             db.session.commit()
-            
             flash("Welfare Scheme added successfully!", "success")
             return redirect(url_for('main.manage_welfare_schemes'))
-            
         except Exception as e:
             db.session.rollback()
             flash(f"Error adding welfare scheme: {str(e)}", "danger")
@@ -1149,7 +1200,7 @@ def modify_welfare_scheme(scheme_id):
     
     return render_template('modify_welfare_scheme.html', scheme=scheme)
 
-@main_bp.route('/modify_welfare_scheme_submit/<int:scheme_id>', methods=['POST'])
+@main_bp.route('/modify_welfare_scheme_submit/<scheme_id>', methods=['POST'])
 def modify_welfare_scheme_submit(scheme_id):
     if 'user' not in session:
         return redirect(url_for('main.login'))
@@ -1168,16 +1219,28 @@ def modify_welfare_scheme_submit(scheme_id):
             flash("All fields are required!", "danger")
             return redirect(url_for('main.modify_welfare_scheme', scheme_id=scheme_id))
         
+        # Check for duplicate scheme description (case-insensitive), excluding current scheme
+        existing_scheme = db.session.execute(
+            text("""
+                SELECT * FROM Welfare_Schemes 
+                WHERE LOWER(scheme_description) = LOWER(:description) 
+                AND scheme_id != :scheme_id
+            """),
+            {"description": description, "scheme_id": scheme_id}
+        ).fetchone()
+        
+        if existing_scheme:
+            flash("A welfare scheme with this description already exists!", "danger")
+            return redirect(url_for('main.modify_welfare_scheme', scheme_id=scheme_id))
+        
         # Update scheme
         scheme.scheme_type = scheme_type
         scheme.budget = budget
         scheme.scheme_description = description
         
         db.session.commit()
-        
         flash("Welfare Scheme updated successfully!", "success")
         return redirect(url_for('main.manage_welfare_schemes'))
-        
     except Exception as e:
         db.session.rollback()
         flash(f"Error updating welfare scheme: {str(e)}", "danger")
@@ -1335,22 +1398,33 @@ def add_health_data():
     if 'user' not in session:
         return redirect(url_for('main.login'))
     
+    error_message = None
+    form_data = {}
+    
     if request.method == 'POST':
         aadhar_no = request.form.get('aadhar_no', '').strip()
         medical_condition = request.form.get('medical_condition', '').strip()
         prescription = request.form.get('prescription', '').strip()
         date_of_visit = request.form.get('date_of_visit', '').strip()
         
+        # Save form data to repopulate fields
+        form_data = {
+            'aadhar_no': aadhar_no,
+            'medical_condition': medical_condition,
+            'prescription': prescription,
+            'date_of_visit': date_of_visit
+        }
+        
         # Validate inputs
         if not all([aadhar_no, medical_condition, prescription, date_of_visit]):
-            flash("All fields are required!", "danger")
-            return redirect(url_for('main.add_health_data'))
+            error_message = "All fields are required!"
+            return render_template('add_health_data.html', error_message=error_message, form_data=form_data)
         
         # Check if citizen exists
         citizen = Citizens.query.filter_by(aadhar_no=aadhar_no).first()
         if not citizen:
-            flash("Citizen with this Aadhar number does not exist!", "danger")
-            return redirect(url_for('main.add_health_data'))
+            error_message = "Citizen with this Aadhar number does not exist!"
+            return render_template('add_health_data.html', error_message=error_message, form_data=form_data, aadhar_error=True)
         
         try:
             # Create new health record
@@ -1369,10 +1443,10 @@ def add_health_data():
             
         except Exception as e:
             db.session.rollback()
-            flash(f"Error adding health record: {str(e)}", "danger")
-            return redirect(url_for('main.add_health_data'))
+            error_message = f"Error adding health record: {str(e)}"
+            return render_template('add_health_data.html', error_message=error_message, form_data=form_data)
     
-    return render_template('add_health_data.html')
+    return render_template('add_health_data.html', error_message=error_message, form_data=form_data)
 
 @main_bp.route('/find_health_records', methods=['GET', 'POST'])
 def find_health_records():

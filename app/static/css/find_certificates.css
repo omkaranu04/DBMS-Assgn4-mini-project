@@ -504,3 +504,14 @@ label i {
         flex-direction: column;
     }
 }
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-weight: 500;
+  }
+  
+  
