@@ -12,7 +12,7 @@
         <h1>GPMS - The Smart Way to Handle a Village</h1>
         <div class="header-buttons">
             <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-            <a href="javascript:history.back()" class="btn">Go Back</a>
+            <a href="{{ url_for('main.dashboard_employees') }}" class="btn">Go Back</a>
         </div>
     </header>
 
@@ -40,9 +40,13 @@
                                 </label>
                                 <select name="resource_name" id="resource_name" class="form-control" required>
                                     <option value="">--Select Resource--</option>
-                                    <option value="Road">Road</option>
+                                    <option value="Roads">Roads</option>
                                     <option value="Drainage System">Drainage System</option>
                                     <option value="Water">Water</option>
+                                    <option value="Electricity">Electricity</option>
+                                    <option value="Street Lights">Street Lights</option>
+                                    <option value="Park">Park</option>
+                                    <option value="Waste Management">Waste Management</option>
                                 </select>
                                 <small class="form-hint">Select the type of resource to add</small>
                             </div>
@@ -120,6 +124,14 @@
                     </div>
                 </div>
             </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                    {% for category, message in messages %}
+                                        <div class="flash-message {{ category }}">{{ message }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
 
             <!-- View All Resources -->
             <div class="resources-section">

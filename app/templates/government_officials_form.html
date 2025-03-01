@@ -11,7 +11,7 @@
         <h1>GPMS - The Smart Way to Handle a Village</h1>
         <div class="header-buttons">
             <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-            <a href="javascript:history.back()" class="btn">Go Back</a>
+            <a href="{{ url_for('main.government_officials') }}" class="btn">Go Back</a>
         </div>
     </header>
 
@@ -41,7 +41,7 @@
                 </div>
                 
                 <div class="form-actions">
-                    {{ form.submit(class="save-button", value="Add User") }}
+                    {{ form.submit(class="save-button", value="Save") }}
                     <a href="{{ url_for('main.government_officials') }}" class="cancel-button">Cancel</a>
                 </div>
             </form>

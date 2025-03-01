@@ -56,7 +56,7 @@ CREATE TABLE Health_CheckUp (
 -- Resources table
 CREATE TABLE Resources (
     Resource_ID SERIAL PRIMARY KEY,
-    Resource_Name VARCHAR(20) CHECK (Resource_Name IN ('Road', 'Drainage System', 'Water')),
+    Resource_Name VARCHAR(20) CHECK (Resource_Name IN ('Roads', 'Drainage System', 'Water', 'Park', 'Electricity', 'Waste Management')),
     Last_Inspected_Date DATE
 );
 

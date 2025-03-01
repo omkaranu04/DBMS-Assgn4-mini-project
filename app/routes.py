@@ -102,12 +102,19 @@ def add_edit_panchayat_employee(username=None):
     if 'user' not in session:
         return redirect(url_for('main.login'))
 
-    # Initialize form variables
+    # Initialize form variables and errors dictionary
     form_username = ""
     form_password = ""
     form_designation = ""
     form_aadhar_no = ""
     old_password = ""
+    errors = {
+        'username': None,
+        'password': None,
+        'designation': None,
+        'aadhar_no': None,
+        'general': None
+    }
 
     if request.method == 'GET' and username:
         # Fetch existing employee details for editing
@@ -133,69 +140,127 @@ def add_edit_panchayat_employee(username=None):
         # Aadhar number remains unchanged during edit
         if not username:  # Only set aadhar number during addition
             form_aadhar_no = request.form.get('aadhar_no', '').strip()
+        else:
+            # Retrieve the existing aadhar number for the edit case
+            employee_result = db.session.execute(
+                text("SELECT aadhar_no FROM Panchayat_Users WHERE username = :username"),
+                {'username': username}
+            ).fetchone()
+            form_aadhar_no = employee_result[0] if employee_result else ""
 
         # Validation checks
-        if not form_username or not form_designation:
-            flash('Username and designation are required!', 'danger')
-        elif not username and not form_password:  # Password is mandatory when adding a new user
-            flash('Password is required when adding a new Panchayat Employee!', 'danger')
-        else:
-            if username:  # Editing existing employee
-                # Fetch old password to retain if new password is blank or has only spaces
-                employee_result = db.session.execute(
-                    text("SELECT password FROM Panchayat_Users WHERE username = :username"),
-                    {'username': username}
-                ).fetchone()
-                
-                old_password = employee_result[0] if employee_result else ""
+        is_valid = True
+        if not form_username:
+            errors['username'] = 'Username is required'
+            is_valid = False
+        
+        if not form_designation:
+            errors['designation'] = 'Designation is required'
+            is_valid = False
+            
+        if not username and not form_password:  # Password is mandatory when adding a new user
+            errors['password'] = 'Password is required for new employees'
+            is_valid = False
+            
+        if not username and not form_aadhar_no:
+            errors['aadhar_no'] = 'Aadhar number is required'
+            is_valid = False
 
-                # Use old password if new password is blank or contains only spaces
-                update_password = form_password if form_password else old_password
-                password_message = "Password updated successfully!" if form_password else "Password kept the same!"
+        if is_valid:
+            try:
+                if username:  # Editing existing employee
+                    # Fetch old password to retain if new password is blank or has only spaces
+                    employee_result = db.session.execute(
+                        text("SELECT password FROM Panchayat_Users WHERE username = :username"),
+                        {'username': username}
+                    ).fetchone()
+                    
+                    old_password = employee_result[0] if employee_result else ""
 
-                db.session.execute(
-                    text("""
-                        UPDATE Panchayat_Users 
-                        SET username = :username, 
-                            password = :password, 
-                            designation = :designation
-                        WHERE username = :old_username
-                    """), 
-                    {
-                        'username': form_username,
-                        'password': update_password,
-                        'designation': form_designation,
-                        'old_username': username
-                    }
-                )
-                flash(f'Panchayat Employee updated successfully! {password_message}', 'success')
-            else:  # Adding a new employee
-                db.session.execute(
-                    text("""
-                        INSERT INTO Panchayat_Users (username, password, designation, aadhar_no)
-                        VALUES (:username, :password, :designation, :aadhar_no)
-                    """), 
-                    {
-                        'username': form_username,
-                        'password': form_password,
-                        'designation': form_designation,
-                        'aadhar_no': form_aadhar_no
-                    }
-                )
-                flash('Panchayat Employee added successfully!', 'success')
+                    # Use old password if new password is blank or contains only spaces
+                    update_password = form_password if form_password else old_password
+                    password_message = "Password updated!" if form_password else "Password unchanged."
 
-            db.session.commit()
-            return redirect(url_for('main.panchayat_employees'))
+                    db.session.execute(
+                        text("""
+                            UPDATE Panchayat_Users 
+                            SET username = :username, 
+                                password = :password, 
+                                designation = :designation
+                            WHERE username = :old_username
+                        """), 
+                        {
+                            'username': form_username,
+                            'password': update_password,
+                            'designation': form_designation,
+                            'old_username': username
+                        }
+                    )
+                    db.session.commit()
+                    flash(f'Employee updated! {password_message}', 'success')
+                    # return redirect(url_for('main.panchayat_employees'))
+                else:  # Adding a new employee
+                    # Check if username already exists
+                    existing_user = db.session.execute(
+                        text("SELECT username FROM Panchayat_Users WHERE username = :username"),
+                        {'username': form_username}
+                    ).fetchone()
+                    
+                    if existing_user:
+                        errors['username'] = 'Username already taken. Choose another.'
+                    else:
+                        # Check if aadhar number already exists
+                        existing_aadhar = db.session.execute(
+                            text("SELECT aadhar_no FROM Panchayat_Users WHERE aadhar_no = :aadhar_no"),
+                            {'aadhar_no': form_aadhar_no}
+                        ).fetchone()
+                        
+                        if existing_aadhar:
+                            errors['aadhar_no'] = 'Aadhar number already in use.'
+                        else:
+                            db.session.execute(
+                                text("""
+                                    INSERT INTO Panchayat_Users (username, password, designation, aadhar_no)
+                                    VALUES (:username, :password, :designation, :aadhar_no)
+                                """), 
+                                {
+                                    'username': form_username,
+                                    'password': form_password,
+                                    'designation': form_designation,
+                                    'aadhar_no': form_aadhar_no
+                                }
+                            )
+                            db.session.commit()
+                            flash('New employee added successfully!', 'success')
+                            # return redirect(url_for('main.panchayat_employees'))
+            
+            except Exception as e:
+                db.session.rollback()
+                # Check if it's an integrity error
+                if "UNIQUE constraint failed" in str(e) or "Duplicate entry" in str(e) or "integrity constraint violation" in str(e):
+                    if "username" in str(e):
+                        errors['username'] = 'Username already exists. Please choose a different one.'
+                    elif "aadhar_no" in str(e):
+                        errors['aadhar_no'] = 'Aadhar number already associated with another employee.'
+                    else:
+                        errors['general'] = 'Database error occurred.'
+                else:
+                    errors['general'] = 'An unexpected error occurred.'
 
-    # Form data for rendering
+    # Prepare form data for rendering
     form_data = {
         'username': form_username,
-        'password': "",  # Always keep blank for security reasons
+        'password': form_password,
         'designation': form_designation,
-        'aadhar_no': form_aadhar_no  # This should be disabled in the HTML for edits
+        'aadhar_no': form_aadhar_no
     }
 
-    return render_template('panchayat_employees_form.html', form_data=form_data, username=username)
+    # Render the template with the current form values and errors
+    return render_template('panchayat_employees_form.html', 
+                          form_data=form_data, 
+                          errors=errors, 
+                          is_edit=bool(username))
+
 
 # Delete a Panchayat Employee
 @main_bp.route('/delete_panchayat_employee/<username>', methods=['POST'])
@@ -203,11 +268,17 @@ def delete_panchayat_employee(username):
     if 'user' not in session:
         return redirect(url_for('main.login'))
 
-    employee = PanchayatUsers.query.filter_by(username=username).first()
-    if employee:
-        db.session.delete(employee)
-        db.session.commit()
-        flash('Panchayat Employee deleted successfully!', 'success')
+    try:
+        employee = PanchayatUsers.query.filter_by(username=username).first()
+        if employee:
+            db.session.delete(employee)
+            db.session.commit()
+            # flash('Panchayat Employee deleted successfully!', 'success')
+        else:
+            flash('Employee not found!', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting employee: {str(e)}', 'danger')
 
     return redirect(url_for('main.panchayat_employees'))
 
@@ -224,13 +295,13 @@ def government_officials():
 @main_bp.route('/add_edit_government_official/', defaults={'username': None}, methods=['GET', 'POST'])
 @main_bp.route('/add_edit_government_official/<username>', methods=['GET', 'POST'])
 def add_edit_government_official(username=None):
-
     if 'user' not in session:
         return redirect(url_for('main.login'))
 
     form = GovernmentOfficialForm()
     official = None
     old_password = ""
+    errors = {}
 
     if username:
         official = SystemUsersTop.query.filter_by(username=username).first()
@@ -242,39 +313,57 @@ def add_edit_government_official(username=None):
     if request.method == 'POST':
         username_input = request.form.get('username', '').strip()
         password_input = request.form.get('password', '').strip()
+        
+        form.username.data = username_input
+        form.password.data = password_input
 
+        is_valid = True
+        
         if not username_input:
-            flash("Username is required!", "danger")
-            return redirect(url_for('main.add_edit_government_official', username=username))
+            form.username.errors = ["Username is required!"]
+            is_valid = False
 
-        if official:  # Editing existing official
-            if password_input:  # User entered a new password
-                official.password = password_input  # Store the new password
-                password_message = "Password updated successfully!"
-            else:
-                password_message = "Password kept the same!"
+        if not official and not password_input:  # New official requires password
+            form.password.errors = ["Password is required for new officials!"]
+            is_valid = False
 
-            official.username = username_input  # Update username
-            flash(f"Government Official updated successfully! {password_message}", "success")
+        if is_valid:
+            try:
+                if official:  # Editing existing official
+                    if password_input:  # User entered a new password
+                        official.password = password_input  # Store the new password
+                        password_message = "Password updated successfully!"
+                    else:
+                        password_message = "Password kept the same!"
 
-        else:  # Adding a new official
-            # Ensure the username is unique
-            existing_user = SystemUsersTop.query.filter_by(username=username_input).first()
-            if existing_user:
-                flash("Username already exists! Choose a different one.", "danger")
-                return redirect(url_for('main.add_edit_government_official'))
+                    official.username = username_input  # Update username
+                    db.session.commit()
+                    # flash(f"Government Official updated successfully! {password_message}", "success")
+                    return redirect(url_for('main.government_officials'))
 
-            # Create a new official
-            new_official = SystemUsersTop(
-                username=username_input,
-                password=password_input,  # Store password as plain text (for now)
-                user_type='Government Official'
-            )
-            db.session.add(new_official)
-            flash("Government Official added successfully!", "success")
-
-        db.session.commit()
-        return redirect(url_for('main.government_officials'))
+                else:  # Adding a new official
+                    # Ensure the username is unique
+                    existing_user = SystemUsersTop.query.filter_by(username=username_input).first()
+                    if existing_user:
+                        form.username.errors = ["Username already exists! Choose a different one."]
+                    else:
+                        # Create a new official
+                        new_official = SystemUsersTop(
+                            username=username_input,
+                            password=password_input,
+                            user_type='Government Official'
+                        )
+                        db.session.add(new_official)
+                        db.session.commit()
+                        # flash("Government Official added successfully!", "success")
+                        return redirect(url_for('main.government_officials'))
+            
+            except Exception as e:
+                db.session.rollback()
+                if "UNIQUE constraint failed" in str(e) or "Duplicate entry" in str(e):
+                    form.username.errors = ["Username already exists! Choose a different one."]
+                else:
+                    flash(f"An error occurred: {str(e)}", "danger")
 
     return render_template('government_officials_form.html', form=form, username=username)
 
@@ -288,7 +377,7 @@ def delete_government_official(username):
     if official:
         db.session.delete(official)
         db.session.commit()
-        flash('Government Official deleted successfully!', 'success')
+        # flash('Government Official deleted successfully!', 'success')
 
     return redirect(url_for('main.government_officials'))
 
@@ -1801,14 +1890,18 @@ def manage_resources():
         action = request.form.get('action')
         
         if action == 'add':
-            # Add resource logic
-            new_resource = Resources(
-                resource_name=request.form.get('resource_name'),
-                last_inspected_date=request.form.get('last_inspected_date')
-            )
-            db.session.add(new_resource)
-            db.session.commit()
-            flash("Resource added successfully!", "success")
+            resource_name = request.form.get('resource_name')
+            existing_resource = Resources.query.filter_by(resource_name=resource_name).first()
+            if existing_resource:
+                flash(f"A resource with the name '{resource_name}' already exists!", "danger")
+            else:
+                new_resource = Resources(
+                    resource_name=resource_name,
+                    last_inspected_date=request.form.get('last_inspected_date')
+                )
+                db.session.add(new_resource)
+                db.session.commit()
+                flash("Resource added successfully!", "success")
 
         elif action == 'delete':
             # Delete resource logic
@@ -1837,17 +1930,118 @@ def manage_resources():
     resources_list = Resources.query.all()
     return render_template('manage_resources.html', resources=resources_list)
 
-@main_bp.route('/view_government_bodies', methods=['GET'])
-def view_government_bodies():
-    # Fetch all government institutions grouped by type
-    institutions = db.session.execute(text("""
-        SELECT Institute_Type, Institute_Name, Institue_Location 
-        FROM Government_Institutions
-        ORDER BY Institute_Type, Institute_Name
-    """)).fetchall()
 
-    # Pass the data to the template for rendering
+@main_bp.route('/add_government_institution', methods=['GET', 'POST'])
+def add_government_institution():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    errors = {}
+    form_data = {
+        'institute_type': '',
+        'institute_name': '',
+        'institute_location': ''
+    }
+    
+    if request.method == 'POST':
+        try:
+            form_data['institute_type'] = request.form.get('institute_type', '')
+            form_data['institute_name'] = request.form.get('institute_name', '')
+            form_data['institute_location'] = request.form.get('institute_location', '')
+            
+            # Validate required fields
+            if not form_data['institute_type']:
+                errors['institute_type'] = "Institution type is required!"
+            if not form_data['institute_name']:
+                errors['institute_name'] = "Institution name is required!"
+            if not form_data['institute_location']:
+                errors['institute_location'] = "Institution location is required!"
+            
+            # Validate institute_type
+            valid_types = ['Educational', 'Health', 'Banking', 'Administration']
+            if form_data['institute_type'] and form_data['institute_type'] not in valid_types:
+                errors['institute_type'] = "Invalid institution type!"
+            
+            # If no errors, proceed with insertion
+            if not errors:
+                # Check if institution with same name already exists
+                existing = db.session.execute(
+                    text("SELECT * FROM Government_Institutions WHERE Institute_Name = :name"),
+                    {'name': form_data['institute_name']}
+                ).fetchone()
+                
+                if existing:
+                    errors['institute_name'] = "An institution with this name already exists!"
+                else:
+                    # Insert into Government_Institutions table
+                    db.session.execute(
+                        text("""
+                        INSERT INTO Government_Institutions (Institute_Type, Institute_Name, Institue_Location)
+                        VALUES (:institute_type, :institute_name, :institute_location)
+                        """),
+                        {
+                            'institute_type': form_data['institute_type'],
+                            'institute_name': form_data['institute_name'],
+                            'institute_location': form_data['institute_location']
+                        }
+                    )
+                    db.session.commit()
+                    flash("Government institution added successfully!", "success")
+                    # Only redirect on success
+                    return redirect(url_for('main.view_government_bodies'))
+                    
+        except Exception as e:
+            db.session.rollback()
+            errors['general'] = f"An error occurred: {str(e)}"
+    
+    # Get all institutions for display
+    institutions = db.session.execute(text("SELECT * FROM Government_Institutions")).fetchall()
+    
+    # Render template with form data, errors, and institutions
+    return render_template('government_bodies.html', 
+                          institutions=institutions,
+                          form_data=form_data,
+                          errors=errors)
+
+@main_bp.route('/delete_government_institution/<institute_name>', methods=['POST'])
+def delete_government_institution(institute_name):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    try:
+        # Check if institution exists
+        institution = db.session.execute(
+            text("SELECT * FROM Government_Institutions WHERE Institute_Name = :name"),
+            {'name': institute_name}
+        ).fetchone()
+        
+        if institution:
+            # Delete the institution
+            db.session.execute(
+                text("DELETE FROM Government_Institutions WHERE Institute_Name = :name"),
+                {'name': institute_name}
+            )
+            db.session.commit()
+            flash(f"Institution '{institute_name}' deleted successfully!", "success")
+        else:
+            flash(f"Institution '{institute_name}' not found!", "danger")
+            
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error deleting institution: {str(e)}", "danger")
+    
+    return redirect(url_for('main.view_government_bodies'))
+
+@main_bp.route('/view_government_bodies')
+def view_government_bodies():
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    # Get all institutions for display
+    institutions = db.session.execute(text("SELECT * FROM Government_Institutions")).fetchall()
+    
     return render_template('view_government_bodies.html', institutions=institutions)
+
 
 @main_bp.route('/avail_welfare_scheme', methods=['GET'])
 def avail_welfare_scheme():
@@ -1997,47 +2191,6 @@ def submit_complaint():
         flash(f"An error occurred: {str(e)}", "danger")
     
     return redirect(url_for('main.citizen', aadhar_no=aadhar_no))
-
-@main_bp.route('/add_government_institution', methods=['POST'])
-def add_government_institution():
-    if 'user' not in session:
-        return redirect(url_for('main.login'))
-    
-    try:
-        institute_type = request.form.get('institute_type')
-        institute_name = request.form.get('institute_name')
-        institute_location = request.form.get('institute_location')
-        
-        if not institute_type or not institute_name or not institute_location:
-            flash("All fields are required!", "danger")
-            return redirect(url_for('main.view_government_bodies'))
-        
-        # Validate institute_type
-        valid_types = ['Educational', 'Health', 'Banking', 'Administration']
-        if institute_type not in valid_types:
-            flash("Invalid institution type!", "danger")
-            return redirect(url_for('main.view_government_bodies'))
-        
-        # Insert into Government_Institutions table
-        db.session.execute(
-            text("""
-            INSERT INTO Government_Institutions (Institute_Type, Institute_Name, Institue_Location)
-            VALUES (:institute_type, :institute_name, :institute_location)
-            """),
-            {
-                'institute_type': institute_type,
-                'institute_name': institute_name,
-                'institute_location': institute_location
-            }
-        )
-        db.session.commit()
-        
-        flash("Government institution added successfully!", "success")
-    except Exception as e:
-        db.session.rollback()
-        flash(f"An error occurred: {str(e)}", "danger")
-    
-    return redirect(url_for('main.view_government_bodies'))
 
 
 @main_bp.route('/about_us', methods=['GET'])
