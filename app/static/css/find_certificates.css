@@ -436,43 +436,43 @@ label i {
         font-size: 1em;
         max-width: 50%;
     }
-    
+
     .btn {
         padding: 6px 10px;
         font-size: 0.65em;
     }
-    
+
     .page-title h2 {
         font-size: 1.6em;
     }
-    
+
     .subtitle {
         font-size: 0.9em;
     }
-    
+
     .certificates-container {
         padding: 20px;
     }
-    
+
     .form-control {
         padding: 10px;
     }
-    
+
     .list-header {
         flex-direction: column;
         gap: 10px;
         align-items: flex-start;
     }
-    
+
     .info-item {
         flex-direction: column;
         gap: 5px;
     }
-    
+
     .info-label {
         width: 100%;
     }
-    
+
     .actions-cell {
         flex-direction: column;
         gap: 5px;
@@ -484,26 +484,27 @@ label i {
         flex-direction: column;
         padding: 10px;
     }
-    
+
     header h1 {
         margin-bottom: 10px;
         max-width: 100%;
         text-align: center;
     }
-    
+
     .header-buttons {
         width: 100%;
         justify-content: center;
     }
-    
+
     .main-content {
         padding-top: 130px;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
 }
+
 .alert-danger {
     color: #721c24;
     background-color: #f8d7da;
@@ -512,6 +513,101 @@ label i {
     border-radius: 4px;
     margin-bottom: 15px;
     font-weight: 500;
-  }
-  
-  
+}
+
+/* Certificate Grid Layout */
+.certificates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.certificate-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.certificate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.certificate-type {
+    background-color: #0056b3;
+    color: white;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.certificate-type i {
+    font-size: 1.2em;
+}
+
+.certificate-details {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.certificate-info {
+    flex: 1;
+}
+
+.certificate-id,
+.issue-date {
+    margin: 5px 0;
+    color: #495057;
+}
+
+.certificate-id {
+    font-weight: 600;
+}
+
+.certificate-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Keep existing table-btn styles from your CSS */
+.table-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.table-btn.edit {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.table-btn.edit:hover {
+    background-color: #e0a800;
+}
+
+.table-btn.delete {
+    background-color: #dc3545;
+}
+
+.table-btn.delete:hover {
+    background-color: #c82333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .certificates-grid {
+        grid-template-columns: 1fr;
+    }
+}

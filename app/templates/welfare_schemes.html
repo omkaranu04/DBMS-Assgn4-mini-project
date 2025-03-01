@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/welfare_schemes.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -34,7 +36,7 @@
                         <p class="summary-value">{{ schemes|length }}</p>
                     </div>
                 </div>
-                
+
                 <div class="summary-card">
                     <div class="summary-icon">
                         <i class="fas fa-money-bill-wave"></i>
@@ -51,7 +53,7 @@
                 <h3 class="section-title">
                     <i class="fas fa-list-alt"></i> Available Welfare Schemes
                 </h3>
-                
+
                 {% if schemes %}
                 <div class="table-responsive">
                     <table class="schemes-table">
@@ -100,4 +102,5 @@
         </div>
     </div>
 </body>
+
 </html>

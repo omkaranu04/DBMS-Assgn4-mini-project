@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/institutions.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -34,7 +36,7 @@
                         <p class="summary-value">{{ institution_counts|sum(attribute='1') }}</p>
                     </div>
                 </div>
-                
+
                 <div class="summary-card">
                     <div class="summary-icon">
                         <i class="fas fa-list-alt"></i>
@@ -51,31 +53,32 @@
                 <h3 class="section-title">
                     <i class="fas fa-sitemap"></i> Institutions by Type
                 </h3>
-                
+
                 {% for institution_type, count in institution_counts %}
                 <div class="institution-type-section">
                     <div class="type-header">
                         <div class="type-icon">
                             {% if institution_type == 'Educational' %}
-                                <i class="fas fa-school"></i>
+                            <i class="fas fa-school"></i>
                             {% elif institution_type == 'Health' %}
-                                <i class="fas fa-hospital"></i>
+                            <i class="fas fa-hospital"></i>
                             {% elif institution_type == 'Banking' %}
-                                <i class="fas fa-university"></i>
+                            <i class="fas fa-university"></i>
                             {% elif institution_type == 'Administration' %}
-                                <i class="fas fa-building"></i>
+                            <i class="fas fa-building"></i>
                             {% else %}
-                                <i class="fas fa-building"></i>
+                            <i class="fas fa-building"></i>
                             {% endif %}
                         </div>
                         <h4>{{ institution_type }} <span class="count-badge">{{ count }}</span></h4>
                     </div>
-                    
+
                     <div class="institutions-list">
                         {% for institution in institutions_by_type[institution_type] %}
                         <div class="institution-card">
-                            <h5>{{ institution.institute_name }}</h5>  <!-- Displaying institution name -->
-                            <p><i class="fas fa-map-marker-alt"></i> Location: {{ institution.institue_location }}</p>  <!-- Displaying institution location -->
+                            <h5>{{ institution.institute_name }}</h5> <!-- Displaying institution name -->
+                            <p><i class="fas fa-map-marker-alt"></i> Location: {{ institution.institue_location }}</p>
+                            <!-- Displaying institution location -->
                         </div>
                         {% endfor %}
                     </div>
@@ -85,4 +88,5 @@
         </div>
     </div>
 </body>
+
 </html>

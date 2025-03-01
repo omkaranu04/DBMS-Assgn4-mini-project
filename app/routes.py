@@ -798,8 +798,8 @@ def add_citizen():
             return render_template('add_citizen.html', form_data=form_data)
 
         # Validate Phone Number
-        if phone_no and (not phone_no.isdigit() or len(phone_no) != 10 or phone_no[0] not in '69'):
-            flash("Invalid phone number! It must contain only numbers, be exactly 10 digits, and start with 6 or 9.", "phone_no_error")
+        if phone_no and (not phone_no.isdigit() or len(phone_no) != 10 or phone_no[0] not in '6789'):
+            flash("Invalid phone number! It must contain only numbers, be exactly 10 digits, and start with 6 to 9.", "phone_no_error")
             return render_template('add_citizen.html', form_data=form_data)
 
         # Create New Citizen Entry
@@ -951,6 +951,7 @@ def modify_citizen():
     
     return render_template('modify_citizen.html', citizen=citizen)
 
+# modify the citizens data
 @main_bp.route('/modify_citizen_submit/<aadhar_no>', methods=['POST'])
 def modify_citizen_submit(aadhar_no):
     if 'user' not in session:
@@ -962,6 +963,11 @@ def modify_citizen_submit(aadhar_no):
             flash("Citizen not found!", "danger")
             return redirect(url_for('main.manage_citizens'))
         
+        # Get the new income value
+        new_income_str = request.form.get('income', '0').strip()
+        new_income = int(new_income_str) if new_income_str else 0
+        old_income = int(citizen.income) if citizen.income else 0
+        
         # Update citizen information
         citizen.name = request.form.get('name', '').strip()
         citizen.dob = request.form.get('dob', '').strip()
@@ -970,13 +976,35 @@ def modify_citizen_submit(aadhar_no):
         citizen.phone_no = request.form.get('phone_no', '').strip()
         citizen.email_id = request.form.get('email_id', '').strip()
         citizen.education_level = request.form.get('education_level', '').strip()
-        citizen.income = request.form.get('income', '').strip()
+        citizen.income = new_income
         citizen.employment = request.form.get('employment', '').strip()
-        citizen.is_alive = citizen.is_alive  # Keep the same    
+        citizen.is_alive = citizen.is_alive  # Keep the same   
+        
+        # If income has changed, update the taxation record
+        if new_income != old_income:
+            # Calculate new tax amount (18% of income) as integer
+            new_tax_amount = int(new_income * 0.18)
+            
+            # Update the taxation record
+            taxation_record = Taxation.query.filter_by(aadhar_no=aadhar_no).first()
+            
+            if taxation_record:
+                # Update existing taxation record
+                taxation_record.tax_amount = new_tax_amount
+                # Reset payment status to False since income changed
+                taxation_record.payment_status = False
+            else:
+                # Create new taxation record if it doesn't exist
+                new_taxation = Taxation(
+                    aadhar_no=aadhar_no,
+                    tax_amount=new_tax_amount,
+                    payment_status=False
+                )
+                db.session.add(new_taxation)
         
         db.session.commit()
         
-        # flash("Citizen information updated successfully!", "success")
+        flash("Citizen information updated successfully! Tax amount recalculated based on new income.", "success")
         return redirect(url_for('main.manage_citizens'))
     
     except Exception as e:

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/health.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -30,7 +32,7 @@
                         <i class="fas fa-heartbeat"></i> Disease-Specific Count This Year
                     </h3>
                 </div>
-                
+
                 {% if disease_data %}
                 <div class="disease-grid">
                     {% for disease, count in disease_data %}
@@ -45,7 +47,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                
+
                 <!-- Disease Bar Chart -->
                 <div class="chart-container">
                     <h3 class="chart-title">Disease Distribution</h3>
@@ -54,7 +56,8 @@
                         <div class="chart-item">
                             <div class="chart-label">{{ disease }}</div>
                             <div class="chart-bar-container">
-                                <div class="chart-bar" style="width: {{ (count / disease_data|map(attribute=1)|list|max * 100) if disease_data|map(attribute=1)|list|max > 0 else 0 }}%">
+                                <div class="chart-bar"
+                                    style="width: {{ (count / disease_data|map(attribute=1)|list|max * 100) if disease_data|map(attribute=1)|list|max > 0 else 0 }}%">
                                     <span class="chart-value">{{ count }}</span>
                                 </div>
                             </div>
@@ -85,7 +88,7 @@
                             <p>Wash hands regularly with soap and water for at least 20 seconds.</p>
                         </div>
                     </div>
-                    
+
                     <div class="tip-card">
                         <div class="tip-icon">
                             <i class="fas fa-walking"></i>
@@ -95,7 +98,7 @@
                             <p>Aim for at least 30 minutes of physical activity every day.</p>
                         </div>
                     </div>
-                    
+
                     <div class="tip-card">
                         <div class="tip-icon">
                             <i class="fas fa-apple-alt"></i>
@@ -110,4 +113,5 @@
         </div>
     </div>
 </body>
+
 </html>

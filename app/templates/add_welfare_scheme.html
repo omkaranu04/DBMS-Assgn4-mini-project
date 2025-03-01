@@ -1,116 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Welfare Scheme - GPMS</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/add_welfare_scheme.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
-  <body>
-    <header>
-      <h1>GPMS - The Smart Way to Handle a Village</h1>
-      <div class="header-buttons">
-        <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-        <a href="javascript:history.back()" class="btn">Go Back</a>
-      </div>
-    </header>
 
-    <div class="main-content">
-      <div class="scheme-container">
-        <div class="page-title">
-          <h2>Add New Welfare Scheme</h2>
-          <p class="subtitle">
-            Create a new government welfare program for citizens
-          </p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Welfare Scheme - GPMS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_welfare_scheme.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+  <header>
+    <h1>GPMS - The Smart Way to Handle a Village</h1>
+    <div class="header-buttons">
+      <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+      <a href="{{ url_for('main.manage_welfare_schemes')}}" class="btn">Go Back</a>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="scheme-container">
+      <div class="page-title">
+        <h2>Add New Welfare Scheme</h2>
+        <p class="subtitle">
+          Create a new government welfare program for citizens
+        </p>
+      </div>
+
+      <div class="scheme-form-wrapper">
+        <div class="form-icon">
+          <i class="fas fa-hand-holding-heart"></i>
         </div>
 
-        <div class="scheme-form-wrapper">
-          <div class="form-icon">
-            <i class="fas fa-hand-holding-heart"></i>
+        <form method="POST" action="{{ url_for('main.add_welfare_scheme') }}" class="scheme-form">
+          {% with messages = get_flashed_messages(with_categories=true) %} {%
+          if messages %} {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            {{ message }}
+          </div>
+          {% endfor %} {% endif %} {% endwith %}
+          <div class="form-group">
+            <label for="scheme_type">
+              <i class="fas fa-tag"></i> Scheme Type:
+            </label>
+            <input type="text" id="scheme_type" name="scheme_type" class="form-control" required />
+            <small class="form-hint">Enter the name or type of welfare scheme</small>
           </div>
 
-          <form
-            method="POST"
-            action="{{ url_for('main.add_welfare_scheme') }}"
-            class="scheme-form"
-          >
-            {% with messages = get_flashed_messages(with_categories=true) %} {%
-            if messages %} {% for category, message in messages %}
-            <div class="alert alert-{{ category }}" role="alert">
-              {{ message }}
-            </div>
-            {% endfor %} {% endif %} {% endwith %}
-            <div class="form-group">
-              <label for="scheme_type">
-                <i class="fas fa-tag"></i> Scheme Type:
-              </label>
-              <input
-                type="text"
-                id="scheme_type"
-                name="scheme_type"
-                class="form-control"
-                required
-              />
-              <small class="form-hint"
-                >Enter the name or type of welfare scheme</small
-              >
-            </div>
+          <div class="form-group">
+            <label for="budget">
+              <i class="fas fa-rupee-sign"></i> Budget:
+            </label>
+            <input type="number" id="budget" name="budget" min="0" class="form-control" required />
+            <small class="form-hint">Enter the allocated budget in rupees</small>
+          </div>
 
-            <div class="form-group">
-              <label for="budget">
-                <i class="fas fa-rupee-sign"></i> Budget:
-              </label>
-              <input
-                type="number"
-                id="budget"
-                name="budget"
-                min="0"
-                class="form-control"
-                required
-              />
-              <small class="form-hint"
-                >Enter the allocated budget in rupees</small
-              >
-            </div>
+          <div class="form-group">
+            <label for="description">
+              <i class="fas fa-align-left"></i> Description:
+            </label>
+            <textarea id="description" name="description" rows="4" class="form-control" required></textarea>
+            <small class="form-hint">Provide details about the scheme, eligibility criteria, and
+              benefits</small>
+          </div>
 
-            <div class="form-group">
-              <label for="description">
-                <i class="fas fa-align-left"></i> Description:
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                rows="4"
-                class="form-control"
-                required
-              ></textarea>
-              <small class="form-hint"
-                >Provide details about the scheme, eligibility criteria, and
-                benefits</small
-              >
-            </div>
-
-            <div class="form-actions">
-              <button type="submit" class="btn-primary">
-                <i class="fas fa-plus-circle"></i> Add Scheme
-              </button>
-              <a
-                href="{{ url_for('main.manage_welfare_schemes') }}"
-                class="btn-secondary"
-              >
-                <i class="fas fa-times"></i> Cancel
-              </a>
-            </div>
-          </form>
-        </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-plus-circle"></i> Add Scheme
+            </button>
+            <a href="{{ url_for('main.manage_welfare_schemes') }}" class="btn-secondary">
+              <i class="fas fa-times"></i> Cancel
+            </a>
+          </div>
+        </form>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

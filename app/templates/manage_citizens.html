@@ -12,7 +12,7 @@
         <h1>GPMS - The Smart Way to Handle a Village</h1>
         <div class="header-buttons">
             <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-            <a href="javascript:history.back()" class="btn">Go Back</a>
+            <a href="{{ url_for('main.dashboard_employees')}}" class="btn">Go Back</a>
         </div>
     </header>
 
@@ -27,12 +27,6 @@
                 <div class="action-buttons">
                     <a href="{{ url_for('main.add_citizen') }}" class="action-btn add">
                         <i class="fas fa-user-plus"></i> Add New Citizen
-                    </a>
-                    <a href="{{ url_for('main.delete_citizen') }}" class="action-btn delete">
-                        <i class="fas fa-user-minus"></i> Delete Citizen
-                    </a>
-                    <a href="{{ url_for('main.modify_citizen') }}" class="action-btn edit">
-                        <i class="fas fa-user-edit"></i> Modify Citizen
                     </a>
                 </div>
                 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/view_government_bodies.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -22,17 +24,17 @@
                 <h2>Government Bodies</h2>
                 <p class="subtitle">View and manage government institutions in the village</p>
             </div>
-            
+
             {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    <div class="flash-messages">
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
             {% endwith %}
-            
+
             <!-- Existing Government Bodies Table -->
             <div class="card">
                 <div class="card-header">
@@ -87,22 +89,28 @@
                     <h3>Add New Government Institution</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ url_for('main.add_government_institution') }}" method="post" class="institution-form">
+                    <form action="{{ url_for('main.add_government_institution') }}" method="post"
+                        class="institution-form">
                         <div class="form-group">
                             <label for="institute_type">
                                 <i class="fas fa-sitemap"></i> Institution Type:
                             </label>
-                            <select class="form-control {% if errors and errors.institute_type %}error-input{% endif %}" 
-                                    id="institute_type" name="institute_type" required>
+                            <select class="form-control {% if errors and errors.institute_type %}error-input{% endif %}"
+                                id="institute_type" name="institute_type" required>
                                 <option value="">-- Select Type --</option>
-                                <option value="Educational" {% if form_data and form_data.institute_type == 'Educational' %}selected{% endif %}>Educational</option>
-                                <option value="Health" {% if form_data and form_data.institute_type == 'Health' %}selected{% endif %}>Health</option>
-                                <option value="Banking" {% if form_data and form_data.institute_type == 'Banking' %}selected{% endif %}>Banking</option>
-                                <option value="Administration" {% if form_data and form_data.institute_type == 'Administration' %}selected{% endif %}>Administration</option>
+                                <option value="Educational" {% if form_data and form_data.institute_type=='Educational'
+                                    %}selected{% endif %}>Educational</option>
+                                <option value="Health" {% if form_data and form_data.institute_type=='Health'
+                                    %}selected{% endif %}>Health</option>
+                                <option value="Banking" {% if form_data and form_data.institute_type=='Banking'
+                                    %}selected{% endif %}>Banking</option>
+                                <option value="Administration" {% if form_data and
+                                    form_data.institute_type=='Administration' %}selected{% endif %}>Administration
+                                </option>
                             </select>
                             <small class="form-hint">Select the category of the institution</small>
                             {% if errors and errors.institute_type %}
-                                <div class="error-message">{{ errors.institute_type }}</div>
+                            <div class="error-message">{{ errors.institute_type }}</div>
                             {% endif %}
                         </div>
 
@@ -110,12 +118,13 @@
                             <label for="institute_name">
                                 <i class="fas fa-signature"></i> Institution Name:
                             </label>
-                            <input type="text" class="form-control {% if errors and errors.institute_name %}error-input{% endif %}" 
-                                   id="institute_name" name="institute_name" 
-                                   value="{{ form_data.institute_name if form_data else '' }}" required />
+                            <input type="text"
+                                class="form-control {% if errors and errors.institute_name %}error-input{% endif %}"
+                                id="institute_name" name="institute_name"
+                                value="{{ form_data.institute_name if form_data else '' }}" required />
                             <small class="form-hint">Enter the official name of the institution</small>
                             {% if errors and errors.institute_name %}
-                                <div class="error-message">{{ errors.institute_name }}</div>
+                            <div class="error-message">{{ errors.institute_name }}</div>
                             {% endif %}
                         </div>
 
@@ -123,12 +132,13 @@
                             <label for="institute_location">
                                 <i class="fas fa-map-marker-alt"></i> Location:
                             </label>
-                            <input type="text" class="form-control {% if errors and errors.institute_location %}error-input{% endif %}" 
-                                   id="institute_location" name="institute_location" 
-                                   value="{{ form_data.institute_location if form_data else '' }}" required />
+                            <input type="text"
+                                class="form-control {% if errors and errors.institute_location %}error-input{% endif %}"
+                                id="institute_location" name="institute_location"
+                                value="{{ form_data.institute_location if form_data else '' }}" required />
                             <small class="form-hint">Enter the physical location or address</small>
                             {% if errors and errors.institute_location %}
-                                <div class="error-message">{{ errors.institute_location }}</div>
+                            <div class="error-message">{{ errors.institute_location }}</div>
                             {% endif %}
                         </div>
 
@@ -140,7 +150,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
         <div class="modal-content">
@@ -155,7 +165,7 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         // Function to show delete confirmation modal
         function confirmDelete(institutionName) {
@@ -163,14 +173,14 @@
             document.getElementById('deleteForm').action = "{{ url_for('main.delete_government_institution', institute_name='') }}" + institutionName;
             document.getElementById('deleteModal').style.display = 'block';
         }
-        
+
         // Function to close the modal
         function closeModal() {
             document.getElementById('deleteModal').style.display = 'none';
         }
-        
+
         // Close the modal if user clicks outside of it
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             var modal = document.getElementById('deleteModal');
             if (event.target == modal) {
                 closeModal();
@@ -178,4 +188,5 @@
         }
     </script>
 </body>
+
 </html>

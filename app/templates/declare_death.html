@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/declare_death.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -22,7 +24,7 @@
                 <h2>Declare Death Certificate</h2>
                 <p class="subtitle">Register a citizen's death and issue a death certificate</p>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">
                     <i class="fas fa-file-medical"></i>
@@ -34,10 +36,11 @@
                             <label for="aadhar_no">
                                 <i class="fas fa-id-card"></i> Aadhar Number:
                             </label>
-                            <input type="text" class="form-control" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="Please enter a valid 12-digit Aadhar number">
+                            <input type="text" class="form-control" id="aadhar_no" name="aadhar_no" required
+                                pattern="[1-9][0-9]{11}" title="Please enter a valid 12-digit Aadhar number">
                             <small class="form-hint">Enter the 12-digit Aadhar number of the deceased</small>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="death_date">
                                 <i class="fas fa-calendar-day"></i> Date of Death:
@@ -45,14 +48,14 @@
                             <input type="date" class="form-control" id="death_date" name="death_date" required>
                             <small class="form-hint">Enter the date when the death occurred</small>
                         </div>
-                        
+
                         <button type="submit" class="btn-primary">
                             <i class="fas fa-file-medical"></i> Submit Death Certificate
                         </button>
                     </form>
                 </div>
             </div>
-            
+
             <!-- Back Button -->
             <div class="back-section">
                 <a href="{{ url_for('main.dashboard_employees') }}" class="back-button">
@@ -62,4 +65,5 @@
         </div>
     </div>
 </body>
+
 </html>

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ 'Edit' if username else 'Add' }} Government Official - GPMS</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/government_officials_form.css') }}">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -20,7 +22,7 @@
             <div class="page-title">
                 <h2>{{ 'Edit' if username else 'Add' }} Government Official</h2>
             </div>
-            
+
             <form method="POST" class="official-form">
                 {{ form.hidden_tag() }}
 
@@ -28,18 +30,18 @@
                     <label for="username">Username:</label>
                     {{ form.username(class="form-control", id="username") }}
                     {% if form.username.errors %}
-                        <p class="error-message">{{ form.username.errors[0] }}</p>
+                    <p class="error-message">{{ form.username.errors[0] }}</p>
                     {% endif %}
                 </div>
-                
+
                 <div class="form-group">
                     <label for="password">Password:</label>
                     {{ form.password(class="form-control", id="password") }}
                     {% if form.password.errors %}
-                        <p class="error-message">{{ form.password.errors[0] }}</p>
+                    <p class="error-message">{{ form.password.errors[0] }}</p>
                     {% endif %}
                 </div>
-                
+
                 <div class="form-actions">
                     {{ form.submit(class="save-button", value="Save") }}
                     <a href="{{ url_for('main.government_officials') }}" class="cancel-button">Cancel</a>
@@ -48,4 +50,5 @@
         </div>
     </div>
 </body>
+
 </html>

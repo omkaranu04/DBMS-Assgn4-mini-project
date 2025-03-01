@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/taxation.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -34,7 +36,7 @@
                         <p class="summary-value">₹{{ tax_summary.total_tax }}</p>
                     </div>
                 </div>
-                
+
                 <div class="summary-card paid">
                     <div class="summary-icon">
                         <i class="fas fa-check-circle"></i>
@@ -44,7 +46,7 @@
                         <p class="summary-value">₹{{ tax_summary.paid_tax }}</p>
                     </div>
                 </div>
-                
+
                 <div class="summary-card pending">
                     <div class="summary-icon">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -63,7 +65,8 @@
                 </h3>
                 <div class="progress-container">
                     <div class="progress-bar">
-                        {% set collection_percentage = (tax_summary.paid_tax / tax_summary.total_tax * 100)|round|int if tax_summary.total_tax > 0 else 0 %}
+                        {% set collection_percentage = (tax_summary.paid_tax / tax_summary.total_tax * 100)|round|int if
+                        tax_summary.total_tax > 0 else 0 %}
                         <div class="progress" style="width: {{ collection_percentage }}%">
                             <span class="progress-text">{{ collection_percentage }}%</span>
                         </div>
@@ -96,7 +99,7 @@
                 <h3 class="section-title">
                     <i class="fas fa-list"></i> List of Tax Defaulters
                 </h3>
-                
+
                 {% if people_not_paid_tax %}
                 <div class="table-responsive">
                     <table class="defaulters-table">
@@ -125,4 +128,5 @@
         </div>
     </div>
 </body>
+
 </html>

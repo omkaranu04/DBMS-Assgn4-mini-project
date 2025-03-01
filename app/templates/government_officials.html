@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Government Officials - GPMS</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/government_officials.css') }}">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -19,7 +21,8 @@
         <div class="officials-container">
             <div class="page-title">
                 <h2>Government Officials</h2>
-                <p class="subtitle">The Government Officials are representatives who oversee village administration and ensure proper implementation of government schemes.</p>
+                <p class="subtitle">The Government Officials are representatives who oversee village administration and
+                    ensure proper implementation of government schemes.</p>
             </div>
 
             <div class="action-bar">
@@ -41,17 +44,22 @@
                         <tr>
                             <td>{{ off.username }}</td>
                             <td class="actions-cell">
-                                <a href="{{ url_for('main.add_edit_government_official', username=off.username) }}" class="edit-button">Edit</a>
-                                <form method="POST" action="{{ url_for('main.delete_government_official', username=off.username) }}" class="delete-form">
-                                    <button type="submit" class="delete-button" onclick="return confirm('Are you sure you want to delete this official?')">Delete</button>
+                                <a href="{{ url_for('main.add_edit_government_official', username=off.username) }}"
+                                    class="edit-button">Edit</a>
+                                <form method="POST"
+                                    action="{{ url_for('main.delete_government_official', username=off.username) }}"
+                                    class="delete-form">
+                                    <button type="submit" class="delete-button"
+                                        onclick="return confirm('Are you sure you want to delete this official?')">Delete</button>
                                 </form>
                             </td>
                         </tr>
                         {% endfor %}
-                        
+
                         {% if not officials %}
                         <tr>
-                            <td colspan="2" class="empty-message">No government officials found. Add a new official to get started.</td>
+                            <td colspan="2" class="empty-message">No government officials found. Add a new official to
+                                get started.</td>
                         </tr>
                         {% endif %}
                     </tbody>
@@ -60,4 +68,5 @@
         </div>
     </div>
 </body>
+
 </html>

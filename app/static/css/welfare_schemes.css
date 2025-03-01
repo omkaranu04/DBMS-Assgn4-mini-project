@@ -261,28 +261,28 @@ header h1 {
         font-size: 1em;
         max-width: 50%;
     }
-    
+
     .btn {
         padding: 6px 10px;
         font-size: 0.65em;
     }
-    
+
     .page-title h2 {
         font-size: 1.6em;
     }
-    
+
     .subtitle {
         font-size: 1em;
     }
-    
+
     .summary-card {
         min-width: 100%;
     }
-    
+
     .schemes-section {
         display: none;
     }
-    
+
     .schemes-cards {
         display: flex;
     }
@@ -293,19 +293,157 @@ header h1 {
         flex-direction: column;
         padding: 10px;
     }
-    
+
     header h1 {
         margin-bottom: 10px;
         max-width: 100%;
         text-align: center;
     }
-    
+
     .header-buttons {
         width: 100%;
         justify-content: center;
     }
-    
+
     .main-content {
         padding-top: 130px;
     }
+}
+
+/* Additional styles for scheme-type-badge */
+.scheme-type-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+/* Action panel styling */
+.action-panel {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.add-scheme-btn {
+    background-color: #e83e8c;
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.add-scheme-btn:hover {
+    background-color: #d6317b;
+}
+
+/* Table button styling */
+.table-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.table-btn.edit {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.table-btn.edit:hover {
+    background-color: #e0a800;
+}
+
+.table-btn.delete {
+    background-color: #dc3545;
+    border: none;
+    cursor: pointer;
+}
+
+.table-btn.delete:hover {
+    background-color: #c82333;
+}
+
+.delete-form {
+    display: inline;
+}
+
+/* Count badge */
+.count-badge {
+    background-color: #e83e8c;
+    color: white;
+    border-radius: 50px;
+    padding: 3px 8px;
+    font-size: 0.8em;
+}
+
+/* Empty schemes styling */
+.empty-schemes {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-icon {
+    font-size: 3em;
+    color: #e83e8c;
+    margin-bottom: 15px;
+}
+
+.empty-schemes p {
+    color: #6c757d;
+    margin: 0 0 20px 0;
+    font-size: 1.1em;
+}
+
+.btn-primary {
+    background-color: #e83e8c;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #d6317b;
+}
+
+/* Section header styling */
+.section-header {
+    background-color: #f0f2f5;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.section-header h3 {
+    margin: 0;
+    color: #0056b3;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Scheme actions for mobile view */
+.scheme-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
 }

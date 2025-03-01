@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/employee_dashboard.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -23,7 +25,7 @@
             </div>
 
             <h3 class="section-title">Data Management</h3>
-            
+
             <div class="dashboard-grid">
                 <div class="dashboard-card" onclick="location.href='{{ url_for('main.manage_citizens') }}'">
                     <div class="card-icon">
@@ -148,4 +150,5 @@
         </div>
     </div>
 </body>
+
 </html>

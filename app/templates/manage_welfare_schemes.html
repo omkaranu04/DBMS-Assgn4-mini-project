@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/welfare_schemes.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
         <div class="header-buttons">
             <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-            <a href="javascript:history.back()" class="btn">Go Back</a>
+            <a href="{{ url_for('main.dashboard_employees')}}" class="btn">Go Back</a>
         </div>
     </header>
 
@@ -22,13 +24,25 @@
                 <h2>Manage Welfare Schemes</h2>
                 <p class="subtitle">Create, modify, and delete government welfare schemes</p>
             </div>
-            
+
+            <div class="welfare-summary">
+                <div class="summary-card">
+                    <div class="summary-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="summary-content">
+                        <h3>Total Schemes</h3>
+                        <p class="summary-value">{{ schemes|length }}</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="action-panel">
                 <a href="{{ url_for('main.add_welfare_scheme') }}" class="add-scheme-btn">
                     <i class="fas fa-plus-circle"></i> Add New Welfare Scheme
                 </a>
             </div>
-            
+
             <div class="schemes-section">
                 <div class="section-header">
                     <h3>
@@ -36,7 +50,7 @@
                         <span class="count-badge">{{ schemes|length }}</span>
                     </h3>
                 </div>
-                
+
                 {% if schemes %}
                 <div class="table-responsive">
                     <table class="schemes-table">
@@ -59,13 +73,16 @@
                                 <td class="budget-cell">₹{{ scheme.budget }}</td>
                                 <td class="description-cell">{{ scheme.scheme_description }}</td>
                                 <td class="actions-cell">
-                                    <a href="{{ url_for('main.modify_welfare_scheme', scheme_id=scheme.scheme_id) }}" class="table-btn edit" title="Modify">
+                                    <a href="{{ url_for('main.modify_welfare_scheme', scheme_id=scheme.scheme_id) }}"
+                                        class="table-btn edit" title="Modify">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form method="POST" action="{{ url_for('main.manage_welfare_schemes') }}" class="delete-form">
+                                    <form method="POST" action="{{ url_for('main.manage_welfare_schemes') }}"
+                                        class="delete-form">
                                         <input type="hidden" name="action" value="delete">
                                         <input type="hidden" name="scheme_id" value="{{ scheme.scheme_id }}">
-                                        <button type="submit" class="table-btn delete" title="Delete" onclick="return confirm('Are you sure you want to delete this scheme?')">
+                                        <button type="submit" class="table-btn delete" title="Delete"
+                                            onclick="return confirm('Are you sure you want to delete this scheme?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -74,6 +91,39 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile view cards -->
+                <div class="schemes-cards">
+                    {% for scheme in schemes %}
+                    <div class="scheme-card">
+                        <div class="scheme-header">
+                            <h4>{{ scheme.scheme_type }}</h4>
+                            <span class="scheme-id">ID: {{ scheme.scheme_id }}</span>
+                        </div>
+                        <div class="scheme-body">
+                            <p class="scheme-description">{{ scheme.scheme_description }}</p>
+                            <div class="scheme-budget">
+                                <i class="fas fa-rupee-sign"></i> {{ scheme.budget }}
+                            </div>
+                            <div class="scheme-actions">
+                                <a href="{{ url_for('main.modify_welfare_scheme', scheme_id=scheme.scheme_id) }}"
+                                    class="table-btn edit" title="Modify">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form method="POST" action="{{ url_for('main.manage_welfare_schemes') }}"
+                                    class="delete-form">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="scheme_id" value="{{ scheme.scheme_id }}">
+                                    <button type="submit" class="table-btn delete" title="Delete"
+                                        onclick="return confirm('Are you sure you want to delete this scheme?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
                 {% else %}
                 <div class="empty-schemes">
@@ -90,4 +140,5 @@
         </div>
     </div>
 </body>
+
 </html>

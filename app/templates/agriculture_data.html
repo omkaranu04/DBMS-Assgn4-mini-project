@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/agriculture_data.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -34,7 +36,7 @@
                         <p class="summary-value">{{ total_land_area }} acres</p>
                     </div>
                 </div>
-                
+
                 {% if crop_data %}
                 <div class="summary-card">
                     <div class="summary-icon">
@@ -54,7 +56,7 @@
                 <h3 class="section-title">
                     <i class="fas fa-chart-pie"></i> Crop Distribution
                 </h3>
-                
+
                 <div class="distribution-grid">
                     {% for crop in crop_data %}
                     <div class="crop-card">
@@ -62,10 +64,11 @@
                             <i class="fas fa-leaf"></i>
                         </div>
                         <div class="crop-details">
-                            <h4>{{ crop[0] }}</h4>  <!-- Crop Type -->
-                            <p class="crop-area">{{ crop[1] }} acres</p>  <!-- Area -->
+                            <h4>{{ crop[0] }}</h4> <!-- Crop Type -->
+                            <p class="crop-area">{{ crop[1] }} acres</p> <!-- Area -->
                             <div class="progress-bar">
-                                <div class="progress" style="width: {{ (crop[1] / total_land_area * 100)|round }}%"></div>
+                                <div class="progress" style="width: {{ (crop[1] / total_land_area * 100)|round }}%">
+                                </div>
                             </div>
                             <p class="crop-percentage">{{ (crop[1] / total_land_area * 100)|round }}% of total area</p>
                         </div>
@@ -73,20 +76,21 @@
                     {% endfor %}
                 </div>
             </div>
-            
+
             <!-- Crop Bar Chart -->
             <div class="chart-section">
                 <h3 class="section-title">
                     <i class="fas fa-chart-bar"></i> Crop Area Comparison
                 </h3>
-                
+
                 <div class="bar-chart">
                     {% for crop in crop_data %}
                     <div class="chart-item">
-                        <div class="chart-label">{{ crop[0] }}</div>  <!-- Crop Type -->
+                        <div class="chart-label">{{ crop[0] }}</div> <!-- Crop Type -->
                         <div class="chart-bar-container">
-                            <div class="chart-bar" style="width: {{ (crop[1] / (crop_data|map(attribute=1)|list|max) * 100) if crop_data|map(attribute=1)|list|max > 0 else 0 }}%">
-                                <span class="chart-value">{{ crop[1] }} acres</span>  <!-- Area -->
+                            <div class="chart-bar"
+                                style="width: {{ (crop[1] / (crop_data|map(attribute=1)|list|max) * 100) if crop_data|map(attribute=1)|list|max > 0 else 0 }}%">
+                                <span class="chart-value">{{ crop[1] }} acres</span> <!-- Area -->
                             </div>
                         </div>
                     </div>
@@ -102,4 +106,5 @@
         </div>
     </div>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/census.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -34,7 +36,7 @@
                         <p class="stat-value">{{ total_alive }}</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card secondary">
                     <div class="stat-icon">
                         <i class="fas fa-male"></i>
@@ -44,7 +46,7 @@
                         <p class="stat-value">{{ total_male }}</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card tertiary">
                     <div class="stat-icon">
                         <i class="fas fa-female"></i>
@@ -70,7 +72,7 @@
                         </div>
                         <div class="data-percentage">{{ (below_18 / total_alive * 100)|round }}%</div>
                     </div>
-                    
+
                     <div class="data-card">
                         <div class="data-label">18-60 Years</div>
                         <div class="data-value">{{ age_18_to_60 }}</div>
@@ -79,7 +81,7 @@
                         </div>
                         <div class="data-percentage">{{ (age_18_to_60 / total_alive * 100)|round }}%</div>
                     </div>
-                    
+
                     <div class="data-card">
                         <div class="data-label">Above 60</div>
                         <div class="data-value">{{ above_60 }}</div>
@@ -103,7 +105,8 @@
                             <span class="list-label">{{ employment }}</span>
                             <span class="list-value">{{ count }}</span>
                             <div class="list-bar">
-                                <div class="list-progress" style="width: {{ (count / total_alive * 100)|round }}%"></div>
+                                <div class="list-progress" style="width: {{ (count / total_alive * 100)|round }}%">
+                                </div>
                             </div>
                         </li>
                         {% endfor %}
@@ -123,7 +126,8 @@
                             <span class="list-label">{{ level }}</span>
                             <span class="list-value">{{ count }}</span>
                             <div class="list-bar">
-                                <div class="list-progress" style="width: {{ (count / total_alive * 100)|round }}%"></div>
+                                <div class="list-progress" style="width: {{ (count / total_alive * 100)|round }}%">
+                                </div>
                             </div>
                         </li>
                         {% endfor %}
@@ -142,7 +146,7 @@
                         <p class="stat-value">{{ births_this_year }}</p>
                     </div>
                 </div>
-                
+
                 <div class="stat-card danger">
                     <div class="stat-icon">
                         <i class="fas fa-cross"></i>
@@ -156,4 +160,5 @@
         </div>
     </div>
 </body>
+
 </html>

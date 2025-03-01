@@ -1,123 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Add Certificate - GPMS</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/add_certificate.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
-  <body>
-    <header>
-      <h1>GPMS - The Smart Way to Handle a Village</h1>
-      <div class="header-buttons">
-        <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-        <a href="javascript:history.back()" class="btn">Go Back</a>
-      </div>
-    </header>
 
-    <div class="main-content">
-      <div class="certificate-container">
-        <div class="page-title">
-          <h2>Add New Certificate</h2>
-          <p class="subtitle">Create a new certificate for a citizen</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Certificate - GPMS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add_certificate.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+  <header>
+    <h1>GPMS - The Smart Way to Handle a Village</h1>
+    <div class="header-buttons">
+      <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+      <a href="{{ url_for('main.manage_certificates')}}" class="btn">Go Back</a>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="certificate-container">
+      <div class="page-title">
+        <h2>Add New Certificate</h2>
+        <p class="subtitle">Create a new certificate for a citizen</p>
+      </div>
+
+      <div class="certificate-form-wrapper">
+        <div class="form-icon">
+          <i class="fas fa-certificate"></i>
         </div>
 
-        <div class="certificate-form-wrapper">
-          <div class="form-icon">
-            <i class="fas fa-certificate"></i>
-          </div>
-
-          <form
-            method="POST"
-            action="{{ url_for('main.add_certificate') }}"
-            class="certificate-form"
-          >
+        <form method="POST" action="{{ url_for('main.add_certificate') }}" class="certificate-form">
           {% if error_message %}
           <div class="alert alert-danger" role="alert">
-              {{ error_message }}
+            {{ error_message }}
           </div>
           {% endif %}
-          
 
-            <div class="form-group">
-              <label for="aadhar_no">Aadhar No:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="aadhar_no"
-                name="aadhar_no"
-                value="{{ prefilled_aadhar }}"
-                required
-              />
-              <small class="form-text text-muted"
-                >Enter 12-digit Aadhar number of the citizen</small
-              >
-            </div>
 
-            <div class="form-group">
-              <label for="certificate_type">
-                <i class="fas fa-file-alt"></i> Certificate Type:
-              </label>
-              <select
-                id="certificate_type"
-                name="certificate_type"
-                class="form-control"
-                required
-              >
-                <option value="">--Select--</option>
-                <option value="Birth">Birth</option>
-                <option value="Death">Death</option>
-                <option value="Caste">Caste</option>
-                <option value="Domicile">Domicile</option>
-                <option value="Residence">Residence</option>
-                <option value="Character">Character</option>
-              </select>
-              <small class="form-hint"
-                >Select the type of certificate to issue</small
-              >
-            </div>
+          <div class="form-group">
+            <label for="aadhar_no">Aadhar No:</label>
+            <input type="text" class="form-control" id="aadhar_no" name="aadhar_no" value="{{ prefilled_aadhar }}"
+              required />
+            <small class="form-text text-muted">Enter 12-digit Aadhar number of the citizen</small>
+          </div>
 
-            <div class="form-group">
-              <label for="date_of_issue">Date of Issue:</label>
-              <input
-                type="date"
-                class="form-control"
-                id="date_of_issue"
-                name="date_of_issue"
-                required
-              />
-              <small class="form-text text-muted"
-                >Enter the date when the certificate is issued</small
-              >
-              {% if error_message and "date of issue must be the same as" in
-              error_message %}
-              <div class="invalid-feedback d-block text-danger">
-                {{ error_message }}
-              </div>
-              {% endif %}
-            </div>
+          <div class="form-group">
+            <label for="certificate_type">
+              <i class="fas fa-file-alt"></i> Certificate Type:
+            </label>
+            <select id="certificate_type" name="certificate_type" class="form-control" required>
+              <option value="">--Select--</option>
+              <option value="Birth">Birth</option>
+              <option value="Death">Death</option>
+              <option value="Caste">Caste</option>
+              <option value="Domicile">Domicile</option>
+              <option value="Residence">Residence</option>
+              <option value="Character">Character</option>
+            </select>
+            <small class="form-hint">Select the type of certificate to issue</small>
+          </div>
 
-            <div class="form-actions">
-              <button type="submit" class="btn-primary">
-                <i class="fas fa-plus-circle"></i> Add Certificate
-              </button>
-              <a
-                href="{{ url_for('main.manage_certificates') }}"
-                class="btn-secondary"
-              >
-                <i class="fas fa-times"></i> Cancel
-              </a>
+          <div class="form-group">
+            <label for="date_of_issue">Date of Issue:</label>
+            <input type="date" class="form-control" id="date_of_issue" name="date_of_issue" required />
+            <small class="form-text text-muted">Enter the date when the certificate is issued</small>
+            {% if error_message and "date of issue must be the same as" in
+            error_message %}
+            <div class="invalid-feedback d-block text-danger">
+              {{ error_message }}
             </div>
-          </form>
-        </div>
+            {% endif %}
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">
+              <i class="fas fa-plus-circle"></i> Add Certificate
+            </button>
+            <a href="{{ url_for('main.manage_certificates') }}" class="btn-secondary">
+              <i class="fas fa-times"></i> Cancel
+            </a>
+          </div>
+        </form>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
