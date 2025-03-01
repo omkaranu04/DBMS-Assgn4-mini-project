@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -29,22 +30,31 @@
                         <label for="aadhar_no">
                             <i class="fas fa-id-card"></i> Aadhar No:
                         </label>
-                        <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit">
+                        <input type="text" id="aadhar_no" name="aadhar_no" required pattern="[1-9][0-9]{11}" title="12-digit Aadhar number starting with non-zero digit" value="{{ form_data.get('aadhar_no', '') }}">
                         <small class="form-hint">12-digit number starting with non-zero digit</small>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    {% if category == 'aadhar_no_error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                     </div>
                     
                     <div class="form-group">
                         <label for="name">
                             <i class="fas fa-user"></i> Name:
                         </label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" required value="{{ form_data.get('name', '') }}">
                     </div>
                     
                     <div class="form-group">
                         <label for="dob">
                             <i class="fas fa-calendar-alt"></i> Date of Birth:
                         </label>
-                        <input type="date" id="dob" name="dob" required>
+                        <input type="date" id="dob" name="dob" required value="{{ form_data.get('dob', '') }}">
                     </div>
                     
                     <div class="form-group">
@@ -53,12 +63,12 @@
                         </label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="male" name="gender" value="Male" required>
+                                <input type="radio" id="male" name="gender" value="Male" required {% if form_data.get('gender') == 'Male' %}checked{% endif %}>
                                 <label for="male">Male</label>
                             </div>
                             
                             <div class="radio-option">
-                                <input type="radio" id="female" name="gender" value="Female">
+                                <input type="radio" id="female" name="gender" value="Female" {% if form_data.get('gender') == 'Female' %}checked{% endif %}>
                                 <label for="female">Female</label>
                             </div>
                         </div>
@@ -68,22 +78,48 @@
                         <label for="house_no">
                             <i class="fas fa-home"></i> House No:
                         </label>
-                        <input type="number" id="house_no" name="house_no" required>
+                        <input type="number" id="house_no" name="house_no" required value="{{ form_data.get('house_no', '') }}">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    {% if category == 'house_no_error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                     </div>
                     
                     <div class="form-group">
                         <label for="phone_no">
                             <i class="fas fa-phone"></i> Phone No:
                         </label>
-                        <input type="text" id="phone_no" name="phone_no" required pattern="[6-9][0-9]{9}" title="10-digit mobile number starting with 6-9">
-                        <small class="form-hint">10-digit number starting with 6-9</small>
+                        <input type="text" id="phone_no" name="phone_no" required pattern="[6-9][0-9]{9}" title="10-digit mobile number starting with 6-9" value="{{ form_data.get('phone_no', '') }}">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    {% if category == 'phone_no_error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                     </div>
                     
                     <div class="form-group">
                         <label for="email_id">
                             <i class="fas fa-envelope"></i> Email ID:
                         </label>
-                        <input type="email" id="email_id" name="email_id">
+                        <input type="email" id="email_id" name="email_id" value="{{ form_data.get('email_id', '') }}" required_pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Valid email address">
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                            {% if messages %}
+                                {% for category, message in messages %}
+                                    {% if category == 'email_id_error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                         <small class="form-hint">Optional</small>
                     </div>
                     
@@ -93,11 +129,11 @@
                         </label>
                         <select id="education_level" name="education_level" required>
                             <option value="">--Select--</option>
-                            <option value="Uneducated">Uneducated</option>
-                            <option value="High School">High School</option>
-                            <option value="Secondary School">Secondary School</option>
-                            <option value="Graduate">Graduate</option>
-                            <option value="Post Graduate">Post Graduate</option>
+                            <option value="Uneducated" {% if form_data.get('education_level') == 'Uneducated' %}selected{% endif %}>Uneducated</option>
+                            <option value="High School" {% if form_data.get('education_level') == 'High School' %}selected{% endif %}>High School</option>
+                            <option value="Secondary School" {% if form_data.get('education_level') == 'Secondary School' %}selected{% endif %}>Secondary School</option>
+                            <option value="Graduate" {% if form_data.get('education_level') == 'Graduate' %}selected{% endif %}>Graduate</option>
+                            <option value="Post Graduate" {% if form_data.get('education_level') == 'Post Graduate' %}selected{% endif %}>Post Graduate</option>
                         </select>
                     </div>
                     
@@ -105,7 +141,7 @@
                         <label for="income">
                             <i class="fas fa-rupee-sign"></i> Income:
                         </label>
-                        <input type="number" id="income" name="income" min="0" required>
+                        <input type="number" id="income" name="income" min="0" required value="{{ form_data.get('income', '') }}">
                         <small class="form-hint">Annual income in rupees</small>
                     </div>
                     
@@ -115,10 +151,10 @@
                         </label>
                         <select id="employment" name="employment" required>
                             <option value="">--Select--</option>
-                            <option value="Unemployed">Unemployed</option>
-                            <option value="Employee">Employee</option>
-                            <option value="Self Employed">Self Employed</option>
-                            <option value="Business">Business</option>
+                            <option value="Unemployed" {% if form_data.get('employment') == 'Unemployed' %}selected{% endif %}>Unemployed</option>
+                            <option value="Employee" {% if form_data.get('employment') == 'Employee' %}selected{% endif %}>Employee</option>
+                            <option value="Self Employed" {% if form_data.get('employment') == 'Self Employed' %}selected{% endif %}>Self Employed</option>
+                            <option value="Business" {% if form_data.get('employment') == 'Business' %}selected{% endif %}>Business</option>
                         </select>
                     </div>
                     
