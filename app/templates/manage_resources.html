@@ -26,220 +26,162 @@
           Add, delete, and view village infrastructure resources
         </p>
       </div>
-      {% with messages = get_flashed_messages(with_categories=true,
-      category_filter=['resource']) %} {% if messages %} {% for category,
-      message in messages %}
-      <div class="alert alert-{{ category[9:] if category.startswith('resource_') else 'info' }}" role="alert">
-        {{ message }}
-      </div>
-      {% endfor %} {% endif %} {% endwith %}
 
-      <div class="main-content">
-        <div class="resources-container">
-          {% with messages = get_flashed_messages(with_categories=true) %} {% if
-          messages %} {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">{{ message }}</div>
-          {% endfor %} {% endif %} {% endwith %}
-          <div class="card-container">
-            <!-- Add Resource Form -->
-            <div class="card">
-              <div class="card-header">
-                <i class="fas fa-plus-circle"></i>
-                <h3>Add Resource</h3>
-              </div>
-              <div class="card-body">
-                <form method="POST" class="resource-form">
-                  <input type="hidden" name="action" value="add" />
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
 
-                  <div class="form-group">
-                    <label for="resource_name">
-                      <i class="fas fa-cogs"></i> Resource Name:
-                    </label>
-                    <select name="resource_name" id="resource_name" class="form-control" required>
-                      <option value="">--Select Resource--</option>
-                      <option value="Roads">Roads</option>
-                      <option value="Drainage System">Drainage System</option>
-                      <option value="Water">Water</option>
-                      <option value="Electricity">Electricity</option>
-                      <option value="Street Lights">Street Lights</option>
-                      <option value="Park">Park</option>
-                      <option value="Waste Management">Waste Management</option>
-                    </select>
-                    <small class="form-hint">Select the type of resource to add</small>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="last_inspected_date">
-                      <i class="fas fa-calendar-check"></i> Last Inspected Date:
-                    </label>
-                    <input type="date" id="last_inspected_date" name="last_inspected_date" class="form-control"
-                      required />
-                    <small class="form-hint">Enter the date when the resource was last inspected</small>
-                  </div>
-
-                  <button type="submit" class="btn-primary">
-                    <i class="fas fa-plus"></i> Add Resource
-                  </button>
-                </form>
-              </div>
-              =======
-              <div class="card-container">
-                <!-- Add Resource Form -->
-                <div class="card">
-                  <div class="card-header">
-                    <i class="fas fa-plus-circle"></i>
-                    <h3>Add Resource</h3>
-                    >>>>>>> Stashed changes
-                  </div>
-                  <div class="card-body">
-                    <form method="POST" class="resource-form">
-                      <input type="hidden" name="action" value="add" />
-
-                      <div class="form-group">
-                        <label for="resource_name">
-                          <i class="fas fa-cogs"></i> Resource Name:
-                        </label>
-                        <select name="resource_name" id="resource_name" class="form-control" required>
-                          <option value="">--Select Resource--</option>
-                          <option value="Roads">Roads</option>
-                          <option value="Drainage System">Drainage System</option>
-                          <option value="Water">Water</option>
-                          <option value="Electricity">Electricity</option>
-                          <option value="Street Lights">Street Lights</option>
-                          <option value="Park">Park</option>
-                          <option value="Waste Management">Waste Management</option>
-                        </select>
-                        <small class="form-hint">Select the type of resource to add</small>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="last_inspected_date">
-                          <i class="fas fa-calendar-check"></i> Last Inspected Date:
-                        </label>
-                        <input type="date" id="last_inspected_date" name="last_inspected_date" class="form-control"
-                          required />
-                        <small class="form-hint">Enter the date when the resource was last inspected</small>
-                      </div>
-
-                      <button type="submit" class="btn-primary">
-                        <i class="fas fa-plus"></i> Add Resource
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                <!-- Delete Resource Form -->
-                <div class="card">
-                  <div class="card-header">
-                    <i class="fas fa-trash-alt"></i>
-                    <h3>Delete Resource</h3>
-                  </div>
-                  <div class="card-body">
-                    <form method="POST" class="resource-form">
-                      <input type="hidden" name="action" value="delete" />
-
-                      <div class="form-group">
-                        <label for="resource_id">
-                          <i class="fas fa-hashtag"></i> Resource ID:
-                        </label>
-                        <input type="text" id="resource_id" name="resource_id" class="form-control" required />
-                        <small class="form-hint">Enter the ID of the resource to delete</small>
-                      </div>
-
-                      <button type="submit" class="btn-danger">
-                        <i class="fas fa-trash-alt"></i> Delete Resource
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                <!-- Edit Resource Form -->
-                <div class="card">
-                  <div class="card-header">
-                    <i class="fas fa-edit"></i>
-                    <h3>Edit Resource</h3>
-                  </div>
-                  <div class="card-body">
-                    <form method="POST" class="resource-form">
-                      <input type="hidden" name="action" value="edit" />
-
-                      <div class="form-group">
-                        <label for="edit_resource_id">
-                          <i class="fas fa-hashtag"></i> Resource ID:
-                        </label>
-                        <input type="text" id="edit_resource_id" name="resource_id" class="form-control" required />
-                        <small class="form-hint">Enter the ID of the resource to edit</small>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="edit_last_inspected_date">
-                          <i class="fas fa-calendar-check"></i> New Last Inspected
-                          Date:
-                        </label>
-                        <input type="date" id="edit_last_inspected_date" name="last_inspected_date" class="form-control"
-                          required />
-                        <small class="form-hint">Enter the new date when the resource was last
-                          inspected</small>
-                      </div>
-
-                      <button type="submit" class="btn-primary">
-                        <i class="fas fa-edit"></i> Update Resource
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-
-              <!-- View All Resources -->
-              <div class="resources-section">
-                <div class="section-header">
-                  <h3>
-                    <i class="fas fa-list-alt"></i> All Resources
-                    <span class="count-badge">{{ resources|length if resources else 0 }}</span>
-                  </h3>
-                </div>
-
-                {% if resources %}
-                <div class="table-responsive">
-                  <table class="resources-table">
-                    <thead>
-                      <tr>
-                        <th>Resource ID</th>
-                        <th>Resource Name</th>
-                        <th>Last Inspected Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for resource in resources %}
-                      <tr>
-                        <td>{{ resource.resource_id }}</td>
-                        <td>
-                          <span class="resource-badge">{{ resource.resource_name }}</span>
-                        </td>
-                        <td>{{ resource.last_inspected_date }}</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-                {% else %}
-                <div class="empty-resources">
-                  <div class="empty-icon">
-                    <i class="fas fa-boxes"></i>
-                  </div>
-                  <p>No resources found. Add a new resource to get started.</p>
-                </div>
-                {% endif %}
-              </div>
-
-              <!-- Back Button -->
-              <div class="back-section">
-                <a href="{{ url_for('main.dashboard_employees') }}" class="back-button">
-                  <i class="fas fa-arrow-left"></i> Back to Dashboard
-                </a>
-              </div>
-            </div>
+      <div class="card-container">
+        <!-- Add Resource Form -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-plus-circle"></i>
+            <h3>Add Resource</h3>
           </div>
+          <div class="card-body">
+            <form method="POST" class="resource-form">
+              <input type="hidden" name="action" value="add" />
+
+              <div class="form-group">
+                <label for="resource_name">
+                  <i class="fas fa-cogs"></i> Resource Name:
+                </label>
+                <select name="resource_name" id="resource_name" class="form-control" required>
+                  <option value="">--Select Resource--</option>
+                  <option value="Roads">Roads</option>
+                  <option value="Drainage System">Drainage System</option>
+                  <option value="Water">Water</option>
+                  <option value="Electricity">Electricity</option>
+                  <option value="Street Lights">Street Lights</option>
+                  <option value="Park">Park</option>
+                  <option value="Waste Management">Waste Management</option>
+                </select>
+                <small class="form-hint">Select the type of resource to add</small>
+              </div>
+
+              <div class="form-group">
+                <label for="last_inspected_date">
+                  <i class="fas fa-calendar-check"></i> Last Inspected Date:
+                </label>
+                <input type="date" id="last_inspected_date" name="last_inspected_date" class="form-control" required />
+                <small class="form-hint">Enter the date when the resource was last inspected</small>
+              </div>
+
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-plus"></i> Add Resource
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Delete Resource Form -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-trash-alt"></i>
+            <h3>Delete Resource</h3>
+          </div>
+          <div class="card-body">
+            <form method="POST" class="resource-form">
+              <input type="hidden" name="action" value="delete" />
+
+              <div class="form-group">
+                <label for="resource_id">
+                  <i class="fas fa-hashtag"></i> Resource ID:
+                </label>
+                <input type="text" id="resource_id" name="resource_id" class="form-control" required />
+                <small class="form-hint">Enter the ID of the resource to delete</small>
+              </div>
+
+              <button type="submit" class="btn-danger">
+                <i class="fas fa-trash-alt"></i> Delete Resource
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Edit Resource Form -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-edit"></i>
+            <h3>Edit Resource</h3>
+          </div>
+          <div class="card-body">
+            <form method="POST" class="resource-form">
+              <input type="hidden" name="action" value="edit" />
+
+              <div class="form-group">
+                <label for="edit_resource_id">
+                  <i class="fas fa-hashtag"></i> Resource ID:
+                </label>
+                <input type="text" id="edit_resource_id" name="resource_id" class="form-control" required />
+                <small class="form-hint">Enter the ID of the resource to edit</small>
+              </div>
+
+              <div class="form-group">
+                <label for="edit_last_inspected_date">
+                  <i class="fas fa-calendar-check"></i> New Last Inspected Date:
+                </label>
+                <input type="date" id="edit_last_inspected_date" name="last_inspected_date" class="form-control"
+                  required />
+                <small class="form-hint">Enter the new date when the resource was last inspected</small>
+              </div>
+
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-edit"></i> Update Resource
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- View All Resources -->
+      <div class="resources-section">
+        <div class="section-header">
+          <h3>
+            <i class="fas fa-list-alt"></i> All Resources
+            <span class="count-badge">{{ resources|length if resources else 0 }}</span>
+          </h3>
+        </div>
+
+        {% if resources %}
+        <div class="table-responsive">
+          <table class="resources-table">
+            <thead>
+              <tr>
+                <th>Resource ID</th>
+                <th>Resource Name</th>
+                <th>Last Inspected Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for resource in resources %}
+              <tr>
+                <td>{{ resource.resource_id }}</td>
+                <td>
+                  <span class="resource-badge">{{ resource.resource_name }}</span>
+                </td>
+                <td>{{ resource.last_inspected_date }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="empty-resources">
+          <div class="empty-icon">
+            <i class="fas fa-boxes"></i>
+          </div>
+          <p>No resources found. Add a new resource to get started.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

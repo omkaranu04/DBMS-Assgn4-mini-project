@@ -441,7 +441,7 @@ label i {
     font-weight: bold;
 }
 
-.table tbody + tbody {
+.table tbody+tbody {
     border-top: 2px solid #dee2e6;
 }
 
@@ -528,4 +528,91 @@ label i {
 
 .table-striped tbody tr:nth-of-type(odd) td {
     background-color: #f9f9f9;
+}
+
+/* Schemes Table Styling */
+.schemes-card {
+    margin-top: 2rem;
+}
+
+.schemes-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.schemes-table th {
+    background-color: #e83e8c;
+    color: white;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    border: none;
+}
+
+.schemes-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e1e4e8;
+    background-color: white;
+}
+
+.schemes-table tr:last-child td {
+    border-bottom: none;
+}
+
+.schemes-table tr:hover td {
+    background-color: #f8f9fa;
+}
+
+.scheme-id {
+    font-weight: 600;
+    color: #0056b3;
+}
+
+.scheme-type-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.scheme-description {
+    color: #495057;
+    max-width: 400px;
+}
+
+.empty-message {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+    font-style: italic;
+}
+
+.empty-message i {
+    margin-right: 8px;
+    color: #17a2b8;
+}
+
+/* Override DataTables styling */
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-left: 8px;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #e83e8c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(232, 62, 140, 0.25);
 }

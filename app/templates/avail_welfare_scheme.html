@@ -1,353 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
-<<<<<<< Updated upstream
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Avail Welfare Scheme - GPMS</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/avail_welfare_scheme.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
-    />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-  </head>
-  <body>
-=======
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avail Welfare Scheme - GPMS</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/avail_welfare_scheme.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avail Welfare Scheme - GPMS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/avail_welfare_scheme.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
->>>>>>> Stashed changes
-    <header>
-      <h1>GPMS - The Smart Way to Handle a Village</h1>
-      <div class="header-buttons">
-        <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-        <a href="{{ url_for('main.dashboard_employees') }}" class="btn"
-          >Go Back</a
-        >
+  <header>
+    <h1>GPMS - The Smart Way to Handle a Village</h1>
+    <div class="header-buttons">
+      <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+      <a href="{{ url_for('main.dashboard_employees') }}" class="btn">Go Back</a>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="welfare-container">
+      <div class="page-title">
+        <h2>Welfare Scheme Management</h2>
+        <p class="subtitle">Add or remove citizens from welfare schemes</p>
       </div>
-    </header>
 
-    <div class="main-content">
-<<<<<<< Updated upstream
-      <div class="welfare-container">
-        <div class="page-title">
-          <h2>Welfare Scheme Management</h2>
-          <p class="subtitle">Add or remove citizens from welfare schemes</p>
-=======
-        <div class="welfare-container">
-            <div class="page-title">
-                <h2>Welfare Scheme Management</h2>
-                <p class="subtitle">Add or remove citizens from welfare schemes</p>
-            </div>
-
-            <!-- Flash Messages Section -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    <i
-                        class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
-                    {{ message }}
-                    <button type="button" class="close-btn"
-                        onclick="this.parentElement.style.display='none';">&times;</button>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
-
-            <div class="cards-container">
-                <!-- Add Beneficiary Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-user-plus"></i>
-                        <h3>Add Beneficiary to Scheme</h3>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ url_for('main.submit_scheme') }}" method="post" class="scheme-form">
-                            <div class="form-group">
-                                <label for="scheme_id">
-                                    <i class="fas fa-tag"></i> Scheme ID:
-                                </label>
-                                <input type="number" class="form-control" id="scheme_id" name="scheme_id" required />
-                                <small class="form-hint">Enter the ID of the welfare scheme</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="citizen_aadhar_no">
-                                    <i class="fas fa-id-card"></i> Citizen Aadhar Number:
-                                </label>
-                                <input type="text" class="form-control" id="citizen_aadhar_no" name="citizen_aadhar_no"
-                                    required />
-                                <small class="form-hint">Enter the 12-digit Aadhar number of the citizen</small>
-                            </div>
-
-                            <button type="submit" class="btn-primary">
-                                <i class="fas fa-plus"></i> Add Beneficiary
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Remove Beneficiary Card -->
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-user-minus"></i>
-                        <h3>Remove Beneficiary from Scheme</h3>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ url_for('main.remove_scheme_beneficiary') }}" method="post"
-                            class="scheme-form">
-                            <div class="form-group">
-                                <label for="remove_scheme_id">
-                                    <i class="fas fa-tag"></i> Scheme ID:
-                                </label>
-                                <input type="number" class="form-control" id="remove_scheme_id" name="scheme_id"
-                                    required />
-                                <small class="form-hint">Enter the ID of the welfare scheme</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="remove_citizen_aadhar_no">
-                                    <i class="fas fa-id-card"></i> Citizen Aadhar Number:
-                                </label>
-                                <input type="text" class="form-control" id="remove_citizen_aadhar_no"
-                                    name="citizen_aadhar_no" required />
-                                <small class="form-hint">Enter the 12-digit Aadhar number of the citizen</small>
-                            </div>
-
-                            <button type="submit" class="btn-danger">
-                                <i class="fas fa-minus"></i> Remove Beneficiary
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
->>>>>>> Stashed changes
+      <!-- Flash Messages Section -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          <i
+            class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+          {{ message }}
+          <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
         </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
 
-        <!-- Flash Messages Section -->
-        {% with messages = get_flashed_messages(with_categories=true) %} {% if
-        messages %}
-        <div class="flash-messages">
-          {% for category, message in messages %}
-          <div class="alert alert-{{ category }}">
-            <i
-              class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-exclamation-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"
-            ></i>
-            {{ message }}
-            <button
-              type="button"
-              class="close-btn"
-              onclick="this.parentElement.style.display='none';"
-            >
-              &times;
-            </button>
-          </div>
-          {% endfor %}
-        </div>
-        {% endif %} {% endwith %}
-
-        <div class="cards-container">
-          <!-- Add Beneficiary Card -->
-          <div class="card">
-            <div class="card-header">
-              <i class="fas fa-user-plus"></i>
-              <h3>Add Beneficiary to Scheme</h3>
-            </div>
-            <div class="card-body">
-              <form
-                action="{{ url_for('main.submit_scheme') }}"
-                method="post"
-                class="scheme-form"
-              >
-                <div class="form-group">
-                  <label for="scheme_id">
-                    <i class="fas fa-tag"></i> Scheme ID:
-                  </label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="scheme_id"
-                    name="scheme_id"
-                    required
-                  />
-                  <small class="form-hint"
-                    >Enter the ID of the welfare scheme</small
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label for="citizen_aadhar_no">
-                    <i class="fas fa-id-card"></i> Citizen Aadhar Number:
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="citizen_aadhar_no"
-                    name="citizen_aadhar_no"
-                    required
-                  />
-                  <small class="form-hint"
-                    >Enter the 12-digit Aadhar number of the citizen</small
-                  >
-                </div>
-
-                <button type="submit" class="btn-primary">
-                  <i class="fas fa-plus"></i> Add Beneficiary
-                </button>
-              </form>
-            </div>
-          </div>
-
-          <!-- Remove Beneficiary Card -->
-          <div class="card">
-            <div class="card-header">
-              <i class="fas fa-user-minus"></i>
-              <h3>Remove Beneficiary from Scheme</h3>
-            </div>
-            <div class="card-body">
-              <form
-                action="{{ url_for('main.remove_scheme_beneficiary') }}"
-                method="post"
-                class="scheme-form"
-              >
-                <div class="form-group">
-                  <label for="remove_scheme_id">
-                    <i class="fas fa-tag"></i> Scheme ID:
-                  </label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="remove_scheme_id"
-                    name="scheme_id"
-                    required
-                  />
-                  <small class="form-hint"
-                    >Enter the ID of the welfare scheme</small
-                  >
-                </div>
-
-                <div class="form-group">
-                  <label for="remove_citizen_aadhar_no">
-                    <i class="fas fa-id-card"></i> Citizen Aadhar Number:
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="remove_citizen_aadhar_no"
-                    name="citizen_aadhar_no"
-                    required
-                  />
-                  <small class="form-hint"
-                    >Enter the 12-digit Aadhar number of the citizen</small
-                  >
-                </div>
-
-                <button type="submit" class="btn-danger">
-                  <i class="fas fa-minus"></i> Remove Beneficiary
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div class="card mt-4">
-          <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">Available Welfare Schemes</h3>
+      <div class="cards-container">
+        <!-- Add Beneficiary Card -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-user-plus"></i>
+            <h3>Add Beneficiary to Scheme</h3>
           </div>
           <div class="card-body">
-            <div class="table-responsive">
-              <table id="welfare-schemes-table" class="table table-striped table-hover">
-                <thead class="thead-dark">
-                  <tr>
-                    <th>Scheme ID</th>
-                    <th>Scheme Type</th>
-                    <th>Scheme Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for scheme in schemes %}
-                  <tr>
-                    <td>{{ scheme.scheme_id }}</td>
-                    <td>{{ scheme.scheme_type }}</td>
-                    <td>{{ scheme.scheme_description }}</td>
-                  </tr>
-                  {% else %}
-                  <tr>
-                    <td colspan="3" class="text-center">
-                      No welfare schemes are currently available.
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
+            <form action="{{ url_for('main.submit_scheme') }}" method="post" class="scheme-form">
+              <div class="form-group">
+                <label for="scheme_id">
+                  <i class="fas fa-tag"></i> Scheme ID:
+                </label>
+                <input type="number" class="form-control" id="scheme_id" name="scheme_id" required />
+                <small class="form-hint">Enter the ID of the welfare scheme</small>
+              </div>
+
+              <div class="form-group">
+                <label for="citizen_aadhar_no">
+                  <i class="fas fa-id-card"></i> Citizen Aadhar Number:
+                </label>
+                <input type="text" class="form-control" id="citizen_aadhar_no" name="citizen_aadhar_no" required />
+                <small class="form-hint">Enter the 12-digit Aadhar number of the citizen</small>
+              </div>
+
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-plus"></i> Add Beneficiary
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Remove Beneficiary Card -->
+        <div class="card">
+          <div class="card-header">
+            <i class="fas fa-user-minus"></i>
+            <h3>Remove Beneficiary from Scheme</h3>
+          </div>
+          <div class="card-body">
+            <form action="{{ url_for('main.remove_scheme_beneficiary') }}" method="post" class="scheme-form">
+              <div class="form-group">
+                <label for="remove_scheme_id">
+                  <i class="fas fa-tag"></i> Scheme ID:
+                </label>
+                <input type="number" class="form-control" id="remove_scheme_id" name="scheme_id" required />
+                <small class="form-hint">Enter the ID of the welfare scheme</small>
+              </div>
+
+              <div class="form-group">
+                <label for="remove_citizen_aadhar_no">
+                  <i class="fas fa-id-card"></i> Citizen Aadhar Number:
+                </label>
+                <input type="text" class="form-control" id="remove_citizen_aadhar_no" name="citizen_aadhar_no"
+                  required />
+                <small class="form-hint">Enter the 12-digit Aadhar number of the citizen</small>
+              </div>
+
+              <button type="submit" class="btn-danger">
+                <i class="fas fa-minus"></i> Remove Beneficiary
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Available Welfare Schemes Table -->
+      <div class="card schemes-card">
+        <div class="card-header">
+          <i class="fas fa-list"></i>
+          <h3>Available Welfare Schemes</h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="welfare-schemes-table" class="schemes-table">
+              <thead>
+                <tr>
+                  <th>Scheme ID</th>
+                  <th>Scheme Type</th>
+                  <th>Scheme Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for scheme in schemes %}
+                <tr>
+                  <td class="scheme-id">{{ scheme.scheme_id }}</td>
+                  <td>
+                    <span class="scheme-type-badge">{{ scheme.scheme_type }}</span>
+                  </td>
+                  <td class="scheme-description">{{ scheme.scheme_description }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="3" class="empty-message">
+                    <i class="fas fa-info-circle"></i> No welfare schemes are currently available.
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <script>
-<<<<<<< Updated upstream
-      // Auto-hide flash messages after 5 seconds
-      document.addEventListener("DOMContentLoaded", function () {
-        setTimeout(function () {
-          const flashMessages = document.querySelectorAll(".alert");
-          flashMessages.forEach(function (message) {
-            message.style.opacity = "0";
-            setTimeout(function () {
-              message.style.display = "none";
-            }, 500);
-          });
-        }, 5000);
-
-        // Initialize DataTables
-        $('#welfare-schemes-table').DataTable({
-          "paging": false,
-          "searching": true,
-          "ordering": true,
-          "info": false,
-          "autoWidth": false,
-          "columnDefs": [
-            { "orderable": false, "targets": 2 }
-          ]
-=======
-        // Auto-hide flash messages after 5 seconds
-        document.addEventListener('DOMContentLoaded', function () {
-            setTimeout(function () {
-                const flashMessages = document.querySelectorAll('.alert');
-                flashMessages.forEach(function (message) {
-                    message.style.opacity = '0';
-                    setTimeout(function () {
-                        message.style.display = 'none';
-                    }, 500);
-                });
-            }, 5000);
->>>>>>> Stashed changes
+  <script>
+    // Auto-hide flash messages after 5 seconds
+    document.addEventListener("DOMContentLoaded", function () {
+      setTimeout(function () {
+        const flashMessages = document.querySelectorAll(".alert");
+        flashMessages.forEach(function (message) {
+          message.style.opacity = "0";
+          setTimeout(function () {
+            message.style.display = "none";
+          }, 500);
         });
+      }, 5000);
+
+      // Initialize DataTables
+      $('#welfare-schemes-table').DataTable({
+        "paging": false,
+        "searching": true,
+        "ordering": true,
+        "info": false,
+        "autoWidth": false,
+        "columnDefs": [
+          { "orderable": false, "targets": 2 }
+        ]
       });
-    </script>
-<<<<<<< Updated upstream
-  </body>
-=======
+    });
+  </script>
 </body>
 
->>>>>>> Stashed changes
 </html>
