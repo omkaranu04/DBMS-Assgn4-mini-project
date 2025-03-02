@@ -1864,7 +1864,7 @@ def delete_taxation_record():
         flash(f"Error deleting taxation record: {str(e)}", "danger")
         return redirect(url_for('main.find_taxation_records'))
 
-@main_bp.route('/manage_meeting_details', methods=['GET', 'POST'])
+@main_bp.route('/manage_meeting_details', methods=['GET', 'POST']) # flag 
 def manage_meeting_details():
     if request.method == 'POST':
         action = request.form.get('action')
@@ -1888,6 +1888,7 @@ def manage_meeting_details():
                 # flash("Meeting details deleted successfully!", "success")
             else:
                 flash("Meeting not found!", "danger")
+                return redirect(url_for('main.manage_meeting_details'))
 
     meetings_list = Meetings.query.all()
     return render_template('manage_meeting_details.html', meetings=meetings_list)
@@ -2010,8 +2011,8 @@ def add_government_institution():
             if not errors:
                 # Check if institution with same name already exists
                 existing = db.session.execute(
-                    text("SELECT * FROM Government_Institutions WHERE Institute_Name = :name"),
-                    {'name': form_data['institute_name']}
+                    text("SELECT * FROM Government_Institutions WHERE Institute_Name = :name AND Institute_Type = :type"),
+                    {'name': form_data['institute_name'], 'type': form_data['institute_type']}
                 ).fetchone()
                 
                 if existing:
@@ -2042,33 +2043,33 @@ def add_government_institution():
     institutions = db.session.execute(text("SELECT * FROM Government_Institutions")).fetchall()
     
     # Render template with form data, errors, and institutions
-    return render_template('government_bodies.html', 
+    return render_template('view_government_bodies.html', 
                           institutions=institutions,
                           form_data=form_data,
                           errors=errors)
 
-@main_bp.route('/delete_government_institution/<institute_name>', methods=['POST'])
-def delete_government_institution(institute_name):
+@main_bp.route('/delete_government_institution/<institute_type>/<institute_name>', methods=['POST'])
+def delete_government_institution(institute_type, institute_name):
     if 'user' not in session:
         return redirect(url_for('main.login'))
     
     try:
-        # Check if institution exists
+        # Check if institution exists with both name and type
         institution = db.session.execute(
-            text("SELECT * FROM Government_Institutions WHERE Institute_Name = :name"),
-            {'name': institute_name}
+            text("SELECT * FROM Government_Institutions WHERE Institute_Name = :name AND Institute_Type = :type"),
+            {'name': institute_name, 'type': institute_type}
         ).fetchone()
         
         if institution:
-            # Delete the institution
+            # Delete the institution matching both name and type
             db.session.execute(
-                text("DELETE FROM Government_Institutions WHERE Institute_Name = :name"),
-                {'name': institute_name}
+                text("DELETE FROM Government_Institutions WHERE Institute_Name = :name AND Institute_Type = :type"),
+                {'name': institute_name, 'type': institute_type}
             )
             db.session.commit()
-            # flash(f"Institution '{institute_name}' deleted successfully!", "success")
+            flash(f"Institution '{institute_name}' of type '{institute_type}' deleted successfully!", "success")
         else:
-            flash(f"Institution '{institute_name}' not found!", "danger")
+            flash(f"Institution '{institute_name}' of type '{institute_type}' not found!", "danger")
             
     except Exception as e:
         db.session.rollback()

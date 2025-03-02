@@ -62,7 +62,7 @@
                                     <td>{{ institution[2] }}</td>
                                     <td>{{ institution[3] }}</td>
                                     <td class="action-column">
-                                        <button class="delete-btn" onclick="confirmDelete('{{ institution[2] }}')">
+                                        <button class="delete-btn" onclick="confirmDelete('{{ institution[2] }}', '{{ institution[1] }}')">
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </button>
                                     </td>
@@ -152,10 +152,11 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
+    <div id="deleteModal" class="modal" style="display: none;">
         <div class="modal-content">
             <h3 class="modal-title">Confirm Deletion</h3>
-            <p>Are you sure you want to delete the institution "<span id="institutionName"></span>"?</p>
+            <p>Are you sure you want to delete the institution "<span id="institutionName"></span>" of type "<span
+                    id="institutionType"></span>"?</p>
             <p>This action cannot be undone.</p>
             <div class="modal-buttons">
                 <button class="cancel-btn" onclick="closeModal()">Cancel</button>
@@ -165,28 +166,34 @@
             </div>
         </div>
     </div>
-
     <script>
-        // Function to show delete confirmation modal
-        function confirmDelete(institutionName) {
+        function confirmDelete(institutionName, institutionType) {
+            console.log("Confirm delete called with:", institutionName, institutionType);
+
+            if (!institutionType || institutionType === "undefined") {
+                alert("Error: Institution type is missing or undefined!");
+                return;
+            }
+
             document.getElementById('institutionName').textContent = institutionName;
-            document.getElementById('deleteForm').action = "{{ url_for('main.delete_government_institution', institute_name='') }}" + institutionName;
+            document.getElementById('institutionType').textContent = institutionType;
+            document.getElementById('deleteForm').action = `/delete_government_institution/${encodeURIComponent(institutionType)}/${encodeURIComponent(institutionName)}`;
             document.getElementById('deleteModal').style.display = 'block';
         }
 
-        // Function to close the modal
         function closeModal() {
             document.getElementById('deleteModal').style.display = 'none';
         }
 
-        // Close the modal if user clicks outside of it
+        // Close modal when clicking outside
         window.onclick = function (event) {
             var modal = document.getElementById('deleteModal');
-            if (event.target == modal) {
+            if (event.target === modal) {
                 closeModal();
             }
-        }
+        };
     </script>
+
 </body>
 
 </html>

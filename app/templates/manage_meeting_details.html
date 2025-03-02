@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_meeting_details.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <header>
         <h1>GPMS - The Smart Way to Handle a Village</h1>
@@ -22,7 +24,20 @@
                 <h2>Manage Meeting Details</h2>
                 <p class="subtitle">Schedule, record, and track village meetings</p>
             </div>
-            
+
+            <div class="flash-messages">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    <span>{{ message }}</span>
+                    <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
+
             <div class="card-container">
                 <!-- Add Meeting Form -->
                 <div class="card">
@@ -33,23 +48,25 @@
                     <div class="card-body">
                         <form method="POST" class="meeting-form">
                             <input type="hidden" name="action" value="add">
-                            
+
                             <div class="form-group">
                                 <label for="date_conducted">
                                     <i class="fas fa-calendar-alt"></i> Date Conducted:
                                 </label>
-                                <input type="date" id="date_conducted" name="date_conducted" class="form-control" required>
+                                <input type="date" id="date_conducted" name="date_conducted" class="form-control"
+                                    required>
                                 <small class="form-hint">Select the date when the meeting was held</small>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="meeting_agenda">
                                     <i class="fas fa-clipboard-list"></i> Meeting Agenda:
                                 </label>
-                                <textarea id="meeting_agenda" name="meeting_agenda" class="form-control" rows="4" required></textarea>
+                                <textarea id="meeting_agenda" name="meeting_agenda" class="form-control" rows="4"
+                                    required></textarea>
                                 <small class="form-hint">Enter the topics discussed in the meeting</small>
                             </div>
-                            
+
                             <button type="submit" class="btn-primary">
                                 <i class="fas fa-plus-circle"></i> Add Meeting
                             </button>
@@ -66,7 +83,7 @@
                     <div class="card-body">
                         <form method="POST" class="meeting-form">
                             <input type="hidden" name="action" value="delete">
-                            
+
                             <div class="form-group">
                                 <label for="meeting_id">
                                     <i class="fas fa-hashtag"></i> Meeting ID:
@@ -74,7 +91,7 @@
                                 <input type="text" id="meeting_id" name="meeting_id" class="form-control" required>
                                 <small class="form-hint">Enter the ID of the meeting to delete</small>
                             </div>
-                            
+
                             <button type="submit" class="btn-danger">
                                 <i class="fas fa-trash-alt"></i> Delete Meeting
                             </button>
@@ -91,7 +108,7 @@
                         <span class="count-badge">{{ meetings|length if meetings else 0 }}</span>
                     </h3>
                 </div>
-                
+
                 {% if meetings %}
                 <div class="table-responsive">
                     <table class="meetings-table">
@@ -132,4 +149,5 @@
         </div>
     </div>
 </body>
+
 </html>
