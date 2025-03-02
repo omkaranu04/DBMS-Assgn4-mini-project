@@ -345,10 +345,13 @@ h2 {
         padding: 8px;
     }
 
-    #householdsTable th,
-    #householdsTable td {
-        padding: 8px;
+    #householdsTable th:nth-child(3),
+    #householdsTable td:nth-child(3) {
+        text-align: center;
+        width: 100px;
+        font-weight: bold;
     }
+
 
     .edit-btn,
     .delete-form button {

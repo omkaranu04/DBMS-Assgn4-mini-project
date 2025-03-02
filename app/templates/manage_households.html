@@ -59,14 +59,17 @@
                 <tr>
                     <th>House No</th>
                     <th>Address</th>
+                    <th>Residents</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for household in households %}
-                <tr data-house-no="{{ household.house_no }}" data-address="{{ household.address }}">
+                <tr data-house-no="{{ household.house_no }}" data-address="{{ household.address }}"
+                    data-residents="{{ household.residents_count }}">
                     <td>{{ household.house_no }}</td>
                     <td class="houseAddress">{{ household.address }}</td>
+                    <td class="residents-count">{{ household.residents_count }}</td>
                     <td>
                         <div class="action-buttons">
                             <button type="button" class="edit-btn">
@@ -84,7 +87,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="3" class="empty-message">No households available.</td>
+                    <td colspan="4" class="empty-message">No households available.</td>
                 </tr>
                 {% endfor %}
             </tbody>

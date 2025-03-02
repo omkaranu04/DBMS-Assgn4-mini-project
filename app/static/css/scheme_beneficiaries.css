@@ -1,169 +1,222 @@
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+}
+
 /* Header Styling */
 header {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #0056b3;
-    color: white;
-    padding: 15px 20px;
-    font-size: 1.5em;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    z-index: 100;
-  }
-  
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #0056b3;
+  color: white;
+  padding: 15px 20px;
+  font-size: 1.5em;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.2em;
+  max-width: 60%;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.header-buttons .btn {
+  background-color: #28a745;
+  color: white;
+  text-decoration: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.7em;
+  white-space: nowrap;
+  transition: background-color 0.3s ease;
+}
+
+.header-buttons .btn:hover {
+  background-color: #218838;
+}
+
+/* Main Container */
+.container {
+  margin-top: 100px;
+  /* Space for fixed header */
+  padding: 20px;
+  max-width: 1000px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Scheme Header Section */
+.scheme-header {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.scheme-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background-color: #e83e8c;
+}
+
+.scheme-header h2 {
+  color: #0056b3;
+  margin: 0 0 15px 0;
+  font-size: 1.8em;
+}
+
+.scheme-header p {
+  color: #6c757d;
+  margin: 0 0 10px 0;
+  line-height: 1.5;
+  font-size: 1.1em;
+}
+
+.scheme-header p:last-child {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.scheme-header p strong {
+  color: #495057;
+}
+
+/* Table Container */
+.table-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Beneficiaries Table */
+.beneficiaries-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.beneficiaries-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  text-align: left;
+  padding: 15px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.beneficiaries-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.beneficiaries-table tr:last-child td {
+  border-bottom: none;
+}
+
+.beneficiaries-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* No Data Message */
+.no-data {
+  text-align: center;
+  padding: 30px;
+  color: #6c757d;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
   header h1 {
-    margin: 0;
-    font-size: 1.2em;
-    max-width: 60%;
+    font-size: 1em;
+    max-width: 50%;
   }
-  
-  .header-buttons {
-    display: flex;
-    gap: 10px;
+
+  .header-buttons .btn {
+    padding: 6px 10px;
+    font-size: 0.65em;
   }
-  
-  /* Button Styling */
-  .btn {
-    background-color: #28a745;
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: bold;
-    font-size: 0.7em;
-    white-space: nowrap;
-    transition: background-color 0.3s ease;
+
+  .scheme-header h2 {
+    font-size: 1.5em;
   }
-  
-  .btn:hover {
-    background-color: #218838;
-  }
-  
-  /* Global Styles */
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    color: #333;
-  }
-  
-  .container {
-    max-width: 1200px;
-    margin: 80px auto 40px;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .scheme-header {
-    margin-bottom: 30px;
-  }
-  
-  .scheme-header h1 {
-    color: #0056b3;
-    font-size: 2.5em;
-    margin: 0;
-  }
-  
+
   .scheme-header p {
-    font-size: 1.2em;
-    margin: 10px 0;
+    font-size: 1em;
   }
-  
-  /* Table Styling */
-  .beneficiaries-table {
-    width: 80%;
-    margin: 20px auto;
-    border-collapse: separate;
-    border-spacing: 0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-  
+
   .beneficiaries-table th,
   .beneficiaries-table td {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  header h1 {
+    margin-bottom: 10px;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .header-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .container {
+    margin-top: 130px;
     padding: 15px;
-    border: 1px solid #dee2e6;
-    text-align: center;
   }
-  
-  .beneficiaries-table thead tr {
-    background: linear-gradient(45deg, #0056b3, #007bff);
-    color: #ffffff;
-    font-weight: bold;
+
+  .scheme-header {
+    padding: 15px;
   }
-  
-  .beneficiaries-table tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
+
+  .table-container {
+    padding: 10px;
   }
-  
-  .beneficiaries-table tbody tr:nth-child(odd) {
-    background-color: #ffffff;
+
+  .beneficiaries-table {
+    font-size: 0.9em;
   }
-  
-  /* Vertical Zebra Stripes for added beauty */
-  .beneficiaries-table td:nth-child(even) {
-    background-color: rgba(0, 123, 255, 0.05);
-  }
-  
-  /* Hover Effect */
-  .beneficiaries-table tbody tr:hover {
-    background-color: #e83e8c;
-    color: #ffffff;
-    transform: scale(1.02);
-  }
-  
-  /* Rounded Corners for Table Header and Footer */
-  .beneficiaries-table th:first-child {
-    border-top-left-radius: 8px;
-  }
-  
-  .beneficiaries-table th:last-child {
-    border-top-right-radius: 8px;
-  }
-  
-  .beneficiaries-table tr:last-child td:first-child {
-    border-bottom-left-radius: 8px;
-  }
-  
-  .beneficiaries-table tr:last-child td:last-child {
-    border-bottom-right-radius: 8px;
-  }
-  
-  /* Back Button Styling */
-  .btn-back {
-    display: inline-block;
-    background-color: #e83e8c;
-    color: #ffffff;
-    padding: 10px 20px;
-    margin: 20px auto;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-back:hover {
-    background-color: #d6317b;
-  }
-  
-  @media (max-width: 768px) {
-    .beneficiaries-table,
-    .beneficiaries-table th,
-    .beneficiaries-table td {
-      font-size: 0.9em;
-    }
-    .container {
-      margin: 60px 10px;
-    }
-  }
-  
+}

@@ -2417,6 +2417,8 @@ def scheme_beneficiaries(scheme_id):
         scheme=scheme,
         beneficiaries=beneficiaries_list
     )
+    
+    
 @main_bp.route('/manage_households', methods=['GET', 'POST'])
 def manage_households():
     if request.method == 'POST':
@@ -2451,7 +2453,18 @@ def manage_households():
                 db.session.rollback()
                 return jsonify({'status': 'error', 'message': f"Error adding household: {str(e)}", 'category': 'danger'})
 
-    households = Household.query.all()
+    # Query to get households and their resident count
+    sql_query = """
+        SELECT h.house_no, h.address, COUNT(c.aadhar_no) as residents_count
+        FROM household h
+        LEFT JOIN citizens c ON h.house_no = c.house_no
+        GROUP BY h.house_no, h.address
+        ORDER BY h.house_no;
+    """
+    
+    result = db.session.execute(text(sql_query))
+    households = result.fetchall()
+
     return render_template('manage_households.html', households=households)
 
 @main_bp.route('/delete_household/<int:house_no>', methods=['POST'])

@@ -1,57 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scheme Beneficiaries - GPMS</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/welfare_schemes.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
-  <body>
-    <header>
-      <h1>GPMS - The Smart Way to Handle a Village</h1>
-      <div class="header-buttons">
-        <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-        <a href="{{ url_for('main.welfare_schemes') }}" class="btn">Go Back</a>
-      </div>
-    </header>
-    
-    <div class="container">
-      <div class="scheme-header">
-        <h2>{{ scheme.scheme_type }}</h2>
-        <p>{{ scheme.scheme_description }}</p>
-        <p><strong>Budget: </strong>₹{{ scheme.budget }}</p>
-      </div>
-      <div class="table-container">
-        {% if beneficiaries %}
-        <table class="beneficiaries-table">
-          <thead>
-            <tr>
-              <th>Aadhar Number</th>
-              <th>Name</th>
-              <th>Date Availed</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for beneficiary in beneficiaries %}
-            <tr>
-              <td>{{ beneficiary.aadhar_no }}</td>
-              <td>{{ beneficiary.name }}</td>
-              <td>{{ beneficiary.avail_date }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        {% else %}
-        <p class="no-data">No beneficiaries found for this scheme.</p>
-        {% endif %}
-      </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scheme Beneficiaries - GPMS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/scheme_beneficiaries.css') }}" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+  <header>
+    <h1>GPMS - The Smart Way to Handle a Village</h1>
+    <div class="header-buttons">
+      <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+      <a href="{{ url_for('main.welfare_schemes') }}" class="btn">Go Back</a>
     </div>
-  </body>
+  </header>
+
+  <div class="container">
+    <div class="scheme-header">
+      <h2>{{ scheme.scheme_type }}</h2>
+      <p>{{ scheme.scheme_description }}</p>
+      <p><strong>Budget: </strong>₹{{ scheme.budget }}</p>
+    </div>
+    <div class="table-container">
+      {% if beneficiaries %}
+      <table class="beneficiaries-table">
+        <thead>
+          <tr>
+            <th>Aadhar Number</th>
+            <th>Name</th>
+            <th>Date Availed</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for beneficiary in beneficiaries %}
+          <tr>
+            <td>{{ beneficiary.aadhar_no }}</td>
+            <td>{{ beneficiary.name }}</td>
+            <td>{{ beneficiary.avail_date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="no-data">No beneficiaries found for this scheme.</p>
+      {% endif %}
+    </div>
+  </div>
+</body>
+
 </html>
