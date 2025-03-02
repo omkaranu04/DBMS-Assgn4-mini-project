@@ -5,6 +5,7 @@ from sqlalchemy import text, true
 from . import db
 from datetime import datetime
 import re
+from flask import jsonify
 
 main_bp = Blueprint('main', __name__)
 
@@ -2416,3 +2417,58 @@ def scheme_beneficiaries(scheme_id):
         scheme=scheme,
         beneficiaries=beneficiaries_list
     )
+@main_bp.route('/manage_households', methods=['GET', 'POST'])
+def manage_households():
+    if request.method == 'POST':
+        house_no = request.form.get('house_no')
+        address = request.form.get('address')
+
+        if not address:
+            flash("Address is required.", "danger")
+            return jsonify({'status': 'error', 'message': "Address is required.", 'category': 'danger'})
+
+        if house_no and house_no.strip():  # Updating an existing household
+            household = Household.query.filter_by(house_no=house_no).first()
+            if household:
+                household.address = address
+                try:
+                    db.session.commit()
+                    flash("Household updated successfully.", "success")
+                    return jsonify({'status': 'success', 'message': "Household updated successfully.", 'category': 'success'})
+                except Exception as e:
+                    db.session.rollback()
+                    return jsonify({'status': 'error', 'message': f"Error updating household: {str(e)}", 'category': 'danger'})
+            else:
+                return jsonify({'status': 'error', 'message': "Household not found.", 'category': 'danger'})
+        else:  # Adding a new household
+            new_household = Household(address=address)
+            db.session.add(new_household)
+            try:
+                db.session.commit()
+                flash("Household added successfully.", "success")
+                return jsonify({'status': 'success', 'message': "Household added successfully.", 'category': 'success'})
+            except Exception as e:
+                db.session.rollback()
+                return jsonify({'status': 'error', 'message': f"Error adding household: {str(e)}", 'category': 'danger'})
+
+    households = Household.query.all()
+    return render_template('manage_households.html', households=households)
+
+@main_bp.route('/delete_household/<int:house_no>', methods=['POST'])
+def delete_household(house_no):
+    household = Household.query.get(house_no)
+
+    if not household:
+        return jsonify({'status': 'error', 'message': "Household not found.", 'category': 'danger'})
+
+    associated_citizens = Citizens.query.filter_by(house_no=house_no).all()
+    if associated_citizens and len(associated_citizens) > 0:
+        return jsonify({'status': 'error', 'message': "Cannot delete household because citizens are living in it.", 'category': 'danger'})
+
+    try:
+        db.session.delete(household)
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': "Household deleted successfully.", 'category': 'success'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'status': 'error', 'message': f"Error deleting household: {str(e)}", 'category': 'danger'})

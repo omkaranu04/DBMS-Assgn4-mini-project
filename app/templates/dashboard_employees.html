@@ -37,6 +37,16 @@
                     </div>
                 </div>
 
+                <div class="dashboard-card" onclick="location.href='{{ url_for('main.manage_households') }}'">
+                    <div class="card-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Household Management</h4>
+                        <p>Add, modify, delete or view household records</p>
+                    </div>
+                </div>
+
                 <div class="dashboard-card" onclick="location.href='{{ url_for('main.manage_certificates') }}'">
                     <div class="card-icon">
                         <i class="fas fa-certificate"></i>
