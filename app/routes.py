@@ -23,7 +23,7 @@ def login():
             
             if user and user.password == password and user.user_type == 'System Administrator':
                 session['user'] = username
-                session['user_type'] = 'System Administrator'  # Store user type in session
+                session['user_type'] = 'System Administrator'
                 return redirect(url_for('main.dashboard_administrator'))
             else:
                 flash('Invalid credentials for System Administrator.', 'danger')
@@ -33,7 +33,7 @@ def login():
             
             if user and user.password == password and user.user_type == 'Government Official':
                 session['user'] = username
-                session['user_type'] = 'Government Official'  # Store user type in session
+                session['user_type'] = 'Government Official'
                 return redirect(url_for('main.dashboard_official'))
             else:
                 flash('Invalid credentials for Government Official.', 'danger')
@@ -43,7 +43,7 @@ def login():
             
             if user and user.password == password:
                 session['user'] = username
-                session['user_type'] = 'Panchayat Employee'  # Store user type in session
+                session['user_type'] = 'Panchayat Employee'
                 return redirect(url_for('main.dashboard_employees'))
             else:
                 flash('Invalid credentials for Panchayat Employee.', 'danger')
@@ -55,7 +55,7 @@ def login():
                 expected_password = f"{username[:4]}@{citizen_user.phone_no[-4:]}"
                 if password == expected_password:
                     session['user'] = username
-                    session['user_type'] = 'Citizen'  # Store user type in session
+                    session['user_type'] = 'Citizen'
                     return redirect(url_for('main.citizen', aadhar_no=username))
             
             flash('Invalid credentials for Citizen.', 'danger')
@@ -103,7 +103,6 @@ def add_edit_panchayat_employee(username=None):
     if 'user' not in session:
         return redirect(url_for('main.login'))
 
-    # Initialize form variables and errors dictionary
     form_username = ""
     form_password = ""
     form_designation = ""
@@ -130,10 +129,9 @@ def add_edit_panchayat_employee(username=None):
 
         if employee_result:
             form_username, old_password, form_designation, form_aadhar_no = employee_result
-            form_password = ""  # Keep password field blank
+            form_password = ""
 
     if request.method == 'POST':
-        # Get form data from request
         form_username = request.form.get('username', '').strip()
         form_password = request.form.get('password', '').strip()
         form_designation = request.form.get('designation', '').strip()
@@ -180,7 +178,6 @@ def add_edit_panchayat_employee(username=None):
 
                     # Use old password if new password is blank or contains only spaces
                     update_password = form_password if form_password else old_password
-                    password_message = "Password updated!" if form_password else "Password unchanged."
 
                     db.session.execute(
                         text("""
@@ -198,7 +195,6 @@ def add_edit_panchayat_employee(username=None):
                         }
                     )
                     db.session.commit()
-                    # flash(f'Employee updated! {password_message}', 'success')
                     return redirect(url_for('main.panchayat_employees'))
                 else:  # Adding a new employee
                     # Check if username already exists
@@ -273,7 +269,6 @@ def delete_panchayat_employee(username):
         if employee:
             db.session.delete(employee)
             db.session.commit()
-            # flash('Panchayat Employee deleted successfully!', 'success')
         else:
             flash('Employee not found!', 'warning')
     except Exception as e:
@@ -282,7 +277,7 @@ def delete_panchayat_employee(username):
 
     return redirect(url_for('main.panchayat_employees'))
 
-# view all Government Officials
+# View all Government Officials
 @main_bp.route('/government_officials', methods=['GET'])
 def government_officials():
     if 'user' not in session:
@@ -291,7 +286,7 @@ def government_officials():
     officials = SystemUsersTop.query.filter_by(user_type='Government Official').all()
     return render_template('government_officials.html', officials=officials)
 
-# View all Government Officials
+# Add Edit all Government Officials
 @main_bp.route('/add_edit_government_official/', defaults={'username': None}, methods=['GET', 'POST'])
 @main_bp.route('/add_edit_government_official/<username>', methods=['GET', 'POST'])
 def add_edit_government_official(username=None):
@@ -300,14 +295,11 @@ def add_edit_government_official(username=None):
 
     form = GovernmentOfficialForm()
     official = None
-    old_password = ""
-    errors = {}
 
     if username:
         official = SystemUsersTop.query.filter_by(username=username).first()
         if official:
             form.username.data = official.username  # Prefill username
-            old_password = official.password  # Store existing password
             form.password.data = ""  # Keep password field blank for security
 
     if request.method == 'POST':
@@ -331,14 +323,10 @@ def add_edit_government_official(username=None):
             try:
                 if official:  # Editing existing official
                     if password_input:  # User entered a new password
-                        official.password = password_input  # Store the new password
-                        password_message = "Password updated successfully!"
-                    else:
-                        password_message = "Password kept the same!"
+                        official.password = password_input
 
                     official.username = username_input  # Update username
                     db.session.commit()
-                    # flash(f"Government Official updated successfully! {password_message}", "success")
                     return redirect(url_for('main.government_officials'))
 
                 else:  # Adding a new official
@@ -355,7 +343,6 @@ def add_edit_government_official(username=None):
                         )
                         db.session.add(new_official)
                         db.session.commit()
-                        # flash("Government Official added successfully!", "success")
                         return redirect(url_for('main.government_officials'))
             
             except Exception as e:
@@ -377,10 +364,10 @@ def delete_government_official(username):
     if official:
         db.session.delete(official)
         db.session.commit()
-        # flash('Government Official deleted successfully!', 'success')
 
     return redirect(url_for('main.government_officials'))
 
+# View the details of the citizen
 @main_bp.route('/citizen/<aadhar_no>')
 def citizen(aadhar_no):
     if 'user' not in session:
@@ -489,6 +476,7 @@ def citizen(aadhar_no):
         """)
     ).fetchall()
     
+    # Query health institutions by type
     health_institutions = db.session.execute(
         text("""
             SELECT Institute_ID, Institute_Name, Institue_Location
@@ -497,6 +485,7 @@ def citizen(aadhar_no):
         """)
     ).fetchall()
     
+    # Query banking institutions by type
     banking_institutions = db.session.execute(
         text("""
             SELECT Institute_ID, Institute_Name, Institue_Location
@@ -505,6 +494,7 @@ def citizen(aadhar_no):
         """)
     ).fetchall()
     
+    # Query administrative institutions by type
     admin_institutions = db.session.execute(
         text("""
             SELECT Institute_ID, Institute_Name, Institue_Location
@@ -541,7 +531,7 @@ def citizen(aadhar_no):
     )
 
 
-
+# Government official Dashboard
 @main_bp.route('/dashboard_official', methods=['GET'])
 def dashboard_official():
     if 'user' not in session:
@@ -549,6 +539,7 @@ def dashboard_official():
 
     return render_template('dashboard_official.html')
 
+# Census Dashboard in government official
 @main_bp.route('/census', methods=['GET'])
 def census():
     # Total people alive now
@@ -560,7 +551,7 @@ def census():
     # Total female
     total_female = db.session.execute(text("SELECT COUNT(*) FROM Citizens WHERE Gender = 'Female' AND Is_Alive = TRUE")).scalar()
 
-    # Employment status chart data
+    # Employment status bar
     employment_data = db.session.execute(text("""
         SELECT Employment, COUNT(*) 
         FROM Citizens 
@@ -585,7 +576,7 @@ def census():
         WHERE DATE_PART('year', AGE(DOB)) > 60 AND Is_Alive = TRUE
     """)).scalar()
 
-    # Education level chart data
+    # Education level bar
     education_data = db.session.execute(text("""
         SELECT Education_Level, COUNT(*) 
         FROM Citizens 
@@ -621,6 +612,7 @@ def census():
         births_this_year=births_this_year,
     )
 
+# Taxation Dashboard in government official
 @main_bp.route('/taxation', methods=['GET'])
 def taxation():
     # Total people who have not paid tax
@@ -641,10 +633,6 @@ def taxation():
                SUM(Tax_Amount) AS total_tax 
         FROM Taxation
     """)).fetchone()
-    
-    # print("Not Paid Tax Count:", not_paid_tax_count)
-    # print("People Not Paid Tax:", people_not_paid_tax)
-    # print("Tax Summary:", tax_summary)
 
     return render_template(
         'taxation.html',
@@ -653,9 +641,10 @@ def taxation():
         tax_summary=tax_summary,
     )
 
+# Health Dashboard in government official
 @main_bp.route('/health', methods=['GET'])
 def health():
-    # Disease-specific count chart for this year
+    # Disease-specific count bar for this year
     disease_data = db.session.execute(text("""
         SELECT Medical_Condition, COUNT(*) 
         FROM Health_CheckUp 
@@ -716,8 +705,7 @@ def institutions():
         institutions_by_type=institutions_by_type
     )
 
-
-
+# Panchayat Employees Dashboard
 @main_bp.route('/dashboard_employees', methods=['GET'])
 def dashboard_employees():
     if 'user' not in session:
@@ -725,7 +713,7 @@ def dashboard_employees():
 
     return render_template('dashboard_employees.html')
 
-
+# Add/ View/ Modify/ Delete Citizens
 @main_bp.route('/manage_citizens', methods=['GET'])
 def manage_citizens():
     if 'user' not in session:
@@ -734,12 +722,12 @@ def manage_citizens():
     citizens_list = Citizens.query.filter_by(is_alive=True).all()
     return render_template('manage_citizens.html', citizens=citizens_list)
 
+# Add citizens
 @main_bp.route('/add_citizen', methods=['GET', 'POST'])
 def add_citizen():
     form_data = request.form.to_dict() if request.method == 'POST' else {}
     
     if request.method == 'POST':
-        # Get and strip form data
         aadhar_no = request.form.get('aadhar_no', '').strip()
         name = request.form.get('name', '').strip()
         dob_str = request.form.get('dob', '').strip()
@@ -752,7 +740,7 @@ def add_citizen():
         employment = request.form.get('employment', 'Unemployed').strip()
         is_alive = True
 
-        # Validate required fields
+        # Validate all required fields
         if not all([aadhar_no, name, dob_str, gender, house_no, education_level, income_str, employment]):
             flash("All required fields must be filled!", "danger")
             return render_template('add_citizen.html', form_data=form_data)
@@ -843,7 +831,6 @@ def add_citizen():
         # Commit Changes
         try:
             db.session.commit()
-            # flash("Citizen added successfully with a birth certificate!", "success")
             return redirect(url_for('main.manage_citizens'))
         except Exception as e:
             db.session.rollback()
@@ -879,6 +866,7 @@ def delete_citizen():
     
     return render_template('delete_citizen.html', citizen=citizen)
 
+# Confirm deletion of citizen
 @main_bp.route('/delete_citizen_confirm/<aadhar_no>', methods=['POST'])
 def delete_citizen_confirm(aadhar_no):
     if 'user' not in session:
@@ -891,6 +879,7 @@ def delete_citizen_confirm(aadhar_no):
             return redirect(url_for('main.manage_citizens'))
         
         # Delete all related records
+        
         # Delete certificates
         Certificates.query.filter_by(aadhar_no=aadhar_no).delete()
         
@@ -918,7 +907,6 @@ def delete_citizen_confirm(aadhar_no):
         db.session.delete(citizen)
         db.session.commit()
         
-        # flash("Citizen and all related records deleted successfully!", "success")
         return redirect(url_for('main.manage_citizens'))
     
     except Exception as e:
@@ -926,6 +914,7 @@ def delete_citizen_confirm(aadhar_no):
         flash(f"Error deleting citizen: {str(e)}", "danger")
         return redirect(url_for('main.delete_citizen'))
 
+# Modify Citizen Data
 @main_bp.route('/modify_citizen', methods=['GET', 'POST'])
 def modify_citizen():
     if 'user' not in session:
@@ -953,7 +942,7 @@ def modify_citizen():
     
     return render_template('modify_citizen.html', citizen=citizen)
 
-# modify the citizens data
+# Modify the citizens data using aadhar no
 @main_bp.route('/modify_citizen_submit/<aadhar_no>', methods=['POST'])
 def modify_citizen_submit(aadhar_no):
     if 'user' not in session:
@@ -1006,7 +995,6 @@ def modify_citizen_submit(aadhar_no):
         
         db.session.commit()
         
-        # flash("Citizen information updated successfully! Tax amount recalculated based on new income.", "success")
         return redirect(url_for('main.manage_citizens'))
     
     except Exception as e:
@@ -1014,7 +1002,7 @@ def modify_citizen_submit(aadhar_no):
         flash(f"Error updating citizen: {str(e)}", "danger")
         return redirect(url_for('main.modify_citizen', aadhar_no=aadhar_no))
 
-
+# Add/ View/ Delete/ Modify Certificates
 @main_bp.route('/manage_certificates', methods=['GET'])
 def manage_certificates():
     if 'user' not in session:
@@ -1022,13 +1010,13 @@ def manage_certificates():
     
     return render_template('manage_certificates.html')
 
+# Add certificates
 @main_bp.route('/add_certificate', methods=['GET', 'POST'])
 def add_certificate():
     if 'user' not in session:
         return redirect(url_for('main.login'))
     
     error_message = None
-    # Get aadhar_no from query parameter if provided
     prefilled_aadhar = request.args.get('aadhar_no', '')
     
     if request.method == 'POST':
@@ -1090,7 +1078,6 @@ def add_certificate():
             
             db.session.add(new_certificate)
             db.session.commit()
-            # flash("Certificate added successfully!", "success")
             return redirect(url_for('main.find_certificates'))
         except Exception as e:
             db.session.rollback()
@@ -1128,6 +1115,7 @@ def find_certificates():
                           certificates=certificates, 
                           error_message=error_message)
 
+# Modify Certificates
 @main_bp.route('/modify_certificate/<int:certificate_id>', methods=['GET'])
 def modify_certificate(certificate_id):
     if 'user' not in session:
@@ -1142,6 +1130,7 @@ def modify_certificate(certificate_id):
     
     return render_template('modify_certificate.html', certificate=certificate, citizen=citizen)
 
+# Modify Certificates Submit
 @main_bp.route('/modify_certificate_submit/<certificate_id>', methods=['POST'])
 def modify_certificate_submit(certificate_id):
     if 'user' not in session:
@@ -1179,7 +1168,6 @@ def modify_certificate_submit(certificate_id):
                 citizen.is_alive = False
         
         db.session.commit()
-        # flash("Certificate updated successfully!", "success")
         return redirect(url_for('main.find_certificates'))
         
     except Exception as e:
@@ -1187,6 +1175,7 @@ def modify_certificate_submit(certificate_id):
         flash(f"Error updating certificate: {str(e)}", "danger")
         return redirect(url_for('main.modify_certificate', certificate_id=certificate_id))
 
+# Delete Certificate
 @main_bp.route('/delete_certificate/<int:certificate_id>', methods=['GET'])
 def delete_certificate(certificate_id):
     if 'user' not in session:
@@ -1201,6 +1190,7 @@ def delete_certificate(certificate_id):
     
     return render_template('delete_certificate.html', certificate=certificate, citizen=citizen)
 
+# Delete Certificate Confirm
 @main_bp.route('/delete_certificate_confirm/<int:certificate_id>', methods=['POST'])
 def delete_certificate_confirm(certificate_id):
     if 'user' not in session:
@@ -1211,15 +1201,11 @@ def delete_certificate_confirm(certificate_id):
         if not certificate:
             flash("Certificate not found!", "danger")
             return redirect(url_for('main.manage_certificates'))
-        
-        aadhar_no = certificate.aadhar_no
-        
+                
         # Delete the certificate
         db.session.delete(certificate)
         db.session.commit()
-        
-        # flash("Certificate deleted successfully!", "success")
-        
+                
         # Redirect back to find certificates with the same Aadhar number
         return redirect(url_for('main.find_certificates'))
         
@@ -1228,6 +1214,7 @@ def delete_certificate_confirm(certificate_id):
         flash(f"Error deleting certificate: {str(e)}", "danger")
         return redirect(url_for('main.delete_certificate', certificate_id=certificate_id))
 
+# Add/ View/ Delete/ Modify Welfare Schemes
 @main_bp.route('/manage_welfare_schemes', methods=['GET', 'POST'])
 def manage_welfare_schemes():
     if 'user' not in session:
@@ -1252,7 +1239,6 @@ def manage_welfare_schemes():
                     # Then delete the scheme
                     db.session.delete(scheme)
                     db.session.commit()
-                    # flash("Welfare Scheme deleted successfully!", "success")
                 except Exception as e:
                     db.session.rollback()
                     flash(f"Error deleting scheme: {str(e)}", "danger")
@@ -1263,6 +1249,7 @@ def manage_welfare_schemes():
     schemes_list = Welfare_Schemes.query.order_by(Welfare_Schemes.scheme_id).all()
     return render_template('manage_welfare_schemes.html', schemes=schemes_list)
 
+# Add Welfare Scheme
 @main_bp.route('/add_welfare_scheme', methods=['GET', 'POST'])
 def add_welfare_scheme():
     if 'user' not in session:
@@ -1301,7 +1288,6 @@ def add_welfare_scheme():
             
             db.session.add(new_scheme)
             db.session.commit()
-            # flash("Welfare Scheme added successfully!", "success")
             return redirect(url_for('main.manage_welfare_schemes'))
         except Exception as e:
             db.session.rollback()
@@ -1310,6 +1296,7 @@ def add_welfare_scheme():
     
     return render_template('add_welfare_scheme.html')
 
+# Modify welfare scheme
 @main_bp.route('/modify_welfare_scheme/<int:scheme_id>', methods=['GET'])
 def modify_welfare_scheme(scheme_id):
     if 'user' not in session:
@@ -1322,6 +1309,7 @@ def modify_welfare_scheme(scheme_id):
     
     return render_template('modify_welfare_scheme.html', scheme=scheme)
 
+# Modify welfare scheme submit
 @main_bp.route('/modify_welfare_scheme_submit/<scheme_id>', methods=['POST'])
 def modify_welfare_scheme_submit(scheme_id):
     if 'user' not in session:
@@ -1361,13 +1349,13 @@ def modify_welfare_scheme_submit(scheme_id):
         scheme.scheme_description = description
         
         db.session.commit()
-        # flash("Welfare Scheme updated successfully!", "success")
         return redirect(url_for('main.manage_welfare_schemes'))
     except Exception as e:
         db.session.rollback()
         flash(f"Error updating welfare scheme: {str(e)}", "danger")
         return redirect(url_for('main.modify_welfare_scheme', scheme_id=scheme_id))
 
+# Add/ View/ Delete/ Modify agricultural land
 @main_bp.route('/manage_agriculture_land', methods=['GET', 'POST'])
 def manage_agriculture_land():
     if 'user' not in session:
@@ -1385,7 +1373,6 @@ def manage_agriculture_land():
                 try:
                     db.session.delete(land)
                     db.session.commit()
-                    # flash("Agricultural land record deleted successfully!", "success")
                 except Exception as e:
                     db.session.rollback()
                     flash(f"Error deleting land record: {str(e)}", "danger")
@@ -1416,6 +1403,7 @@ def manage_agriculture_land():
     
     return render_template('manage_agriculture_land.html', lands=lands_list)
 
+# Add agricultural land
 @main_bp.route('/add_agriculture_land', methods=['GET', 'POST'])
 def add_agriculture_land():
     if 'user' not in session:
@@ -1450,7 +1438,6 @@ def add_agriculture_land():
             db.session.add(new_land)
             db.session.commit()
             
-            # flash("Agricultural land added successfully!", "danger")
             return redirect(url_for('main.manage_agriculture_land'))
             
         except Exception as e:
@@ -1460,6 +1447,7 @@ def add_agriculture_land():
     
     return render_template('add_agriculture_land.html')
 
+# Modify agricultural land
 @main_bp.route('/modify_agriculture_land/<int:land_id>', methods=['GET'])
 def modify_agriculture_land(land_id):
     if 'user' not in session:
@@ -1474,6 +1462,7 @@ def modify_agriculture_land(land_id):
     
     return render_template('modify_agriculture_land.html', land=land, citizen=citizen)
 
+# Modify agricultural land submit
 @main_bp.route('/modify_agriculture_land_submit/<int:land_id>', methods=['POST'])
 def modify_agriculture_land_submit(land_id):
     if 'user' not in session:
@@ -1493,14 +1482,12 @@ def modify_agriculture_land_submit(land_id):
             flash("All fields are required!", "danger")
             return redirect(url_for('main.modify_agriculture_land', land_id=land_id))
         
-        # Update land record
         land.area_in_acres = area_in_acres
         land.crop_type = crop_type
         land.soil_type = soil_type
         
         db.session.commit()
         
-        # flash("Agricultural land updated successfully!", "success")
         return redirect(url_for('main.manage_agriculture_land'))
         
     except Exception as e:
@@ -1508,6 +1495,7 @@ def modify_agriculture_land_submit(land_id):
         flash(f"Error updating agricultural land: {str(e)}", "danger")
         return redirect(url_for('main.modify_agriculture_land', land_id=land_id))
 
+# Add/ View/ Delete/ Modify Health Checkup Records
 @main_bp.route('/manage_health_data', methods=['GET'])
 def manage_health_data():
     if 'user' not in session:
@@ -1515,6 +1503,7 @@ def manage_health_data():
     
     return render_template('manage_health_data.html')
 
+# Add Health Checkup Record
 @main_bp.route('/add_health_data', methods=['GET', 'POST'])
 def add_health_data():
     if 'user' not in session:
@@ -1529,7 +1518,6 @@ def add_health_data():
         prescription = request.form.get('prescription', '').strip()
         date_of_visit = request.form.get('date_of_visit', '').strip()
         
-        # Save form data to repopulate fields
         form_data = {
             'aadhar_no': aadhar_no,
             'medical_condition': medical_condition,
@@ -1560,7 +1548,6 @@ def add_health_data():
             db.session.add(new_record)
             db.session.commit()
             
-            # flash("Health record added successfully!", "success")
             return redirect(url_for('main.manage_health_data'))
             
         except Exception as e:
@@ -1570,6 +1557,7 @@ def add_health_data():
     
     return render_template('add_health_data.html', error_message=error_message, form_data=form_data)
 
+# Find Health Records
 @main_bp.route('/find_health_records', methods=['GET', 'POST'])
 def find_health_records():
     if 'user' not in session:
@@ -1596,6 +1584,7 @@ def find_health_records():
     
     return render_template('find_health_records.html', citizen=citizen, health_records=health_records)
 
+# Modify Health Record
 @main_bp.route('/modify_health_record/<int:checkup_id>', methods=['GET'])
 def modify_health_record(checkup_id):
     if 'user' not in session:
@@ -1610,6 +1599,7 @@ def modify_health_record(checkup_id):
     
     return render_template('modify_health_record.html', record=record, citizen=citizen)
 
+# Modify Health Record Submit
 @main_bp.route('/modify_health_record_submit/<int:checkup_id>', methods=['POST'])
 def modify_health_record_submit(checkup_id):
     if 'user' not in session:
@@ -1638,9 +1628,7 @@ def modify_health_record_submit(checkup_id):
         record.date_of_visit = date_of_visit
         
         db.session.commit()
-        
-        # flash("Health record updated successfully!", "success")
-        
+                
         # Create a response with a form that auto-submits to find_health_records with the aadhar_no
         response = make_response("""
         <html>
@@ -1662,6 +1650,7 @@ def modify_health_record_submit(checkup_id):
         flash(f"Error updating health record: {str(e)}", "danger")
         return redirect(url_for('main.modify_health_record', checkup_id=checkup_id))
 
+# Delete Health Record
 @main_bp.route('/delete_health_record', methods=['POST'])
 def delete_health_record():
     if 'user' not in session:
@@ -1674,14 +1663,10 @@ def delete_health_record():
         if not record:
             flash("Health record not found!", "danger")
             return redirect(url_for('main.manage_health_data'))
-        
-        aadhar_no = record.aadhar_no
-        
+                
         db.session.delete(record)
         db.session.commit()
-        
-        # flash("Health record deleted successfully!", "success")
-        
+                
         # Redirect back to the same citizen's records
         return redirect(url_for('main.find_health_records'))
         
@@ -1690,6 +1675,7 @@ def delete_health_record():
         flash(f"Error deleting health record: {str(e)}", "danger")
         return redirect(url_for('main.find_health_records'))
 
+# Add/ View/ Delete/ Modify Taxation Data
 @main_bp.route('/manage_taxation_data', methods=['GET'])
 def manage_taxation_data():
     if 'user' not in session:
@@ -1697,6 +1683,7 @@ def manage_taxation_data():
     
     return render_template('manage_taxation_data.html')
 
+# Add Taxation Data
 @main_bp.route('/add_taxation_data', methods=['GET', 'POST'])
 def add_taxation_data():
     if 'user' not in session:
@@ -1738,7 +1725,6 @@ def add_taxation_data():
             db.session.add(new_record)
             db.session.commit()
             
-            # flash("Taxation record added successfully!", "success")
             return redirect(url_for('main.manage_taxation_data'))
             
         except Exception as e:
@@ -1748,6 +1734,7 @@ def add_taxation_data():
     
     return render_template('add_taxation_data.html', error_message=error_message, prefilled_aadhar=prefilled_aadhar)
 
+# Find Taxation Records
 @main_bp.route('/find_taxation_records', methods=['GET', 'POST'])
 def find_taxation_records():
     if 'user' not in session:
@@ -1777,6 +1764,7 @@ def find_taxation_records():
                           taxation_record=taxation_record, 
                           error_message=error_message)
 
+# Modify Taxation Record
 @main_bp.route('/modify_taxation_record/<string:aadhar_no>', methods=['GET'])
 def modify_taxation_record(aadhar_no):
     if 'user' not in session:
@@ -1791,6 +1779,7 @@ def modify_taxation_record(aadhar_no):
     
     return render_template('modify_taxation_record.html', taxation_record=taxation_record, citizen=citizen)
 
+# Modify Taxation Record Submit
 @main_bp.route('/modify_taxation_record_submit/<string:aadhar_no>', methods=['POST'])
 def modify_taxation_record_submit(aadhar_no):
     if 'user' not in session:
@@ -1814,9 +1803,7 @@ def modify_taxation_record_submit(aadhar_no):
         taxation_record.payment_status = payment_status
         
         db.session.commit()
-        
-        # flash("Taxation record updated successfully!", "success")
-        
+                
         # Redirect back to find_taxation_records with the aadhar_no as POST parameter
         response = make_response("""
         <html>
@@ -1838,6 +1825,7 @@ def modify_taxation_record_submit(aadhar_no):
         flash(f"Error updating taxation record: {str(e)}", "danger")
         return redirect(url_for('main.modify_taxation_record', aadhar_no=aadhar_no))
 
+# Delete Taxation Record
 @main_bp.route('/delete_taxation_record', methods=['POST'])
 def delete_taxation_record():
     if 'user' not in session:
@@ -1853,9 +1841,7 @@ def delete_taxation_record():
         
         db.session.delete(taxation_record)
         db.session.commit()
-        
-        # flash("Taxation record deleted successfully!", "success")
-        
+                
         # Redirect back to the find taxation records page
         return redirect(url_for('main.find_taxation_records'))
         
@@ -1864,6 +1850,7 @@ def delete_taxation_record():
         flash(f"Error deleting taxation record: {str(e)}", "danger")
         return redirect(url_for('main.find_taxation_records'))
 
+# Add/ View/ Delete/ Modify Meetings
 @main_bp.route('/manage_meeting_details', methods=['GET', 'POST']) # flag 
 def manage_meeting_details():
     if request.method == 'POST':
@@ -1876,7 +1863,6 @@ def manage_meeting_details():
             )
             db.session.add(new_meeting)
             db.session.commit()
-            # flash("Meeting details added successfully!", "success")
 
         elif action == 'delete':
             # Delete meeting details logic
@@ -1885,7 +1871,6 @@ def manage_meeting_details():
             if meeting:
                 db.session.delete(meeting)
                 db.session.commit()
-                # flash("Meeting details deleted successfully!", "success")
             else:
                 flash("Meeting not found!", "danger")
                 return redirect(url_for('main.manage_meeting_details'))
@@ -1893,7 +1878,7 @@ def manage_meeting_details():
     meetings_list = Meetings.query.all()
     return render_template('manage_meeting_details.html', meetings=meetings_list)
 
-# yet to be checked because of correlation
+# Add/ View/ Delete/ Modify Complaints
 @main_bp.route('/manage_complaints', methods=['GET', 'POST'])
 def manage_complaints():
     if request.method == 'POST':
@@ -1907,7 +1892,6 @@ def manage_complaints():
             if complaint:
                 db.session.delete(complaint)
                 db.session.commit()
-                # flash("Complaint deleted successfully!", "success")
             else:
                 flash("Complaint not found!", "danger")
 
@@ -1924,6 +1908,7 @@ def manage_complaints():
 
     return render_template('manage_complaints.html', complaints=complaints_list)
 
+# Add/ View/ Delete/ Modify Resources
 @main_bp.route('/manage_resources', methods=['GET', 'POST'])
 def manage_resources():
     if request.method == 'POST':
@@ -1939,7 +1924,6 @@ def manage_resources():
             if existing_resource:
                 flash("A resource with this name already exists in the database!", "danger")
                 return redirect(url_for('main.manage_resources'))
-                # flash("Resource added successfully!", "success")
             else:
                 new_resource = Resources(
                     resource_name=resource_name,
@@ -1955,7 +1939,6 @@ def manage_resources():
             if resource:
                 db.session.delete(resource)
                 db.session.commit()
-                # flash("Resource deleted successfully!", "success")
             else:
                 flash("Resource not found!", "danger")
 
@@ -1967,7 +1950,6 @@ def manage_resources():
             if resource:
                 resource.last_inspected_date = new_inspection_date
                 db.session.commit()
-                # flash("Resource updated successfully!", "success")
             else:
                 flash("Resource not found!", "danger")
 
@@ -1975,7 +1957,7 @@ def manage_resources():
     resources_list = Resources.query.all()
     return render_template('manage_resources.html', resources=resources_list)
 
-
+# Add Government Institution
 @main_bp.route('/add_government_institution', methods=['GET', 'POST'])
 def add_government_institution():
     if 'user' not in session:
@@ -2031,8 +2013,6 @@ def add_government_institution():
                         }
                     )
                     db.session.commit()
-                    # flash("Government institution added successfully!", "success")
-                    # Only redirect on success
                     return redirect(url_for('main.view_government_bodies'))
                     
         except Exception as e:
@@ -2048,6 +2028,7 @@ def add_government_institution():
                           form_data=form_data,
                           errors=errors)
 
+# Delete Government Institution (by name and type)
 @main_bp.route('/delete_government_institution/<institute_type>/<institute_name>', methods=['POST'])
 def delete_government_institution(institute_type, institute_name):
     if 'user' not in session:
@@ -2077,6 +2058,7 @@ def delete_government_institution(institute_type, institute_name):
     
     return redirect(url_for('main.view_government_bodies'))
 
+# View Government Institutions
 @main_bp.route('/view_government_bodies')
 def view_government_bodies():
     if 'user' not in session:
@@ -2087,7 +2069,7 @@ def view_government_bodies():
     
     return render_template('view_government_bodies.html', institutions=institutions)
 
-
+# Add beneficiary to welfare scheme
 @main_bp.route('/avail_welfare_scheme', methods=['GET'])
 def avail_welfare_scheme():
     # Fetch all welfare schemes from the database
@@ -2097,7 +2079,7 @@ def avail_welfare_scheme():
     
     return render_template('avail_welfare_scheme.html', schemes=schemes)
 
-
+# Submit welfare scheme
 @main_bp.route('/submit_scheme', methods=['POST'])
 def submit_scheme():
     try:
@@ -2148,7 +2130,6 @@ def submit_scheme():
         """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id})
 
         db.session.commit()
-        # flash("Welfare Scheme availed successfully!", "success")
     
     except Exception as e:
         db.session.rollback()
@@ -2156,7 +2137,7 @@ def submit_scheme():
 
     return redirect(url_for('main.avail_welfare_scheme'))
 
-
+# Remove beneficiary from welfare scheme
 @main_bp.route('/remove_scheme_beneficiary', methods=['POST'])
 def remove_scheme_beneficiary():
     try:
@@ -2191,7 +2172,6 @@ def remove_scheme_beneficiary():
         """), {'aadhar_no': citizen_aadhar_no, 'scheme_id': scheme_id})
 
         db.session.commit()
-        # flash("Beneficiary removed from the welfare scheme successfully!", "success")
     
     except Exception as e:
         db.session.rollback()
@@ -2199,7 +2179,7 @@ def remove_scheme_beneficiary():
 
     return redirect(url_for('main.avail_welfare_scheme'))
 
-
+# Submit a complaint from citizen
 @main_bp.route('/submit_complaint', methods=['POST'])
 def submit_complaint():
     if 'user' not in session:
@@ -2240,7 +2220,6 @@ def submit_complaint():
         )
         db.session.commit()
         
-        # flash("Complaint submitted successfully!", "success")
     except Exception as e:
         db.session.rollback()
         flash(f"An error occurred: {str(e)}", "danger")
@@ -2294,6 +2273,7 @@ def about_us():
     
     return render_template('aboutus.html', panchayat_employees=panchayat_employees)
 
+# Declare a citizen as deceased
 @main_bp.route('/declare_death', methods=['GET'])
 def declare_death():
     if 'user' not in session:
@@ -2301,6 +2281,7 @@ def declare_death():
     
     return render_template('declare_death.html')
 
+# Process death declaration
 @main_bp.route('/process_death_declaration', methods=['POST'])
 def process_death_declaration():
     if 'user' not in session:
@@ -2344,6 +2325,7 @@ def process_death_declaration():
             {'aadhar_no': aadhar_no, 'death_date': death_date}
         )
         
+        # 3. Remove the panchayat user entry
         db.session.execute(
            text("""
             DELETE FROM Panchayat_Users WHERE Aadhar_No = :aadhar_no
@@ -2351,6 +2333,7 @@ def process_death_declaration():
            {'aadhar_no': aadhar_no}
         )
         
+        # 4. Remove the beneficiary
         db.session.execute(
             text("""
                  DELETE FROM Avails WHERE Aadhar_No = :aadhar_no
@@ -2358,6 +2341,7 @@ def process_death_declaration():
             {'aadhar_no': aadhar_no}
         )
         
+        # 5. Remove the complaints
         db.session.execute(
             text("""
                  DELETE FROM Complaints WHERE Aadhar_No = :aadhar_no
@@ -2365,6 +2349,7 @@ def process_death_declaration():
             {'aadhar_no': aadhar_no}
         )
         
+        # 6. Delete tax data
         db.session.execute(
             text("""
                  DELETE FROM Taxation WHERE Aadhar_No = :aadhar_no
@@ -2373,7 +2358,6 @@ def process_death_declaration():
         )
         
         db.session.commit()
-        # flash("Death has been recorded successfully. Death certificate has been issued.", "success")
         
     except Exception as e:
         db.session.rollback()
@@ -2381,6 +2365,7 @@ def process_death_declaration():
     
     return redirect(url_for('main.dashboard_employees'))
 
+# View beneficiaries of a welfare scheme
 @main_bp.route('/scheme_beneficiaries/<int:scheme_id>', methods=['GET'])
 def scheme_beneficiaries(scheme_id):
     if 'user' not in session:
@@ -2419,7 +2404,7 @@ def scheme_beneficiaries(scheme_id):
         beneficiaries=beneficiaries_list
     )
     
-    
+# Add/ View/ Delete/ Modify Households
 @main_bp.route('/manage_households', methods=['GET', 'POST'])
 def manage_households():
     if request.method == 'POST':
@@ -2468,6 +2453,7 @@ def manage_households():
 
     return render_template('manage_households.html', households=households)
 
+# Delete Household
 @main_bp.route('/delete_household/<int:house_no>', methods=['POST'])
 def delete_household(house_no):
     household = Household.query.get(house_no)

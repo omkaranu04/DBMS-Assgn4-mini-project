@@ -29,13 +29,13 @@ class Citizens(db.Model):
         db.String(20),
         nullable=False,
         default='Uneducated'
-    )  # e.g., 'Uneducated', 'High School', etc.
+    )  # e.g., 'Uneducated', 'High School', 'Graduate','Post Graduate','Secondary'
     income = db.Column(db.Numeric, default=0.0)
     employment = db.Column(
         db.String(20),
         nullable=False,
         default='Unemployed'
-    )  # e.g., 'Unemployed', 'Employee', etc.
+    )  # e.g., 'Unemployed', 'Employee', 'Self-Employee','Business'
     is_alive = db.Column(db.Boolean, default=True)
 
 # Household
@@ -67,14 +67,14 @@ class Certificates(db.Model):
     certificate_type = db.Column(
         db.String(20),
         nullable=False
-    )  # e.g., 'Birth', 'Death', etc.
+    )  # e.g., 'Birth', 'Death', 'Caste', 'Domicille', 'Residence', 'Character'
     date_of_issue = db.Column(db.Date, nullable=False)
 
 # Welfare Schemes
 class Welfare_Schemes(db.Model):
     __tablename__ = 'welfare_schemes'
     scheme_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    scheme_type = db.Column(db.String(100), nullable=False)  # e.g., 'Education Support'
+    scheme_type = db.Column(db.String(100), nullable=False)
     budget = db.Column(db.Numeric, nullable=False)
     scheme_description = db.Column(db.Text)
 
