@@ -1,106 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welfare Schemes - GPMS</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/welfare_schemes.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/welfare_schemes.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1>GPMS - The Smart Way to Handle a Village</h1>
-        <div class="header-buttons">
-            <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-            <a href="{{ url_for('main.dashboard_official') }}" class="btn">Go Back</a>
-        </div>
+      <h1>GPMS - The Smart Way to Handle a Village</h1>
+      <div class="header-buttons">
+        <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+        <a href="{{ url_for('main.dashboard_official') }}" class="btn"
+          >Go Back</a
+        >
+      </div>
     </header>
 
     <div class="main-content">
-        <div class="welfare-container">
-            <div class="page-title">
-                <h2>Welfare Schemes</h2>
-                <p class="subtitle">Government programs for the benefit and welfare of village citizens</p>
-            </div>
-
-            <!-- Welfare Summary -->
-            <div class="welfare-summary">
-                <div class="summary-card">
-                    <div class="summary-icon">
-                        <i class="fas fa-hand-holding-heart"></i>
-                    </div>
-                    <div class="summary-content">
-                        <h3>Total Welfare Schemes</h3>
-                        <p class="summary-value">{{ schemes|length }}</p>
-                    </div>
-                </div>
-
-                <div class="summary-card">
-                    <div class="summary-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <div class="summary-content">
-                        <h3>Total Budget Allocated</h3>
-                        <p class="summary-value">₹{{ total_budget }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Schemes List -->
-            <div class="schemes-section">
-                <h3 class="section-title">
-                    <i class="fas fa-list-alt"></i> Available Welfare Schemes
-                </h3>
-
-                {% if schemes %}
-                <div class="table-responsive">
-                    <table class="schemes-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Scheme Name</th>
-                                <th>Description</th>
-                                <th>Budget</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for scheme in schemes %}
-                            <tr>
-                                <td>{{ scheme[0] }}</td>
-                                <td>{{ scheme[1] }}</td>
-                                <td>{{ scheme[3] }}</td>
-                                <td class="budget-cell">₹{{ scheme[2] }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <p class="empty-message">No welfare schemes are currently available.</p>
-                {% endif %}
-            </div>
-
-            <!-- Schemes Cards (Mobile-friendly view) -->
-            <div class="schemes-cards">
-                {% for scheme in schemes %}
-                <div class="scheme-card">
-                    <div class="scheme-header">
-                        <h4>{{ scheme.Scheme_Type }}</h4>
-                        <span class="scheme-id">ID: {{ scheme.Scheme_ID }}</span>
-                    </div>
-                    <div class="scheme-body">
-                        <p class="scheme-description">{{ scheme.Scheme_Description }}</p>
-                        <div class="scheme-budget">
-                            <i class="fas fa-rupee-sign"></i> {{ scheme.Budget }}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
+      <div class="welfare-container">
+        <div class="page-title">
+          <h2>Welfare Schemes</h2>
+          <p class="subtitle">
+            Government programs for the benefit and welfare of village citizens
+          </p>
         </div>
-    </div>
-</body>
 
+        <!-- Welfare Summary -->
+        <div class="welfare-summary">
+          <div class="summary-card">
+            <div class="summary-icon">
+              <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <div class="summary-content">
+              <h3>Total Welfare Schemes</h3>
+              <p class="summary-value">{{ schemes|length }}</p>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <div class="summary-content">
+              <h3>Total Budget Allocated</h3>
+              <p class="summary-value">₹{{ total_budget }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schemes List -->
+        <div class="schemes-section">
+          <h3 class="section-title">
+            <i class="fas fa-list-alt"></i> Available Welfare Schemes
+          </h3>
+
+          {% if schemes %}
+          <div class="table-responsive">
+            <table class="schemes-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Scheme Name</th>
+                  <th>Description</th>
+                  <th>Budget</th>
+                  <th>Beneficiaries</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for scheme in schemes %}
+                <tr>
+                  <td>{{ scheme[0] }}</td>
+                  <td>{{ scheme[1] }}</td>
+                  <td>{{ scheme[3] }}</td>
+                  <td class="budget-cell">₹{{ scheme[2] }}</td>
+                  <td>
+                    <a
+                      href="{{ url_for('main.scheme_beneficiaries', scheme_id=scheme[0]) }}"
+                      class="btn btn-info"
+                      >View Beneficiaries</a
+                    >
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="empty-message">
+            No welfare schemes are currently available.
+          </p>
+          {% endif %}
+        </div>
+
+        <!-- Schemes Cards (Mobile-friendly view) -->
+        <div class="schemes-cards">
+          {% for scheme in schemes %}
+          <div class="scheme-card">
+            <div class="scheme-header">
+              <h4>{{ scheme.Scheme_Type }}</h4>
+              <span class="scheme-id">ID: {{ scheme.Scheme_ID }}</span>
+            </div>
+            <div class="scheme-body">
+              <p class="scheme-description">{{ scheme.Scheme_Description }}</p>
+              <div class="scheme-budget">
+                <i class="fas fa-rupee-sign"></i> {{ scheme.Budget }}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

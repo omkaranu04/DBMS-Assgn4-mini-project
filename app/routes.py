@@ -2378,3 +2378,41 @@ def process_death_declaration():
         flash(f"An error occurred: {str(e)}", "danger")
     
     return redirect(url_for('main.dashboard_employees'))
+
+@main_bp.route('/scheme_beneficiaries/<int:scheme_id>', methods=['GET'])
+def scheme_beneficiaries(scheme_id):
+    if 'user' not in session:
+        return redirect(url_for('main.login'))
+    
+    # Get scheme details
+    scheme = Welfare_Schemes.query.get(scheme_id)
+    if not scheme:
+        flash("Welfare scheme not found!", "danger")
+        return redirect(url_for('main.welfare_schemes'))
+    
+    # Get beneficiaries with their names
+    beneficiaries = db.session.execute(
+        text("""
+        SELECT a.Aadhar_No, c.Name, a.Avail_Date
+        FROM Avails a
+        JOIN Citizens c ON a.Aadhar_No = c.Aadhar_No
+        WHERE a.Scheme_ID = :scheme_id
+        ORDER BY a.Avail_Date DESC
+        """),
+        {'scheme_id': scheme_id}
+    ).fetchall()
+    
+    # Convert to list of dictionaries for template
+    beneficiaries_list = []
+    for b in beneficiaries:
+        beneficiaries_list.append({
+            'aadhar_no': b[0],
+            'name': b[1],
+            'avail_date': b[2]
+        })
+    
+    return render_template(
+        'scheme_beneficiaries.html',
+        scheme=scheme,
+        beneficiaries=beneficiaries_list
+    )
