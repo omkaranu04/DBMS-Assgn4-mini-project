@@ -845,7 +845,6 @@ def delete_citizen():
         return redirect(url_for('main.login'))
     
     citizen = None
-    
     if request.method == 'POST':
         aadhar_no = request.form.get('aadhar_no', '').strip()
         
