@@ -2471,3 +2471,30 @@ def delete_household(house_no):
     except Exception as e:
         db.session.rollback()
         return jsonify({'status': 'error', 'message': f"Error deleting household: {str(e)}", 'category': 'danger'})
+
+# Add this route in routes.py
+@main_bp.route('/execute_sql', methods=['GET', 'POST'])
+def execute_sql():
+    if 'user' not in session or session.get('user_type') != 'System Administrator':
+        flash('Unauthorized access!', 'danger')
+        return redirect(url_for('main.login'))
+
+    query = ""
+    result = None
+    error = None
+
+    if request.method == 'POST':
+        query = request.form.get('query', '').strip()
+        if query:
+            try:
+                result_proxy = db.session.execute(text(query))
+                if result_proxy.returns_rows:
+                    result = [dict(row._mapping) for row in result_proxy.fetchall()]
+                else:
+                    db.session.commit()
+                    result = f"Query executed successfully. Rows affected: {result_proxy.rowcount}"
+            except Exception as e:
+                db.session.rollback()
+                error = str(e)
+
+    return render_template('execute_sql.html', query=query, result=result, error=error)

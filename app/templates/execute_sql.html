@@ -1,0 +1,60 @@
+<!-- execute_sql.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Execute SQL Query</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/execute_sql.css') }}">
+</head>
+<body class="container">
+</head>
+<body class="container mt-4">
+
+  <h2>Execute Custom SQL Query</h2>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    <div class="form-group">
+      <label for="query">SQL Query:</label>
+      <textarea name="query" id="query" rows="5" class="form-control">{{ query }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-success mt-2">Run Query</button>
+  </form>
+
+  {% if result %}
+    <hr>
+    {% if result is string %}
+      <div class="alert alert-info">{{ result }}</div>
+    {% else %}
+      <h4>Query Results:</h4>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            {% for key in result[0].keys() %}
+              <th>{{ key }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in result %}
+            <tr>
+              {% for value in row.values() %}
+                <td>{{ value }}</td>
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  {% endif %}
+
+  <a href="{{ url_for('main.dashboard_administrator') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+
+</body>
+</html>

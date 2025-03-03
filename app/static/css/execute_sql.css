@@ -1,0 +1,89 @@
+/* execute_sql.css */
+
+/* General body styling */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Container styling */
+.container {
+    max-width: 900px;
+    margin-top: 40px;
+    padding: 30px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+/* Page heading */
+h2 {
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+/* Form elements */
+textarea.form-control {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    resize: vertical;
+}
+
+button.btn-success {
+    width: 150px;
+}
+
+/* Result section styling */
+hr {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+h4 {
+    margin-bottom: 15px;
+    color: #495057;
+}
+
+/* Table styling */
+.table {
+    font-size: 14px;
+}
+
+.table thead th {
+    background-color: #343a40;
+    color: white;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f3f5;
+}
+
+/* Alert messages */
+.alert {
+    margin-top: 20px;
+}
+
+/* Back button */
+a.btn-secondary {
+    margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    button.btn-success,
+    a.btn-secondary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    textarea.form-control {
+        height: 150px !important;
+    }
+}
