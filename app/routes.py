@@ -7,7 +7,6 @@ from datetime import datetime
 import re
 from flask import jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from hashlib import md5
 
 def verify_password(stored_password, input_password):
@@ -86,7 +85,9 @@ def login():
 def dashboard_administrator():
     if 'user' not in session:
         return redirect(url_for('main.login'))
-    
+    if session.get('user_type') != 'System Administrator':
+        flash('You are not authorized to access this page.', 'danger')
+        return redirect(url_for('main.login'))
     return render_template('administrator_view.html')
 
 

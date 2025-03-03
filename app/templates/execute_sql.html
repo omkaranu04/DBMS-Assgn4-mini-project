@@ -1,60 +1,92 @@
-<!-- execute_sql.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Execute SQL Query</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/execute_sql.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/execute_sql.css') }}" />
 </head>
-<body class="container">
-</head>
-<body class="container mt-4">
 
-  <h2>Execute Custom SQL Query</h2>
-
-  {% if error %}
-    <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
-
-  <form method="post">
-    <div class="form-group">
-      <label for="query">SQL Query:</label>
-      <textarea name="query" id="query" rows="5" class="form-control">{{ query }}</textarea>
+<body>
+  <header>
+    <h1>Panchayat Management System</h1>
+    <div class="header-buttons">
+      <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+      <a href="{{ url_for('main.dashboard_administrator') }}" class="btn">Go Back</a>
     </div>
-    <button type="submit" class="btn btn-success mt-2">Run Query</button>
-  </form>
+  </header>
 
-  {% if result %}
-    <hr>
-    {% if result is string %}
-      <div class="alert alert-info">{{ result }}</div>
-    {% else %}
-      <h4>Query Results:</h4>
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            {% for key in result[0].keys() %}
-              <th>{{ key }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in result %}
-            <tr>
-              {% for value in row.values() %}
+  <div class="main-content">
+    <div class="container">
+      <div class="welcome-message">
+        <h2>Execute Custom SQL Query</h2>
+        <p>Run direct SQL commands on the database</p>
+      </div>
+
+      {% if error %}
+      <div class="alert alert-danger">
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <div class="form-group">
+        <div class="terminal-container">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <span class="terminal-button red"></span>
+              <span class="terminal-button yellow"></span>
+              <span class="terminal-button green"></span>
+            </div>
+            <div class="terminal-title">SQL Command Terminal</div>
+          </div>
+          <div class="terminal-body">
+            <form method="post" action="">
+              <div class="terminal-prompt">
+                <textarea name="query" id="query" class="terminal-input"
+                  placeholder="Enter your SQL query here...">{{ query }}</textarea>
+              </div>
+              <div class="terminal-actions">
+                <button type="submit" class="btn btn-execute">Execute Query</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {% if result %}
+      <div class="results-section">
+        <h3>Query Results</h3>
+        <div class="result-container">
+          {% if result is string %}
+          <div class="result-message">
+            {{ result }}
+          </div>
+          {% else %}
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                {% for key in result[0].keys() %}
+                <th>{{ key }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in result %}
+              <tr>
+                {% for value in row.values() %}
                 <td>{{ value }}</td>
+                {% endfor %}
+              </tr>
               {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
-  {% endif %}
-
-  <a href="{{ url_for('main.dashboard_administrator') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
-
+            </tbody>
+          </table>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
 </body>
+
 </html>

@@ -1,54 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Administrator Dashboard - GPMS</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/admin_dashboard.css') }}"
-    />
-  </head>
 
-  <body>
-    <header>
-      <h1>GPMS - The Smart Way to Handle a Village</h1>
-      <div class="header-buttons">
-        <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
-        <a href="{{ url_for('main.about_us') }}" class="btn">About Us</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administrator Dashboard - GPMS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}" />
+</head>
+
+<body>
+  <header>
+    <h1>GPMS - The Smart Way to Handle a Village</h1>
+    <div class="header-buttons">
+      <a href="{{ url_for('main.login') }}" class="btn">LogOut</a>
+      <a href="{{ url_for('main.about_us') }}" class="btn">About Us</a>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <div class="dashboard-container">
+      <div class="welcome-message">
+        <h2>Welcome Administrator</h2>
+        <p>What would you like to do?</p>
       </div>
-    </header>
 
-    <div class="main-content">
-      <div class="dashboard-container">
-        <div class="welcome-message">
-          <h2>Welcome Administrator</h2>
-          <p>What would you like to do?</p>
-        </div>
+      <div class="options-container">
+        <a href="{{ url_for('main.panchayat_employees') }}" class="option-card">
+          <div class="option-icon">👥</div>
+          <h3>View Panchayat Employees</h3>
+          <p>Manage and view all panchayat staff members</p>
+        </a>
 
-        <div class="options-container">
-          <a
-            href="{{ url_for('main.panchayat_employees') }}"
-            class="option-card"
-          >
-            <div class="option-icon">👥</div>
-            <h3>View Panchayat Employees</h3>
-            <p>Manage and view all panchayat staff members</p>
-          </a>
-
-          <a
-            href="{{ url_for('main.government_officials') }}"
-            class="option-card"
-          >
-            <div class="option-icon">🏛️</div>
-            <h3>View Government Officials</h3>
-            <p>Access information about government officials</p>
-          </a>
-          <a href="{{ url_for('main.execute_sql') }}" class="btn btn-primary">
-            Execute Custom SQL Query
-          </a>
-        </div>
+        <a href="{{ url_for('main.government_officials') }}" class="option-card">
+          <div class="option-icon">🏛️</div>
+          <h3>View Government Officials</h3>
+          <p>Access information about government officials</p>
+        </a>
+        <a href="{{ url_for('main.execute_sql') }}" class="option-card">
+          <div class="option-icon">👨‍💻</div>
+          <h3>Execute SQL Queries</h3>
+          <p>SuperPower Given to the System Administrator</p>
+        </a>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

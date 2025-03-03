@@ -1,3 +1,5 @@
+/* admin_dashboard.css */
+
 /* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -40,8 +42,7 @@ header h1 {
     gap: 10px;
 }
 
-/* Button Styling */
-.btn {
+.header-buttons .btn {
     background-color: #28a745;
     color: white;
     text-decoration: none;
@@ -53,7 +54,7 @@ header h1 {
     transition: background-color 0.3s ease;
 }
 
-.btn:hover {
+.header-buttons .btn:hover {
     background-color: #218838;
 }
 
@@ -79,40 +80,45 @@ header h1 {
 
 .welcome-message h2 {
     color: #0056b3;
-    font-size: 2em;
-    margin-bottom: 10px;
+    margin: 0 0 10px 0;
+    font-size: 2.2em;
 }
 
 .welcome-message p {
     color: #6c757d;
-    font-size: 1.2em;
     margin: 0;
+    font-size: 1.2em;
 }
 
 /* Options Container */
 .options-container {
     display: flex;
-    justify-content: center;
-    gap: 30px;
     flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
 }
 
 /* Option Cards */
 .option-card {
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    width: 300px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
     text-align: center;
     text-decoration: none;
-    color: #333;
+    color: inherit;
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .option-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .option-icon {
@@ -122,12 +128,52 @@ header h1 {
 
 .option-card h3 {
     color: #0056b3;
-    margin: 0 0 15px 0;
+    margin: 0 0 10px 0;
+    font-size: 1.3em;
 }
 
 .option-card p {
     color: #6c757d;
     margin: 0;
+    font-size: 0.9em;
+}
+
+/* SQL Query Button */
+.btn-primary {
+    background-color: #17a2b8;
+    color: white;
+    text-decoration: none;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1em;
+    display: block;
+    text-align: center;
+    margin: 30px auto 0;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    background-color: #138496;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(23, 162, 184, 0.4);
+}
+
+.btn-primary::after {
+    content: "⚙️";
+    position: absolute;
+    right: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover::after {
+    opacity: 1;
+    transform: translateX(-5px);
 }
 
 /* Responsive Adjustments */
@@ -136,23 +182,29 @@ header h1 {
         font-size: 1em;
         max-width: 50%;
     }
-    
-    .btn {
+
+    .header-buttons .btn {
         padding: 6px 10px;
         font-size: 0.65em;
     }
-    
+
     .welcome-message h2 {
-        font-size: 1.6em;
+        font-size: 1.8em;
     }
-    
+
     .welcome-message p {
         font-size: 1em;
     }
-    
+
     .option-card {
+        min-width: 100%;
+    }
+
+    .btn-primary {
         width: 100%;
-        max-width: 300px;
+        max-width: none;
+        padding: 12px 20px;
+        font-size: 1em;
     }
 }
 
@@ -161,19 +213,23 @@ header h1 {
         flex-direction: column;
         padding: 10px;
     }
-    
+
     header h1 {
         margin-bottom: 10px;
         max-width: 100%;
         text-align: center;
     }
-    
+
     .header-buttons {
         width: 100%;
         justify-content: center;
     }
-    
+
     .main-content {
         padding-top: 130px;
+    }
+
+    .welcome-message h2 {
+        font-size: 1.5em;
     }
 }
