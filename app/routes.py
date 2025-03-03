@@ -6,6 +6,13 @@ from . import db
 from datetime import datetime
 import re
 from flask import jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from hashlib import md5
+
+def verify_password(stored_password, input_password):
+    hashed_input = md5(input_password.encode()).hexdigest()
+    return stored_password == hashed_input
 
 main_bp = Blueprint('main', __name__)
 
@@ -17,6 +24,9 @@ def login():
         username = form.username.data.strip()
         password = form.password.data.strip()
         user_type = form.user_type.data.strip()
+
+        # Import the hash function
+        from hashlib import md5
 
         if user_type == 'System Administrator':
             user = SystemUsersTop.query.filter_by(username=username).first()
@@ -31,7 +41,10 @@ def login():
         elif user_type == 'Government Official':
             user = SystemUsersTop.query.filter_by(username=username).first()
             
-            if user and user.password == password and user.user_type == 'Government Official':
+            # Hash the input password and compare with stored hash
+            hashed_password = md5(password.encode()).hexdigest()
+            
+            if user and user.password == hashed_password and user.user_type == 'Government Official':
                 session['user'] = username
                 session['user_type'] = 'Government Official'
                 return redirect(url_for('main.dashboard_official'))
@@ -41,7 +54,10 @@ def login():
         elif user_type == 'Panchayat Employee':
             user = PanchayatUsers.query.filter_by(username=username).first()
             
-            if user and user.password == password:
+            # Hash the input password and compare with stored hash
+            hashed_password = md5(password.encode()).hexdigest()
+            
+            if user and user.password == hashed_password:
                 session['user'] = username
                 session['user_type'] = 'Panchayat Employee'
                 return redirect(url_for('main.dashboard_employees'))
@@ -177,7 +193,11 @@ def add_edit_panchayat_employee(username=None):
                     old_password = employee_result[0] if employee_result else ""
 
                     # Use old password if new password is blank or contains only spaces
-                    update_password = form_password if form_password else old_password
+                    update_password = old_password
+                    if form_password:
+                        # Encrypt the new password
+                        from hashlib import md5
+                        update_password = md5(form_password.encode()).hexdigest()
 
                     db.session.execute(
                         text("""
@@ -215,6 +235,10 @@ def add_edit_panchayat_employee(username=None):
                         if existing_aadhar:
                             errors['aadhar_no'] = 'Aadhar number already in use.'
                         else:
+                            # Encrypt the password
+                            from hashlib import md5
+                            encrypted_password = md5(form_password.encode()).hexdigest()
+                            
                             db.session.execute(
                                 text("""
                                     INSERT INTO Panchayat_Users (username, password, designation, aadhar_no)
@@ -222,7 +246,7 @@ def add_edit_panchayat_employee(username=None):
                                 """), 
                                 {
                                     'username': form_username,
-                                    'password': form_password,
+                                    'password': encrypted_password,
                                     'designation': form_designation,
                                     'aadhar_no': form_aadhar_no
                                 }
@@ -323,7 +347,10 @@ def add_edit_government_official(username=None):
             try:
                 if official:  # Editing existing official
                     if password_input:  # User entered a new password
-                        official.password = password_input
+                        # Use MD5 which produces a 32-character hash - less secure but fits in the field
+                        from hashlib import md5
+                        hashed_password = md5(password_input.encode()).hexdigest()
+                        official.password = hashed_password
 
                     official.username = username_input  # Update username
                     db.session.commit()
@@ -335,10 +362,14 @@ def add_edit_government_official(username=None):
                     if existing_user:
                         form.username.errors = ["Username already exists! Choose a different one."]
                     else:
-                        # Create a new official
+                        # Use MD5 which produces a 32-character hash
+                        from hashlib import md5
+                        hashed_password = md5(password_input.encode()).hexdigest()
+                        
+                        # Create a new official with encrypted password
                         new_official = SystemUsersTop(
                             username=username_input,
-                            password=password_input,
+                            password=hashed_password,
                             user_type='Government Official'
                         )
                         db.session.add(new_official)
@@ -347,6 +378,8 @@ def add_edit_government_official(username=None):
             
             except Exception as e:
                 db.session.rollback()
+                # Print the error for debugging
+                print(f"Database error: {str(e)}")
                 if "UNIQUE constraint failed" in str(e) or "Duplicate entry" in str(e):
                     form.username.errors = ["Username already exists! Choose a different one."]
                 else:
